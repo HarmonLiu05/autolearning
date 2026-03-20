@@ -231,18 +231,24 @@
 只有在你想使用下面这些能力时，才需要启动 [server](/Users/lhx/Desktop/autolearing/server)：
 
 - GitHub 登录
-- 贡献题目
-- 为贡献自动创建 GitHub issue
+- 旧版服务端贡献流
+- 旧版 GitHub OAuth 登录调试
 
-贡献流程现在是：
+当前默认的贡献流程已经改成纯 GitHub 自动化：
 
-1. 先启动本地后端 `npm run dev:server`
-2. 在设置页或面板里点击 `登录 GitHub`
-3. 回到 `编辑题库`
-4. 在“我的题库”里勾选题目并点击 `贡献选中题目`
-5. 后端会在你的 GitHub 仓库里自动创建 issue
+1. 回到 `编辑题库`
+2. 在“我的题库”里勾选题目并点击 `贡献选中题目`
+3. 插件会打开一个预填好的 GitHub issue 页面
+4. 用户确认提交 issue
+5. 仓库中的 GitHub Actions 会自动解析 JSON、去重，并向云端题库仓库创建待审核 PR
 
-如果只做 `同步云端`，则不需要 GitHub 登录。
+如果只做 `同步云端`，则不需要 GitHub 登录；如果只做新版贡献流程，也不需要本地后端。
+
+要让自动化真正写入云端题库仓库，还需要在当前仓库的 Actions Secrets 中配置：
+
+- `QUESTION_BANK_SYNC_TOKEN`
+
+这个 token 需要对云端题库仓库具备可写权限，用于自动创建分支和 PR。
 
 启动方式：
 

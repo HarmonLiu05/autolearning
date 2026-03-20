@@ -4,11 +4,14 @@ const DEFAULT_CODE_PROMPT =
   "当前页面大概率是编程题、代码填空题或需要补全模板的题。请优先保留题目指定语言、函数签名、输入输出格式和已有代码骨架，只补上真正缺失的部分。若页面自带代码与题面冲突，优先相信题面和样例。code 字段只放最终可提交或可复制的内容，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
 const QUESTION_BANK_CATEGORIES = ["educoder", "zhihuishu", "leetcode", "general"];
 const FIXED_SERVER_ORIGIN = "http://03hhhx.dpdns.org";
+const FIXED_CONTRIBUTION_REPO_OWNER = "HarmonLiu05";
+const FIXED_CONTRIBUTION_REPO_NAME = "autolearning";
 const FIXED_CLOUD_REPO_OWNER = "HarmonLiu05";
 const FIXED_CLOUD_REPO_NAME = "question-bank";
 const FIXED_CLOUD_REPO_BRANCH = "main";
 const DEFAULT_SERVER_ORIGIN = FIXED_SERVER_ORIGIN;
 const GITHUB_AUTH_STORAGE_KEY = "autolearningGithubAuthSession";
+const MAX_GITHUB_ISSUE_URL_LENGTH = 7000;
 
 const DEFAULT_SETTINGS = {
   baseUrl: "https://api.deepseek.com/v1",
@@ -419,34 +422,128 @@ async function syncCloudQuestionBank() {
 
 async function submitContribution(category, entries) {
   const normalizedCategory = String(category || "").trim();
-  const normalizedEntries = Array.isArray(entries) ? entries : [];
+  const normalizedEntries = Array.isArray(entries)
+    ? entries
+        .map((entry) => normalizeContributionEntry(entry))
+        .filter((entry) => entry && entry.stem && entry.answer)
+    : [];
   if (!normalizedCategory) {
     throw new Error("请选择贡献分类。");
   }
   if (normalizedEntries.length === 0) {
     throw new Error("请先选择要贡献的题目。");
   }
-  const authSession = await getGitHubAuthStatus({ forceRefresh: true });
-  if (!authSession?.sessionToken) {
-    throw new Error("请先登录 GitHub，并确保后端服务已可访问。");
+  const settings = await storageGet(DEFAULT_SETTINGS);
+  const owner = String(FIXED_CONTRIBUTION_REPO_OWNER || settings.cloudRepoOwner || "").trim();
+  const repo = String(FIXED_CONTRIBUTION_REPO_NAME || settings.cloudRepoName || "").trim();
+  if (!owner || !repo) {
+    throw new Error("当前没有配置 GitHub 贡献仓库。");
   }
 
-  const payload = await fetchLocalServerJson("/contributions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${authSession.sessionToken}`,
-    },
-    body: {
-      category: normalizedCategory,
-      entries: normalizedEntries,
-    },
-  });
+  const payload = {
+    version: 1,
+    category: normalizedCategory,
+    exportedAt: new Date().toISOString(),
+    source: "autolearning-extension",
+    questions: normalizedEntries.map((entry) => ({
+      clientEntryId: entry.clientEntryId,
+      stem: entry.stem,
+      answer: entry.answer,
+      sourceMeta: entry.sourceMeta,
+    })),
+  };
+  const issueTitle = `[题库贡献][${normalizedCategory}] ${normalizedEntries.length} 题`;
+  const issueBody = [
+    "## 题库贡献",
+    "",
+    `- 分类: ${normalizedCategory}`,
+    `- 题目数量: ${normalizedEntries.length}`,
+    `- 提交时间: ${payload.exportedAt}`,
+    `- 来源: ${payload.source}`,
+    "",
+    "## JSON",
+    "",
+    "```json",
+    JSON.stringify(payload, null, 2),
+    "```",
+  ].join("\n");
+  const compactIssueBody = [
+    "## 题库贡献",
+    "",
+    `- 分类: ${normalizedCategory}`,
+    `- 题目数量: ${normalizedEntries.length}`,
+    "",
+    "预填 JSON 过长，插件已经把完整内容复制到剪贴板。",
+    "请把 JSON 粘贴到下方代码块后再提交 issue。",
+    "",
+    "## JSON",
+    "",
+    "```json",
+    "请把剪贴板中的 JSON 粘贴到这里",
+    "```",
+  ].join("\n");
+  let issueUrl = buildGitHubIssueUrl(owner, repo, issueTitle, issueBody);
+  const needsPaste = issueUrl.length > MAX_GITHUB_ISSUE_URL_LENGTH;
+  if (needsPaste) {
+    issueUrl = buildGitHubIssueUrl(owner, repo, issueTitle, compactIssueBody);
+  }
+  await openUrlInNewTab(issueUrl);
 
   return {
-    createdCount: Number(payload?.createdCount || 0),
-    duplicateCount: Number(payload?.duplicateCount || 0),
-    results: Array.isArray(payload?.results) ? payload.results : [],
+    createdCount: 1,
+    duplicateCount: 0,
+    issueUrl,
+    needsPaste,
+    payloadText: needsPaste ? JSON.stringify(payload, null, 2) : "",
+    results: normalizedEntries.map((entry) => ({
+      clientEntryId: entry.clientEntryId,
+      status: "issue_opened",
+      fingerprint: "",
+    })),
   };
+}
+
+function normalizeContributionEntry(entry) {
+  if (!entry || typeof entry !== "object") {
+    return null;
+  }
+  const sourceMeta =
+    entry.sourceMeta && typeof entry.sourceMeta === "object"
+      ? {
+          title: String(entry.sourceMeta.title || "").trim(),
+          category: String(entry.sourceMeta.category || "").trim(),
+          source: String(entry.sourceMeta.source || "").trim(),
+          site: String(entry.sourceMeta.site || "").trim(),
+          pageUrl: String(entry.sourceMeta.pageUrl || "").trim(),
+        }
+      : {};
+  return {
+    clientEntryId: String(entry.clientEntryId || "").trim(),
+    stem: String(entry.stem || "").trim(),
+    answer: String(entry.answer || "").trim(),
+    sourceMeta,
+  };
+}
+
+function buildGitHubIssueUrl(owner, repo, title, body) {
+  const params = new URLSearchParams({
+    title: String(title || ""),
+    body: String(body || ""),
+    labels: "question-bank-contribution",
+  });
+  return `https://github.com/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/issues/new?${params.toString()}`;
+}
+
+function openUrlInNewTab(url) {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.create({ url }, (tab) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message));
+        return;
+      }
+      resolve(tab);
+    });
+  });
 }
 
 async function fetchGitHubCategory(owner, repo, branch, category) {

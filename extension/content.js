@@ -237,10 +237,8 @@
             </div>
             <div class="al-actions al-actions-secondary">
               <button data-role="cloud-sync" type="button">同步云端</button>
-              <button data-role="github-auth-login" type="button">登录 GitHub</button>
-              <button data-role="github-auth-logout" type="button" hidden>退出登录</button>
             </div>
-            <div class="al-summary" data-role="platform-summary">云端题库会从 GitHub 下载到本地缓存使用，贡献只会从“我的题库”里选择。</div>
+            <div class="al-summary" data-role="platform-summary">云端题库会从 GitHub 下载到本地缓存使用；贡献会打开 GitHub Issue 页面，由仓库自动处理。</div>
           </section>
 
           <section class="al-section" data-role="choice-answer-wrap" hidden>
@@ -3630,33 +3628,12 @@
     const owner = String(state.settings.cloudRepoOwner || "").trim();
     const repo = String(state.settings.cloudRepoName || "").trim();
     const branch = String(state.settings.cloudRepoBranch || "").trim() || "main";
-    const auth = normalizeGitHubAuthSession(state.githubAuth);
-    const authLabel = auth?.user
-      ? auth.user.name
-        ? `${auth.user.name} (@${auth.user.login})`
-        : `@${auth.user.login}`
-      : "";
     if (!owner || !repo) {
-      elements.platformSummary.textContent = authLabel
-        ? `还没有配置云端仓库。当前已登录 GitHub：${authLabel}。`
-        : "还没有配置云端仓库；配置后可从 GitHub 同步公共题库到本地。";
-      if (elements.githubAuthLogin instanceof HTMLElement) {
-        elements.githubAuthLogin.hidden = false;
-      }
-      if (elements.githubAuthLogout instanceof HTMLElement) {
-        elements.githubAuthLogout.hidden = !auth;
-      }
+      elements.platformSummary.textContent = "还没有配置云端仓库；配置后可从 GitHub 同步公共题库到本地。";
       return;
     }
-    elements.platformSummary.textContent = authLabel
-      ? `当前云端仓库：${owner}/${repo}@${branch}。已登录 GitHub：${authLabel}。同步云端不需要登录，贡献题目会复用当前登录态。`
-      : `当前云端仓库：${owner}/${repo}@${branch}。同步云端不需要登录；贡献题目时会要求先登录 GitHub，并确保后端服务可访问。`;
-    if (elements.githubAuthLogin instanceof HTMLElement) {
-      elements.githubAuthLogin.hidden = false;
-    }
-    if (elements.githubAuthLogout instanceof HTMLElement) {
-      elements.githubAuthLogout.hidden = !auth;
-    }
+    elements.platformSummary.textContent =
+      `当前云端仓库：${owner}/${repo}@${branch}。同步云端不需要登录；贡献题目会打开 GitHub Issue 页面，由仓库里的 Actions 自动校验并生成待审核更新。`;
   }
 
   async function hydrateGitHubAuthStatus(options = {}) {
@@ -3754,25 +3731,11 @@
   }
 
   function buildGitHubAuthSummaryHtml(options = {}) {
-    const auth = normalizeGitHubAuthSession(options.auth ?? state.githubAuth);
-    if (!auth?.user) {
-      return `
-        <div class="al-summary-card">
-          <div class="al-summary-grid">
-            ${buildSummaryRow("GitHub", "未登录")}
-            ${buildSummaryHint("贡献题目时会先要求登录 GitHub；同步云端题库不受影响。", "warning")}
-          </div>
-        </div>
-      `;
-    }
-    const userLabel = auth.user.name
-      ? `${auth.user.name} (@${auth.user.login})`
-      : `@${auth.user.login}`;
     return `
       <div class="al-summary-card">
         <div class="al-summary-grid">
-          ${buildSummaryRow("GitHub", userLabel)}
-          ${buildSummaryHint("当前登录态会用于“贡献选中题目”，不会影响匿名同步云端题库。")}
+          ${buildSummaryRow("GitHub", "无需登录")}
+          ${buildSummaryHint("提交时会打开 GitHub Issue 页面，仓库会自动解析 JSON 并生成待审核更新。")}
         </div>
       </div>
     `;
@@ -6908,6 +6871,8 @@
       const cloudStatus =
         result.status === "issue_created" || result.status === "submitted"
           ? "issue_created"
+          : result.status === "issue_opened"
+            ? "issue_opened"
           : result.status === "duplicate"
             ? "duplicate"
             : "";
@@ -7673,10 +7638,6 @@
                   </button>
                 </div>
                 <div class="al-bank-auth-summary">${buildGitHubAuthSummaryHtml()}</div>
-                <div class="al-bank-modal-tool-buttons">
-                  <button type="button" data-role="bank-auth-login">登录 GitHub</button>
-                  <button type="button" data-role="bank-auth-logout" ${state.githubAuth?.sessionToken ? "" : "disabled"}>退出登录</button>
-                </div>
               </div>`
             : `<div class="al-bank-empty"><p>云端题库只读展示，会在本地直接参与匹配，不会出现在贡献列表里。</p></div>`
         }
@@ -7699,6 +7660,8 @@
                     const cloudStatusText =
                       item.cloudStatus === "approved"
                         ? "云端已收录"
+                        : item.cloudStatus === "issue_opened"
+                          ? "待 GitHub 审核"
                         : item.cloudStatus === "issue_created" || item.cloudStatus === "submitted"
                           ? "已创建 Issue"
                           : item.cloudStatus === "duplicate"
@@ -7758,24 +7721,6 @@
         categorySelect.addEventListener("change", () => {
           selectedCategory = normalizeQuestionBankCategory(categorySelect.value);
           renderTabPanel();
-        });
-      }
-
-      const authLoginButton = tabPanel.querySelector('[data-role="bank-auth-login"]');
-      if (authLoginButton instanceof HTMLButtonElement) {
-        authLoginButton.addEventListener("click", () => {
-          void handleGitHubAuthLogin().then(() => {
-            renderTabPanel();
-          }).catch(() => {});
-        });
-      }
-
-      const authLogoutButton = tabPanel.querySelector('[data-role="bank-auth-logout"]');
-      if (authLogoutButton instanceof HTMLButtonElement) {
-        authLogoutButton.addEventListener("click", () => {
-          void handleGitHubAuthLogout().then(() => {
-            renderTabPanel();
-          }).catch(() => {});
         });
       }
 
@@ -7984,11 +7929,6 @@
       setSaveIndicator("提交贡献中...", "saving");
       setBankNotice("提交贡献中...", "saving");
       try {
-        if (!normalizeGitHubAuthSession(state.githubAuth)) {
-          setBankNotice("当前还没有 GitHub 登录，正在打开登录流程...", "info");
-          await handleGitHubAuthLogin({ silent: true });
-          renderTabPanel();
-        }
         const response = await sendMessage({
           type: "autolearning:submit-contribution",
           category: submitCategory,
@@ -8001,11 +7941,22 @@
         const results = Array.isArray(response.result?.results) ? response.result.results : [];
         applyContributionResults(items, results, submitCategory);
         await persistQuestionBank();
-        const createdCount = results.filter((item) => item.status === "issue_created").length;
+        const openedCount = results.filter((item) => item.status === "issue_opened").length;
         const duplicateCount = results.filter((item) => item.status === "duplicate").length;
-        const summaryText = `贡献完成：已创建 Issue ${createdCount} 条，重复 ${duplicateCount} 条。`;
+        if (response.result?.needsPaste && response.result?.payloadText) {
+          try {
+            await navigator.clipboard.writeText(String(response.result.payloadText));
+          } catch {}
+        }
+        const summaryText = response.result?.needsPaste
+          ? `贡献入口已打开：本次整理了 ${openedCount} 条题目，完整 JSON 已复制到剪贴板，请在 GitHub 页面粘贴后提交。`
+          : `贡献入口已打开：本次整理了 ${openedCount} 条题目，重复标记 ${duplicateCount} 条。`;
         setSaveIndicator(summaryText, "saved", true);
-        setStatus(`贡献提交完成：已创建 Issue ${createdCount} 条，重复 ${duplicateCount} 条。`);
+        setStatus(
+          response.result?.needsPaste
+            ? "GitHub Issue 已打开，完整 JSON 已复制到剪贴板。"
+            : "GitHub Issue 已打开，请在新页面确认提交。",
+        );
         setBankNotice(summaryText, "success", true);
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);

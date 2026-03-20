@@ -183,13 +183,9 @@
           </label>
 
           <div class="field">
-            <span>GitHub 登录（用于贡献题目）</span>
-            <div id="authSessionSummary" class="status">正在读取 GitHub 登录状态...</div>
-            <div class="actions" style="margin-top: 10px;">
-              <button type="button" id="githubAuthLogin" class="secondary">登录 GitHub</button>
-              <button type="button" id="githubAuthLogout" class="secondary">退出登录</button>
-            </div>
-            <small>同步云端题库不需要登录；只有贡献题目等服务端能力才需要后端服务可访问并登录 GitHub。</small>
+            <span>GitHub 贡献</span>
+            <div id="authSessionSummary" class="status">无需登录 GitHub；提交时会打开预填好的 Issue 页面。</div>
+            <small>同步云端题库不需要登录；贡献题目会跳转到 GitHub Issue，由仓库中的 Actions 自动校验并生成待审核更新。</small>
           </div>
 
           <label class="toggle-field" for="cloudAutoSync">

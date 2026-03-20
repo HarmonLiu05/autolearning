@@ -1,0 +1,38 @@
+name: Process Question Bank Contribution
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+      - reopened
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  process:
+    if: startsWith(github.event.issue.title, '[题库贡献]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Process contribution issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          TARGET_REPO_OWNER: HarmonLiu05
+          TARGET_REPO_NAME: question-bank
+          TARGET_REPO_BRANCH: main
+          TARGET_REPO_TOKEN: ${{ secrets.QUESTION_BANK_SYNC_TOKEN }}
+        run: node scripts/process-question-bank-contribution.mjs

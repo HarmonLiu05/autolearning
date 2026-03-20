@@ -46,18 +46,10 @@ const restoreChoicePromptButton = document.getElementById("restoreChoicePrompt")
 const restoreCodePromptButton = document.getElementById("restoreCodePrompt");
 const authSessionSummaryNode = document.getElementById("authSessionSummary");
 const cloudRepoSummaryNode = document.getElementById("cloudRepoSummary");
-const githubAuthLoginButton = document.getElementById("githubAuthLogin");
-const githubAuthLogoutButton = document.getElementById("githubAuthLogout");
-
-let currentAuthSession = null;
-
 void hydrateForm();
 chrome.storage.onChanged.addListener((changes, areaName) => {
   if (areaName !== "local") {
     return;
-  }
-  if (changes.autolearningGithubAuthSession) {
-    renderAuthSessionSummary(changes.autolearningGithubAuthSession.newValue || null);
   }
   if (changes.cloudRepoOwner || changes.cloudRepoName || changes.cloudRepoBranch) {
     void hydrateForm();
@@ -134,40 +126,6 @@ restoreCodePromptButton.addEventListener("click", async () => {
   setStatus("已恢复代码题默认提示词。");
 });
 
-githubAuthLoginButton?.addEventListener("click", async () => {
-  setStatus("正在打开 GitHub 登录...");
-  try {
-    const response = await sendMessage({ type: "autolearning:github-auth-start" });
-    if (!response?.ok) {
-      throw new Error(response?.error || "GitHub 登录失败");
-    }
-    currentAuthSession = normalizeAuthSession(response.authSession);
-    renderAuthSessionSummary(currentAuthSession);
-    setStatus(
-      currentAuthSession?.user?.login
-        ? `GitHub 登录成功：${currentAuthSession.user.login}`
-        : "GitHub 登录成功。",
-    );
-  } catch (error) {
-    setStatus(error instanceof Error ? error.message : String(error));
-  }
-});
-
-githubAuthLogoutButton?.addEventListener("click", async () => {
-  setStatus("正在退出 GitHub...");
-  try {
-    const response = await sendMessage({ type: "autolearning:github-auth-logout" });
-    if (!response?.ok) {
-      throw new Error(response?.error || "退出登录失败");
-    }
-    currentAuthSession = null;
-    renderAuthSessionSummary(null);
-    setStatus("已退出 GitHub 登录。");
-  } catch (error) {
-    setStatus(error instanceof Error ? error.message : String(error));
-  }
-});
-
 async function hydrateForm() {
   const values = await storageGet(DEFAULT_SETTINGS);
   document.getElementById("textBaseUrl").value = values.textBaseUrl || values.baseUrl || "";
@@ -196,7 +154,7 @@ async function hydrateForm() {
   );
   document.getElementById("cloudAutoSync").checked = Boolean(values.cloudAutoSync);
   renderCloudRepoSummary(values);
-  await refreshGitHubAuthStatus({ forceRefresh: true, silent: true });
+  renderAuthSessionSummary();
 }
 
 function storageGet(defaults) {
@@ -237,73 +195,12 @@ function renderCloudRepoSummary(values) {
   cloudRepoSummaryNode.textContent = `${owner}/${repo}${branch ? `@${branch}` : ""}`;
 }
 
-function renderAuthSessionSummary(authSession) {
+function renderAuthSessionSummary() {
   if (!authSessionSummaryNode) {
     return;
   }
-  const normalized = normalizeAuthSession(authSession);
-  currentAuthSession = normalized;
-  if (!normalized?.sessionToken || !normalized?.user) {
-    authSessionSummaryNode.textContent = "未登录 GitHub。贡献题目时会先要求登录，并需要后端服务可访问。";
-    if (githubAuthLoginButton) {
-      githubAuthLoginButton.disabled = false;
-    }
-    if (githubAuthLogoutButton) {
-      githubAuthLogoutButton.disabled = true;
-    }
-    return;
-  }
-  const userLabel = normalized.user.name
-    ? `${normalized.user.name} (@${normalized.user.login})`
-    : `@${normalized.user.login}`;
-  authSessionSummaryNode.textContent = `已登录 GitHub：${userLabel}`;
-  if (githubAuthLoginButton) {
-    githubAuthLoginButton.disabled = false;
-  }
-  if (githubAuthLogoutButton) {
-    githubAuthLogoutButton.disabled = false;
-  }
-}
-
-async function refreshGitHubAuthStatus(options = {}) {
-  try {
-    const response = await sendMessage({
-      type: "autolearning:github-auth-status",
-      forceRefresh: Boolean(options.forceRefresh),
-    });
-    if (!response?.ok) {
-      throw new Error(response?.error || "读取 GitHub 登录状态失败");
-    }
-    renderAuthSessionSummary(response.authSession || null);
-  } catch (error) {
-    renderAuthSessionSummary(null);
-    if (!options.silent) {
-      setStatus(error instanceof Error ? error.message : String(error));
-    }
-  }
-}
-
-function normalizeAuthSession(authSession) {
-  if (!authSession || typeof authSession !== "object") {
-    return null;
-  }
-  const sessionToken = String(authSession.sessionToken || "").trim();
-  const user = authSession.user && typeof authSession.user === "object" ? authSession.user : null;
-  if (!sessionToken || !user) {
-    return null;
-  }
-  return {
-    sessionToken,
-    user: {
-      id: String(user.id || "").trim(),
-      login: String(user.login || "").trim(),
-      name: String(user.name || "").trim(),
-      avatarUrl: String(user.avatarUrl || "").trim(),
-      profileUrl: String(user.profileUrl || "").trim(),
-      isAdmin: Boolean(user.isAdmin),
-    },
-    updatedAt: String(authSession.updatedAt || "").trim(),
-  };
+  authSessionSummaryNode.textContent =
+    "无需登录 GitHub；贡献题目时会打开预填好的 Issue 页面，并由仓库 Actions 自动处理。";
 }
 
 function normalizeHistoryLimitInput(value) {
