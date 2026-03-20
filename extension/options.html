@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>智拓 设置</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <p class="eyebrow">智拓</p>
+        <h1>浏览器插件设置</h1>
+        <p class="slogan">智启新知，拓学无界</p>
+        <p class="hero-text">
+          填好模型接口之后，插件就可以在题目页里直接识别题面、生成答案并填充回编辑器。
+        </p>
+      </section>
+
+      <section class="card">
+        <form id="settings-form" class="form">
+          <label class="field">
+            <span>文本 Base URL</span>
+            <input
+              id="textBaseUrl"
+              name="textBaseUrl"
+              type="url"
+              placeholder="https://api.openai.com/v1"
+              required
+            />
+            <small>纯文本请求走这个接口，比如提取题面全自动、普通题面分析、纯文本答题。</small>
+          </label>
+
+          <label class="field">
+            <span>文本 API Key</span>
+            <input
+              id="textApiKey"
+              name="textApiKey"
+              type="password"
+              placeholder="sk-..."
+              autocomplete="off"
+            />
+            <small>保存在当前浏览器本地，不会写进这个仓库。</small>
+          </label>
+
+          <label class="field">
+            <span>文本模型</span>
+            <input
+              id="textModel"
+              name="textModel"
+              type="text"
+              placeholder="gpt-4.1-mini"
+              required
+            />
+            <small>纯文本提问时使用这个模型，比如“提取题面全自动”或普通题面分析。</small>
+          </label>
+
+          <label class="field">
+            <span>图像 Base URL</span>
+            <input
+              id="imageBaseUrl"
+              name="imageBaseUrl"
+              type="url"
+              placeholder="https://api.openai.com/v1"
+              required
+            />
+            <small>当本次请求里真的附带了截图时，固定走这个接口。即使同时有文本和图像，也优先走图像接口。</small>
+          </label>
+
+          <label class="field">
+            <span>图像 API Key</span>
+            <input
+              id="imageApiKey"
+              name="imageApiKey"
+              type="password"
+              placeholder="sk-..."
+              autocomplete="off"
+            />
+            <small>如果图像模型来自另一家服务商，就在这里填写那家的 Key。</small>
+          </label>
+
+          <label class="field">
+            <span>图像模型</span>
+            <input
+              id="imageModel"
+              name="imageModel"
+              type="text"
+              placeholder="gpt-4.1-mini"
+              required
+            />
+            <small>当本次请求里实际附带了截图时，固定使用这个模型。即使同时有文本和图像，也会优先走图像模型。</small>
+          </label>
+
+          <div class="field">
+            <span>选择题提示词</span>
+            <textarea
+              id="extraInstructionsChoice"
+              name="extraInstructionsChoice"
+              rows="6"
+              placeholder="用于选择题、判断题、概念题。"
+            ></textarea>
+            <small>选择题模式下会读取这里的提示词。</small>
+            <div class="actions">
+              <button type="button" id="restoreChoicePrompt" class="secondary">恢复选择题默认</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <span>代码题提示词</span>
+            <textarea
+              id="extraInstructionsCode"
+              name="extraInstructionsCode"
+              rows="6"
+              placeholder="用于编程题、补全题、代码填空题。"
+            ></textarea>
+            <small>代码题模式下会读取这里的提示词。</small>
+            <div class="actions">
+              <button type="button" id="restoreCodePrompt" class="secondary">恢复代码题默认</button>
+            </div>
+          </div>
+
+          <label class="toggle-field" for="includeScreenshotInSolver">
+            <span class="toggle-copy">
+              <strong>生成答案时附带截图</strong>
+              <small>默认关闭。只有当解题模型支持图片输入时才建议开启，比如 Gemini Flash 这类多模态模型。</small>
+            </span>
+            <input
+              id="includeScreenshotInSolver"
+              name="includeScreenshotInSolver"
+              type="checkbox"
+            />
+          </label>
+
+          <label class="toggle-field" for="autoSolveAfterCapture">
+            <span class="toggle-copy">
+              <strong>截图后立刻开始生成</strong>
+              <small>开启后，截图完成会自动开始生成答案。直接发图模式会立刻发图，OCR 模式会在 OCR 完成后自动开始。</small>
+            </span>
+            <input
+              id="autoSolveAfterCapture"
+              name="autoSolveAfterCapture"
+              type="checkbox"
+            />
+          </label>
+
+          <label class="field">
+            <span>全自动模式快捷键</span>
+            <input
+              id="fullAutoShortcut"
+              name="fullAutoShortcut"
+              type="text"
+              placeholder="Alt+Shift+A"
+            />
+            <small>按下后会直接触发“开启全自动/停止全自动”，效果等同点击面板里的全自动按钮。</small>
+          </label>
+
+          <label class="field">
+            <span>全自动下一题等待时间（毫秒）</span>
+            <input
+              id="fullAutoNextDelayMs"
+              name="fullAutoNextDelayMs"
+              type="number"
+              min="500"
+              max="15000"
+              step="100"
+              placeholder="3000"
+            />
+            <small>全自动模式点击“下一题”后，至少固定等待多久再继续处理下一题。数值越大越稳，但整体速度会更慢。</small>
+          </label>
+
+          <label class="field">
+            <span>自动勾选后等待时间（毫秒）</span>
+            <input
+              id="autoPickNextDelayMs"
+              name="autoPickNextDelayMs"
+              type="number"
+              min="100"
+              max="5000"
+              step="50"
+              placeholder="600"
+            />
+            <small>选择题模式下，AI 返回答案后，自动点击“下一题”前会额外等待多久。若页面勾选选项较慢，可以把这里调大。</small>
+          </label>
+
+          <div class="field">
+            <span>GitHub 登录（用于贡献题目）</span>
+            <div id="authSessionSummary" class="status">正在读取 GitHub 登录状态...</div>
+            <div class="actions" style="margin-top: 10px;">
+              <button type="button" id="githubAuthLogin" class="secondary">登录 GitHub</button>
+              <button type="button" id="githubAuthLogout" class="secondary">退出登录</button>
+            </div>
+            <small>同步云端题库不需要登录；只有贡献题目等服务端能力才需要后端服务可访问并登录 GitHub。</small>
+          </div>
+
+          <label class="toggle-field" for="cloudAutoSync">
+            <span class="toggle-copy">
+              <strong>启动时自动同步云端题库</strong>
+              <small>开启后，面板初始化时会自动从 GitHub 拉取云端题库并合并到本地缓存。</small>
+            </span>
+            <input id="cloudAutoSync" name="cloudAutoSync" type="checkbox" />
+          </label>
+
+          <div class="field">
+            <span>当前云端仓库</span>
+            <div id="cloudRepoSummary" class="status">liuhexiong/question-bank@main</div>
+            <small>云端题库配置已固定，不再需要手动填写。</small>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="primary">保存设置</button>
+            <button type="button" id="reset" class="secondary">恢复默认</button>
+          </div>
+
+          <p id="status" class="status" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <script src="options.js"></script>
+  </body>
+</html>

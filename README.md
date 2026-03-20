@@ -1,52 +1,320 @@
-# AutoLearning MVP
+# 智拓 - 智能学习助手
 
-This is a minimal prototype for:
+> 智启新知，拓学无界
 
-1. opening a problem page with Playwright
-2. extracting the problem statement from the DOM
-3. saving the extracted result locally
+智拓是一个浏览器插件，目标是帮助你在做题页面里更快完成学习任务：
 
-It does not call any model and does not auto-submit.
+1. 提取题面和选项
+2. 调用大模型生成答案或代码
+3. 自动选择答案或回填代码
+4. 在合适的页面里继续切到下一题
 
-## Setup
+当前插件优先适配 Educoder、智慧树这类"题面 + 选项 / 编辑器"页面，同时保留了一些通用页面的兼容逻辑。
+
+## 当前能力
+
+- Chrome Manifest V3 插件
+- 页面内悬浮 `智拓` 助手面板
+- 悬浮球支持边缘自动吸附，靠近浏览器边缘自动收缩
+- 支持选择题模式和代码题模式
+- 支持提取题目标题、题面正文、样例、当前代码
+- 支持自定义题面规则：点选页面元素后按当前页面保存并复用
+- 支持 Monaco / CodeMirror 5 / Ace / 普通 textarea 的读取与回填
+- 支持 OpenAI 兼容接口调用模型
+- 支持局部截图、固定区域截图、可选 OCR
+- 支持搜题记录保存和导出
+- 支持本地题库命中、编辑、导入、导出
+- 支持同步 GitHub JSON 云端题库到本地缓存
+- 支持题库答案输入自动保存提示
+- 支持单选题和多选题自动勾选答案
+- 支持自动点击"下一题"
+- 支持两种全自动模式：
+  - `截图全自动`
+  - `提取题面全自动`
+
+## 题库能力
+
+- `编辑题库` 会打开本地题库面板，优先显示你这轮刚做过的选择题
+- 题库为空时也可以打开编辑面板，支持导入已有题库
+- 在题库面板里修改答案后，会自动保存，并在面板里显示保存状态
+- 支持把本地题库导出为 JSON（精简格式：仅包含题目、题面、答案）
+- 支持从 JSON 导入题库，并合并到当前本地题库
+- 本地题库优先命中，云端题库同步到本地后也会一起参与匹配
+- 选择题题库和代码题题库按 `promptMode` 分开：同一道题在 `选择题` 和 `代码题` 模式下不会共用同一条记录
+
+## 两种全自动模式
+
+### 截图全自动
+
+适合页面题面结构不好提取、但固定区域比较稳定的场景。
+
+流程：
+
+1. 先设定固定截图区域
+2. 每轮按固定区域截图
+3. 根据当前配置决定是否做 OCR
+4. 把题面信息发给模型
+5. 自动勾选答案
+6. 自动进入下一题
+7. 按设置的等待时间继续下一轮
+
+### 提取题面全自动
+
+适合只支持文本的模型，或者页面 DOM 本身就能稳定提取题干和选项的场景。
+
+流程：
+
+1. 直接读取页面题干和选项文本
+2. 把纯文本题面发给模型
+3. 自动勾选答案
+4. 自动进入下一题
+5. 按设置的等待时间继续下一轮
+
+这个模式当前不会使用 OCR。
+
+## 目录
+
+- [extension](/Users/lhx/Desktop/autolearing/extension): 浏览器插件本体
+- [src](/Users/lhx/Desktop/autolearing/src): 之前的 Playwright 原型，保留作提取调试参考
+
+## 安装插件
+
+1. 打开 Chrome 或 Edge 的扩展管理页面
+2. 开启"开发者模式"
+3. 选择"加载已解压的扩展程序"
+4. 选择这个目录下的 [extension](/Users/lhx/Desktop/autolearing/extension)
+
+## 轻量版云端题库
+
+当前默认推荐的是轻量版方案：
+
+- 本地题库优先命中
+- 云端题库放在 GitHub JSON 里
+- 插件把云端题库下载到本地缓存后再匹配
+- 贡献题目时从“我的题库”里挑选，提交到后端并自动创建 GitHub issue
+
+这条路线不依赖服务端奖励体系；如果你只做 `同步云端`，不需要启动后端，但如果你要 `贡献题目`，就需要让后端服务可访问并登录 GitHub。
+
+三层数据关系可以这样理解：
+
+- 本地题库：插件保存在当前浏览器本地，日常命中主要靠这一层
+- GitHub JSON：公共只读分发层，点击 `同步云端` 后会下载到本地缓存参与匹配
+- `server/`：可选后端，负责 GitHub 登录、接收贡献，以及为贡献自动创建 GitHub issue
+
+## 基础配置
+
+加载插件后，打开插件详情页里的"扩展程序选项"，或者在页面悬浮面板里点击"设置"。
+
+建议先填：
+
+- Base URL: `https://api.openai.com/v1`
+- API Key: 你的接口密钥
+- Model: `gpt-4.1-mini`
+
+如果你用 OpenRouter 或其他兼容服务，只要把 `Base URL` 改成对应地址即可。
+
+## 设置页支持的主要配置
+
+- `Base URL`
+- `API Key`
+- `Model`
+- 选择题提示词
+- 代码题提示词
+- 是否在解题时附带截图
+- 是否截图后自动开始生成
+- 框选截图快捷键
+- 固定区域截图快捷键
+- 固定区域截图后自动提交
+- 全自动下一题等待时间（毫秒）
+- OCR Base URL / API Key / Model / Prompt
+- 搜题记录上限
+- 后端服务地址
+- 云端仓库所有者 / 仓库名 / 分支
+- GitHub 登录状态（用于贡献题目）
+- 启动时自动同步云端题库
+
+## 面板使用方式
+
+打开题目页后，右侧会出现 `智拓` 悬浮按钮。插件默认打开选择题模式。
+
+面板里当前主要有这些能力：
+
+- `提取题面`
+- `选取题面元素`
+- `生成答案`
+- `编辑题库`
+- `框选截图`
+- `设定区域`
+- `开启全自动`
+- `读取剪贴板代码`
+- `设置`
+
+同时支持两组切换：
+
+- `答题模式`
+  - `选择题`
+  - `代码题`
+- `全自动模式`
+  - `截图全自动`
+  - `提取题面全自动`
+
+另外新增了云端题库能力：
+
+- `同步云端`
+- `编辑题库` 面板里的 `贡献选中题目`
+- 设置页和面板里的 `登录 GitHub / 退出登录`
+
+## 推荐使用方式
+
+### 选择题手动辅助
+
+1. 切到 `选择题`（默认模式）
+2. 点击 `提取题面`
+3. 如果当前页面还没有规则，插件会直接进入 `选取题面元素`；第一次保存后会自动继续提取
+4. 如果当前页面已经保存过规则，插件会直接复用规则提取
+5. 点击 `生成答案`
+6. 单选题和多选题都会尝试自动勾选答案，请手动确认是否完整
+
+### 自定义题面规则
+
+- `提取题面` 现在是“自定义规则优先”的手动入口
+- 第一次进入某个页面时，建议直接点 `提取题面`，然后在页面上点选真正的题面区域
+- 保存后，规则会按 `当前页面 URL` 维度复用；下次再点 `提取题面` 会直接走这条规则
+- `选取题面元素` 按钮可以随时重新覆盖当前页面规则
+- 如果页面结构变化导致旧规则失效，点击 `提取题面` 会重新进入点选模式
+- 即使已经有站点适配逻辑，自定义规则仍然会作为手动提取的第一入口；内置适配继续负责题型、选项和回退补充
+
+### 多选题配合题库
+
+1. 先随机作答并提交
+2. 看完解析后，点击 `编辑题库`
+3. 把正确答案改成例如 `AC`、`BCD`
+4. 面板会自动保存，也可以手动点保存
+5. 之后再次遇到这题时，插件会直接给出题库答案，但仍建议手动确认
+
+### 代码题辅助
+
+1. 切到 `代码题`
+2. 点击 `提取题面`
+3. 如果这一页没存过规则，先点选题面区域；保存后会自动继续提取
+4. 点击 `生成答案`
+5. 查看生成代码
+6. 复制代码或自动填回编辑器
+
+### 本地题库与模式切换
+
+- 选择题模式只会优先查 `choice` 题库
+- 代码题模式只会优先查 `code` 题库
+- 如果一题本来是选择题，但你误切到了 `代码题` 模式，就可能看起来像“题库没命中”
+- 遇到这类理论题、判断题、多选题时，通常应保持在 `选择题` 模式下提取和生成
+
+### 个人使用的最简路径
+
+1. 只配置模型接口
+2. 平时正常做题，答案会进入本地题库
+3. 定期在 `编辑题库` 中导出 JSON 作为备份
+4. 换浏览器或换机器时，再把 JSON 导入回来
+
+这套流程不需要 GitHub 登录，也不需要启动 `server/`
+
+### 带 GitHub 云端同步的路径
+
+1. 准备一个存放题库 JSON 的 GitHub 仓库
+2. 在设置页填 `云端仓库所有者 / 仓库名 / 分支`
+3. 回到题目页，点击 `同步云端`
+4. 插件会把 GitHub JSON 下载到本地缓存后参与匹配
+
+如果你只是想“拉公共题库到本地使用”，通常不需要启动 `server/`
+
+### 什么时候需要启动本地后端
+
+只有在你想使用下面这些能力时，才需要启动 [server](/Users/lhx/Desktop/autolearing/server)：
+
+- GitHub 登录
+- 贡献题目
+- 为贡献自动创建 GitHub issue
+
+贡献流程现在是：
+
+1. 先启动本地后端 `npm run dev:server`
+2. 在设置页或面板里点击 `登录 GitHub`
+3. 回到 `编辑题库`
+4. 在“我的题库”里勾选题目并点击 `贡献选中题目`
+5. 后端会在你的 GitHub 仓库里自动创建 issue
+
+如果只做 `同步云端`，则不需要 GitHub 登录。
+
+启动方式：
 
 ```bash
-npm install
-npx playwright install chromium
-Copy-Item .env.example .env
+npm run dev:server
 ```
 
-Set `EDUCODER_USERNAME` and `EDUCODER_PASSWORD` in `.env`.
-For easier debugging, keep `KEEP_OPEN=true` so the browser stays open after extraction.
-
-## Run
+本机开发默认监听：
 
 ```bash
-npm run dev
+HOST=127.0.0.1 PORT=8787 npm run dev:server
 ```
 
-Artifacts are written to `artifacts/problem.json` and `artifacts/problem-page.png`.
-
-## Record your flow
-
-Start Playwright codegen if you want to re-record the flow:
+准备给公网代理或 FRP 使用时，可改为：
 
 ```bash
-npm run codegen
+HOST=0.0.0.0 PORT=8787 PUBLIC_BASE_URL=https://your-domain.example npm run dev:server
 ```
 
-Then:
+后端相关环境变量包括：
 
-1. log in to the target site
-2. navigate to a single problem page
-3. stop once the full statement is visible
+- `HOST`
+- `PORT`
+- `PUBLIC_BASE_URL`
+- `GITHUB_OAUTH_CLIENT_ID`
+- `GITHUB_OAUTH_CLIENT_SECRET`
+- `GITHUB_REPO_TOKEN`
+- `GITHUB_REPO_OWNER`
+- `GITHUB_REPO_NAME`
+- `GITHUB_REPO_BRANCH`
 
-The current project already includes your recorded Educoder flow in [src/flows/recorded.ts](E:\autolearning\src\flows\recorded.ts).
+后端本地数据库默认在：
 
-Keep only the steps needed to reliably land on the problem page. Delete submit-related actions.
+- [server/data/db.json](/Users/lhx/Desktop/autolearing/server/data/db.json)
 
-## Notes
+### 提取题面全自动
 
-- `src/extractor.ts` currently uses generic selectors and a fallback to `main` or `body`.
-- After you share the target site structure, we can tighten selectors and add sample parsing rules.
-- The next step after this MVP is usually an `editor_bridge` or a third-party solver client.
+1. 切到 `选择题`（默认模式）
+2. 把全自动模式切到 `提取题面全自动`
+3. 点击 `开启全自动`
+
+适合纯文本模型，也适合页面题面和选项能稳定直接提取的站点。
+
+### 截图全自动
+
+1. 切到 `选择题`（默认模式）
+2. 把全自动模式切到 `截图全自动`
+3. 先点击 `设定区域`
+4. 点击 `开启全自动`
+
+适合 DOM 提取不稳定，但固定截图区域稳定的站点。
+
+## 本地校验
+
+如果你想快速检查扩展脚本有没有语法错误，可以运行：
+
+```bash
+npm run check:extension
+```
+
+
+如果你想直接跑一遍浏览器自动化冒烟测试，可以运行：
+
+```bash
+npm run test:extension
+```
+
+## 当前说明
+
+- 这是学习辅助插件，不保证所有站点都能直接稳定运行。
+- 选择题全自动目前只适合页面存在明确"下一题"按钮的场景。
+- 自动勾选后请手动确认选择是否完整。
+- 如果页面结构变化较大，可能需要继续补选择器。
+- OCR 是可选能力，不是所有模式都会用到。
+- 老的 Playwright 原型还在 [src](/Users/lhx/Desktop/autolearing/src) 目录，可以继续拿来做页面结构调试。

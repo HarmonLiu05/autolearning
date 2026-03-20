@@ -19,5 +19,10 @@ export type ProblemData = {
 export type SolveResult = {
   model: string;
   promptPreview: string;
+  generatedTitle?: string;
+  summary?: string;
+  problemType?: string;
+  problemDefinition?: string;
+  approach?: string;
   code: string;
 };

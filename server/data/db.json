@@ -1,0 +1,2685 @@
+{
+  "users": [
+    {
+      "id": "user_5f5e6a815e2985a94a75fee9",
+      "githubId": "54166358",
+      "login": "HarmonLiu05",
+      "name": "Harmon Liu",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/54166358?v=4",
+      "profileUrl": "https://github.com/HarmonLiu05",
+      "isAdmin": false,
+      "createdAt": "2026-03-20T08:40:09.949Z",
+      "updatedAt": "2026-03-20T14:26:12.082Z"
+    }
+  ],
+  "sessions": [
+    {
+      "token": "sess_546023db9738828ba4057d2e",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "createdAt": "2026-03-20T14:26:12.082Z"
+    }
+  ],
+  "authFlows": [
+    {
+      "id": "flow_3b2f892b8d230f089526293c",
+      "state": "state_c3b196e5021995eacf9b0a88",
+      "status": "completed",
+      "callbackUrl": "http://127.0.0.1:8787/auth/github/callback",
+      "createdAt": "2026-03-20T08:39:59.444Z",
+      "updatedAt": "2026-03-20T08:40:09.949Z",
+      "sessionToken": "sess_83f4c7811bcd17ae9bc77a54",
+      "userId": "user_5f5e6a815e2985a94a75fee9"
+    },
+    {
+      "id": "flow_e4dcab7c79f656c7b79baeaa",
+      "state": "state_e7f22be5a86ac0f73cb1138a",
+      "status": "completed",
+      "callbackUrl": "http://03hhhx.dpdns.org/auth/github/callback",
+      "createdAt": "2026-03-20T14:07:02.482Z",
+      "updatedAt": "2026-03-20T14:07:12.154Z",
+      "sessionToken": "sess_d8d8b30327686fc1e517de44",
+      "userId": "user_5f5e6a815e2985a94a75fee9"
+    },
+    {
+      "id": "flow_e37c7c2006b418bb23bc00af",
+      "state": "state_ac0aaf4529fc34d82c51870d",
+      "status": "completed",
+      "callbackUrl": "http://03hhhx.dpdns.org/auth/github/callback",
+      "createdAt": "2026-03-20T14:26:08.475Z",
+      "updatedAt": "2026-03-20T14:26:12.082Z",
+      "sessionToken": "sess_546023db9738828ba4057d2e",
+      "userId": "user_5f5e6a815e2985a94a75fee9"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "contrib_adf21bcd5f6005010dbd438c",
+      "clientEntryId": "bank:8ee0166b",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n顺着某一条搜索路径巡访二叉树中的结点,使得每个结点均被访问一次,而且仅被访问一次称作二叉树的( )\nA. 遍历\nB. 游览\nC. 浏览\nD. 查询",
+      "answer": "A",
+      "fingerprint": "f4725f4055675a31c0d6ae6431577e001532139930c51016391c3c0b462e2c32",
+      "sourceMeta": {
+        "title": "3. 单选题 顺着某一条搜索路径巡访二叉树中的结点，使得每个结点均被访问一次，而且仅被访问一次称作二叉树的（ ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.774Z",
+      "updatedAt": "2026-03-20T08:42:48.774Z"
+    },
+    {
+      "id": "contrib_873f2f05a0cb09678800357c",
+      "clientEntryId": "bank:ea903241",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n广义表是 ( )的推广。\nA. 数组\nB. 线性表\nC. 队列\nD. 树",
+      "answer": "B",
+      "fingerprint": "f9756754d0d9a3c2dd4727e69930d9220ba582ef3b7f4ad31c6d62540145a137",
+      "sourceMeta": {
+        "title": "4. 单选题 广义表是 （   ）的推广。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.774Z",
+      "updatedAt": "2026-03-20T08:42:48.774Z"
+    },
+    {
+      "id": "contrib_5b5a0b168590af07fb074f56",
+      "clientEntryId": "bank:8371a821",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n若一个广义表的表尾为空表,则此广义表亦为空表。 ( )\nA. 对\nB. 错",
+      "answer": "错",
+      "fingerprint": "9f718f77e76700331ae09fc32fcb35cb6a7e53fb3e989cb2c527fc5fb8b237e5",
+      "sourceMeta": {
+        "title": "3. 单选题 若一个广义表的表尾为空表，则此广义表亦为空表。 （   ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.774Z",
+      "updatedAt": "2026-03-20T08:42:48.774Z"
+    },
+    {
+      "id": "contrib_79ba555f9a0dfb54cd009774",
+      "clientEntryId": "bank:171d2e8",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n线索二叉树中,若一个节点的左孩子为空,那么该节点的左指针应该指向什么?\nA. 其左子节点\nB. 其右子节点\nC. 其前驱节点\nD. 其后继节点",
+      "answer": "C",
+      "fingerprint": "83c9a2aaead94c5ec0ed38330fa32a35846551bf850a0c33a43fb899b4d415fa",
+      "sourceMeta": {
+        "title": "6. 单选题 线索二叉树中，若一个节点的左孩子为空，那么该节点的左指针应该指向什么？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.774Z",
+      "updatedAt": "2026-03-20T08:42:48.774Z"
+    },
+    {
+      "id": "contrib_fb032061d8663034b92d04a5",
+      "clientEntryId": "bank:ed395f70",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n设有两个串p和q,其中q是p的子串,求q在p中首次出现的位置的算法称为( )\nA. 求子串\nB. 联接\nC. 匹配\nD. 求串长",
+      "answer": "A",
+      "fingerprint": "752defc39a3257dccf331903354fb6f85254b6ec7a821055dc8e5ce9a893afd3",
+      "sourceMeta": {
+        "title": "2. 单选题 设有两个串p和q，其中q是p的子串，求q在p中首次出现的位置的算法称为（    ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.774Z",
+      "updatedAt": "2026-03-20T08:42:48.774Z"
+    },
+    {
+      "id": "contrib_dd5c32dff06c3d38c1550e50",
+      "clientEntryId": "bank:b338500",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n数组A中,每个元素A的长度为3个字节,行下标i从1到8,列下标j从1到10,从首地址SA开始连续存放在存储器内,存放该数组至少需要的单元数是____。\nA. 80\nB. 100\nC. 240\nD. 270",
+      "answer": "C",
+      "fingerprint": "be49e309ec5bfb675711b1ad35810175ff8b94a382979b765e4063b63bf4c2e4",
+      "sourceMeta": {
+        "title": "1. 单选题 数组A中，每个元素A的长度为3个字节，行下标i从1到8，列下标j从1到10，从首地址SA开始连续存放在存储器内，存放该数组至少需要的单元数是____。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.774Z",
+      "updatedAt": "2026-03-20T08:42:48.774Z"
+    },
+    {
+      "id": "contrib_ba7631b60419f5fd5a0ea3e1",
+      "clientEntryId": "bank:e653ac08",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n深度为3的二叉树至多有( )结点\nA. 5\nB. 6\nC. 7\nD. 8",
+      "answer": "C",
+      "fingerprint": "612a488bf5626275f955d9fc2145ed7642e99997529aaf2ca7a45c731dddc479",
+      "sourceMeta": {
+        "title": "2. 单选题 深度为3的二叉树至多有（   ）结点",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.774Z",
+      "updatedAt": "2026-03-20T08:42:48.774Z"
+    },
+    {
+      "id": "contrib_5b841a5a0600d5ec65a7a50f",
+      "clientEntryId": "bank:64e9ff8c",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n广义表((()),a,((b,c),(),d),(((e))))的长度为( )\nA. 3\nB. 4\nC. 5\nD. 2",
+      "answer": "B",
+      "fingerprint": "9188fe7e8798df0a1c40d14b2ecabcf9774ca8c3090f21e0a33cae14460b70f7",
+      "sourceMeta": {
+        "title": "1. 单选题 广义表（（（））,a,((b,c),(),d),(((e)))）的长度为（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.774Z",
+      "updatedAt": "2026-03-20T08:42:48.774Z"
+    },
+    {
+      "id": "contrib_2c03895383d1899bd6f539bd",
+      "clientEntryId": "bank:8f7ae5e4",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n根据使用频率为5个字符设计的哈夫曼编码不可能是( )\nA. 000,001,010,011,1\nB. 0000,0001,001,01,1\nC. 000,001,01,10,11\nD. 00,100,101,110,111",
+      "answer": "D",
+      "fingerprint": "1d126814ad4e7c4837d3bf0d5d1a0bf3940da43463a73a87c55e5beb41ba5142",
+      "sourceMeta": {
+        "title": "4. 单选题 根据使用频率为5个字符设计的哈夫曼编码不可能是（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.774Z",
+      "updatedAt": "2026-03-20T08:42:48.774Z"
+    },
+    {
+      "id": "contrib_433a46016cf16153eb19b23e",
+      "clientEntryId": "bank:3b0a0664",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n设广义表L=((a,b,c)),则L的长度和深度分别为( )。\nA. 1和1\nB. 1和3\nC. 1和2\nD. 2和3",
+      "answer": "C",
+      "fingerprint": "d0e29b13d845db21c267fc9389cd57720dc641ee38afd75b30150aa3fbc94164",
+      "sourceMeta": {
+        "title": "3. 单选题 设广义表L=（（a,b,c）），则L的长度和深度分别为（   ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.774Z",
+      "updatedAt": "2026-03-20T08:42:48.774Z"
+    },
+    {
+      "id": "contrib_21f823cd734f8ba1f37e00eb",
+      "clientEntryId": "bank:573e48b2",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n下面哪个选项不是数组顺序存储的优点?\nA. 随机访问速度快\nB. 插入和删除操作快\nC. 内存利用率高\nD. 存储空间分配简单",
+      "answer": "B",
+      "fingerprint": "77b904ea40fda2526a29bbd029ea240ede73afcd12b6e6a54f56a96bd5ff98e5",
+      "sourceMeta": {
+        "title": "1. 单选题 下面哪个选项不是数组顺序存储的优点？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.774Z",
+      "updatedAt": "2026-03-20T08:42:48.774Z"
+    },
+    {
+      "id": "contrib_e10fbae39ed0baae45df04d2",
+      "clientEntryId": "bank:a33091a7",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n二叉树是每个结点最多有两个子树的树结构,假设一棵二叉树的高度为m,所有结点的度为0,或为2,则关于此树拥有的最少节点个数,下列选项正确的是\nA. 2m-1\nB. 2m-2\nC. 2m+1\nD. m+1",
+      "answer": "A",
+      "fingerprint": "bbf3c5825858d80ad79d4b7878ea73b5098c761569411f00aa3356153c350a75",
+      "sourceMeta": {
+        "title": "1. 单选题 二叉树是每个结点最多有两个子树的树结构,假设一棵二叉树的高度为m，所有结点的度为0，或为2，则关于此树拥有的最少节点个数，下列选项正确的是",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_e5edc4346b245e07f537c3d8",
+      "clientEntryId": "bank:75b90c49",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n编写递归算法,将二叉树中所有结点的左、右子树相互交换。Status ExchangeBiTree(BiTree& T){ BiTree p; if(T){ p=T->lchild; T->lchild=T->rchild; T->rchild=p; ExchangeBiTree(T->lchild); ____ } return OK;}\nA. ExchangeBiTree(p);\nB. ExchangeBiTree(T->rchild);\nC. ExchangeBiTree(T->lchild->rchild);\nD. ExchangeBiTree(T);",
+      "answer": "B",
+      "fingerprint": "c6c8785acec0307995872cf31051975eadb23db8d72ce27de97ff267f4c276e2",
+      "sourceMeta": {
+        "title": "1. 单选题 编写递归算法，将二叉树中所有结点的左、右子树相互交换。Status ExchangeBiTree(BiTree& T){    BiTree p;    if(T){        p=T->lchild;        T-",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_12d7676a9d57bff6502f2c17",
+      "clientEntryId": "bank:2b6319c2",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 多选题\n以下哪些遍历方式适用于二叉树?",
+      "answer": "ABCD",
+      "fingerprint": "53e3384a68f8659678341621555f1766290ae719c41d789a2e5b32b0f958088b",
+      "sourceMeta": {
+        "title": "5. 多选题 以下哪些遍历方式适用于二叉树？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_96d424cdb89055dbc06e1928",
+      "clientEntryId": "bank:c59cdc03",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n图中的简单路径指的是( )\nA 图序列中顶点不重复出现的路径\nB 图序列中第一个顶点和最后一个顶点相同,其他顶点不重复出现的路径\nC 图序列中第一个顶点和最后一个顶点相同的路径\nD 图序列中最短的路径",
+      "answer": "A",
+      "fingerprint": "b096103ceabf371deabfca073e8ac607519ded6e688d7e8f64da865fd8859586",
+      "sourceMeta": {
+        "title": "4. 单选题 图中的简单路径指的是（ ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_2be0cac88f17dcbd613d408f",
+      "clientEntryId": "bank:4730f662",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n如下的无向图中有多少个不同的最小生成树( )\nA. 4\nB. 5\nC. 6\nD. 7",
+      "answer": "A",
+      "fingerprint": "d256df0eb888c0b81eab1e3ceb1f36dc35296a65b4518282ec02c7ea63379bc6",
+      "sourceMeta": {
+        "title": "6. 单选题 如下的无向图中有多少个不同的最小生成树（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_c97de19f36b2fcc642bb5c3b",
+      "clientEntryId": "bank:c3e57e0e",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n在一棵具有5层的满二叉树中结点总数为( )。\nA. 31\nB. 32\nC. 33\nD. 16",
+      "answer": "A",
+      "fingerprint": "34d7a4b79709f2f07b91d69f3e6d645dd092a4fe46fba3a246e0d1226b35cb88",
+      "sourceMeta": {
+        "title": "4. 单选题 在一棵具有5层的满二叉树中结点总数为( )。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_96b588d5c983b8714185003d",
+      "clientEntryId": "bank:3f6bf0b1",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n以下数据结构中,是非线性数据结构的是( )\nA. 树\nB. 队列\nC. 栈\nD. 串",
+      "answer": "A",
+      "fingerprint": "8f4ffb89266ffab199dc06bb4924f6b2b8122b377cb4ee41f92f5aeca756636a",
+      "sourceMeta": {
+        "title": "1. 单选题 以下数据结构中，是非线性数据结构的是（   ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_494cbcc60996b568ef3ec997",
+      "clientEntryId": "bank:ae431cb",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n广义表的深度=Max {子表的深度} +1。( )\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "c1dce881b5e472749a9671e8fed66d3f46931aee47ab790eab9d9248ef1af2a6",
+      "sourceMeta": {
+        "title": "1. 单选题 广义表的深度=Max {子表的深度} +1。（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_7101973163cfa56ea8171768",
+      "clientEntryId": "bank:d90b29c0",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 单选题\n在二叉树的第i层上至多有( )结点\nA.\nB.\nC.\nD.",
+      "answer": "A",
+      "fingerprint": "4505acd816418bfec9a928abdaba22500a5c54822cb66277938fd2f4787673ab",
+      "sourceMeta": {
+        "title": "5. 单选题 在二叉树的第i层上至多有(   )结点",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_8d1668f086e7c7d9bd2feb0b",
+      "clientEntryId": "bank:3de24cc2",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n二叉树的先序遍历和中序遍历如下: 先序遍历:EFHIGJK;中序遍历: HFIEJKG 。该二叉树根的右子树的根是\nA. E\nB. F\nC. G\nD. H",
+      "answer": "C",
+      "fingerprint": "8ffeecf7cc1bb239a265efb407bd8bd005c3215be133b90d546da62604328e18",
+      "sourceMeta": {
+        "title": "3. 单选题 二叉树的先序遍历和中序遍历如下： 先序遍历：EFHIGJK；中序遍历: HFIEJKG 。该二叉树根的右子树的根是",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_5128a60e85f7d073ba9b517a",
+      "clientEntryId": "bank:3e04bb3f",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 判断题\n广义表的表尾可以是空表。\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "083b25ebd560bda02397072110a9a5d9e1a4dcc7711a6d6a9714977d78bf4e48",
+      "sourceMeta": {
+        "title": "5. 判断题 广义表的表尾可以是空表。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_069888fadd2917fe93829152",
+      "clientEntryId": "bank:2f360102",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 多选题\n以下哪些矩阵适合使用压缩存储?",
+      "answer": "BC",
+      "fingerprint": "c28925b048e89fac68aff48a656e9fe2f9dfe3b499ce710940f922fc222bc711",
+      "sourceMeta": {
+        "title": "1. 多选题 以下哪些矩阵适合使用压缩存储？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_d55082b35f4a8ee9ce3e77d6",
+      "clientEntryId": "bank:9df5b98",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n设无向图G中有n个顶点,则该无向图的最小生成树上有( )条边。\nA. n\nB. n-1\nC. 2n\nD. 2n-1",
+      "answer": "B",
+      "fingerprint": "68458fc9d916e892b7b0c7c8ebcc8ad0580d752a68906998de46050453435b98",
+      "sourceMeta": {
+        "title": "2. 单选题 设无向图G中有n个顶点，则该无向图的最小生成树上有（   ）条边。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_bf8621126e0be5ec79929af8",
+      "clientEntryId": "bank:5830a2",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n设串sl=′′Data Structures with Java′′,s2=“it′′,则子串定位函数index(s1,s2)的值为( )\nA. 15\nB. 16\nC. 17\nD. 18",
+      "answer": "D",
+      "fingerprint": "d56420a63e0d078b442eb88fd1aaf22e418dc40293ae0d6d67d343adbb7fdc98",
+      "sourceMeta": {
+        "title": "2. 单选题 设串sl=″Data Structures with Java″,s2=“it″，则子串定位函数index(s1,s2)的值为（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_4723e2b927be2736ef1cc2f6",
+      "clientEntryId": "bank:be9a2a33",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n设给定权值总数有n个,其哈夫曼二叉树的结点总数为( )。\nA. 不确定\nB. 2n\nC. 2n+1\nD. 2n-1",
+      "answer": "D",
+      "fingerprint": "168b38ffa0520f7b792db0cad799874ad4b784ca04936d39cf8407a57912e2df",
+      "sourceMeta": {
+        "title": "6. 单选题 设给定权值总数有n个，其哈夫曼二叉树的结点总数为（     ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_e48a7ffaa8f0a38fd6a1ac68",
+      "clientEntryId": "bank:230343e2",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n在图的存储结构中,邻接矩阵表示法适用于哪种类型的图?\nA. 无向图\nB. 有向图\nC. 稀疏图\nD. 稠密图",
+      "answer": "D",
+      "fingerprint": "09eba54d5e149eff7745dd35e07180c2ab192eefbefdd60657f8b64365b35339",
+      "sourceMeta": {
+        "title": "1. 单选题 在图的存储结构中，邻接矩阵表示法适用于哪种类型的图？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_468bb8d9c20a159fc48c58d6",
+      "clientEntryId": "bank:57517b52",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n若对n阶对称矩阵A以行序为主序方式将其下三角形的元素(包括主对角线上所有元素)依次存放于一维数组B[1..(n(n+1))/2]中,则在B中确定aij(i\nA i*(i-1)/2+j\nB j*(j-1)/2+i\nC i*(i+1)/2+j\nD j*(j+1)/2+i",
+      "answer": "B",
+      "fingerprint": "0f351db05af962e5935dbcc8a607b46dd8215253dcb58012b8885a7b8ac9183f",
+      "sourceMeta": {
+        "title": "2. 单选题 若对n阶对称矩阵A以行序为主序方式将其下三角形的元素(包括主对角线上所有元素)依次存放于一维数组B[1..(n(n+1))/2]中，则在B中确定aij（i",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_d7a4a61901f9a021d09cbb67",
+      "clientEntryId": "bank:48b5b1a6",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n若一棵二叉树具有10个度为2的结点,5个度为1的结点,则度为0的结点个数为( )\nA. 9\nB. 11\nC. 15\nD. 不确定",
+      "answer": "B",
+      "fingerprint": "f247e6a92e56c635033f8db685d4d82d5c5e35680bc24d6958b953be3aee9560",
+      "sourceMeta": {
+        "title": "6. 单选题 若一棵二叉树具有10个度为2的结点，5个度为1的结点，则度为0的结点个数为（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_81ef77084a65031ebaf4ac32",
+      "clientEntryId": "bank:c0d4093",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 单选题\n一个有向图的邻接矩阵中各非零元素之和与图中边的条数相等。( )\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "71f8b16d95946830675fc348c0b99a07e8a6a22c2b043c39f403a6c5d586d825",
+      "sourceMeta": {
+        "title": "5. 单选题 一个有向图的邻接矩阵中各非零元素之和与图中边的条数相等。（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_ca88d0cac290541f36433eeb",
+      "clientEntryId": "bank:2d324821",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 判断题\n在二叉树中,每个节点最多有两个子节点。\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "a8583142493e12773871aec8ee6c5af4f7141ffaf298ba931ee4e4737bd84a73",
+      "sourceMeta": {
+        "title": "4. 判断题 在二叉树中，每个节点最多有两个子节点。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_8530822792e3947d428c1222",
+      "clientEntryId": "bank:757417e2",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 多选题\n广义表的定义包含哪些元素?",
+      "answer": "BCD",
+      "fingerprint": "b323f9e110868cc8e061c3766c6e94ae6bd0f363c66ebd4f34afb786b33c243c",
+      "sourceMeta": {
+        "title": "3. 多选题 广义表的定义包含哪些元素？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.775Z",
+      "updatedAt": "2026-03-20T08:42:48.775Z"
+    },
+    {
+      "id": "contrib_c24121ad0149303c8672cd61",
+      "clientEntryId": "bank:4c6e65b5",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 单选题\n假设有二维数组A6×8,每个元素用相邻的6个字节存储,存储器按字节编址。已知A的起始存储位置为1000,计算数组A按行存储时元素A[1][4]第一个字节的位置,下标从0开始( )\nA. 1018\nB. 1024\nC. 1030\nD. 1072",
+      "answer": "D",
+      "fingerprint": "cde29790dfeb390c4e6d12b146e235d497c8057b98b4b798ae733a9cea8d779b",
+      "sourceMeta": {
+        "title": "5. 单选题 假设有二维数组A6×8，每个元素用相邻的6个字节存储，存储器按字节编址。已知A的起始存储位置为1000，计算数组A按行存储时元素A[1][4]第一个字节的位置,下标从0开始（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_9e7b3be3f1cbfd38b89f8011",
+      "clientEntryId": "bank:f6060e6f",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n在串的定长顺序存储表示中执行串连接操作可能会出现字符串的“截断”现象( )\nA. 对\nB. 错",
+      "answer": "A",
+      "fingerprint": "732d9399f41bc6c555f367e2afea156f2665de6efabcb10c6683884c258840f0",
+      "sourceMeta": {
+        "title": "2. 单选题 在串的定长顺序存储表示中执行串连接操作可能会出现字符串的“截断”现象（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_0e59107817790b098234ee45",
+      "clientEntryId": "bank:b63ff286",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n对于一个具有n个顶点和e条边的无向图,若采用邻接表表示,所有邻接表中的结点总数是( )。\nA. e/2\nB. e\nC. 2e\nD. n+e",
+      "answer": "C",
+      "fingerprint": "5472652589e9f51625ad2cca9331764e9949ffec86752205412962549387fd18",
+      "sourceMeta": {
+        "title": "6. 单选题 对于一个具有n个顶点和e条边的无向图,若采用邻接表表示，所有邻接表中的结点总数是（   ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_d4d8ca7b023363405cadfbd2",
+      "clientEntryId": "bank:5010b29",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\nn个顶点的连通图的生成树有( )条边\nA. n\nB. n-1\nC. n+1\nD. 不确定",
+      "answer": "B",
+      "fingerprint": "19ac8096253a1581ab7ec176bd44a5f3d745f1ce3a3a631415783b32cc81abf1",
+      "sourceMeta": {
+        "title": "3. 单选题 n个顶点的连通图的生成树有（  ）条边",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_667fbbde4f4097fe05571e1f",
+      "clientEntryId": "bank:e85046c9",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n二叉排序树可以得到一个从小到大的有序序列。( )\nA. 先序遍历\nB. 中序遍历\nC. 后序遍历\nD. 层次遍历",
+      "answer": "B",
+      "fingerprint": "8d64becc2348f99dba75edae8a1817591c48c4338f03125e7b07977e7e12fe22",
+      "sourceMeta": {
+        "title": "1. 单选题 二叉排序树可以得到一个从小到大的有序序列。(   )",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_8139b737e7d3c63c7ec7315b",
+      "clientEntryId": "bank:f3bd0be2",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n在图的存储结构中,哪种表示法可以方便地获取图中所有顶点的度数?\nA. 邻接矩阵\nB. 邻接表\nC. 边列表\nD. 所有选项都可以",
+      "answer": "A",
+      "fingerprint": "1d038c02d2de564db64c68f72d267e771c712cece4eae8e16728cf507e4bb933",
+      "sourceMeta": {
+        "title": "4. 单选题 在图的存储结构中，哪种表示法可以方便地获取图中所有顶点的度数？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_7d3c3f8769afd8b36c3fe8cd",
+      "clientEntryId": "bank:be64b924",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n在二叉树的层序遍历中,节点访问的顺序是什么?\nA. 从左到右,逐层访问\nB. 从右到左,逐层访问\nC. 从上到下,逐层访问\nD. 从下到上,逐层访问",
+      "answer": "A",
+      "fingerprint": "81bd40e7982a01f3640977f4468297a84600ca01f756a69b37a0297afabf0be0",
+      "sourceMeta": {
+        "title": "6. 单选题 在二叉树的层序遍历中，节点访问的顺序是什么？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_1fe56084b89e70d60c3c9b0b",
+      "clientEntryId": "bank:a327a0ca",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n赫夫曼编码的编码长度与以下哪个因素有关?\nA. 字符的ASCII值\nB. 字符在编码中的顺序\nC. 字符出现的频率\nD. 编码使用的符号集大小",
+      "answer": "C",
+      "fingerprint": "dc53d685eb3d6255dc7d68389b2d2655f562ad26a12bb96939bbeca064cd7dfe",
+      "sourceMeta": {
+        "title": "6. 单选题 赫夫曼编码的编码长度与以下哪个因素有关？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_eec3973086f55c38acf21164",
+      "clientEntryId": "bank:92648fb7",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n在以下的叙述中,正确的是 ( ) 。\nA. 线性表的顺序存储结构优于链表存储结构\nB. 二维数组是其数据元素为线性表的线性表\nC. 栈的操作方式是先进先出\nD. 队列的操作方式是先进后出",
+      "answer": "B",
+      "fingerprint": "aac56dd60c62848ed4abcbed8b2ad2553e8ccec38f03220fc0062337af768275",
+      "sourceMeta": {
+        "title": "4. 单选题 在以下的叙述中，正确的是  ( )  。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_ab291f1700e071fc77c927bb",
+      "clientEntryId": "bank:caecfe20",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 多选题\n在邻接矩阵表示的图结构中,哪些操作的时间复杂度较高?",
+      "answer": "CD",
+      "fingerprint": "a7ee57652c10b1edcd0ea0794680ef03890e214cdfac0d40f715a76bf8c7b3e2",
+      "sourceMeta": {
+        "title": "5. 多选题 在邻接矩阵表示的图结构中，哪些操作的时间复杂度较高？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_75b4ad3eef79dd4765c64480",
+      "clientEntryId": "bank:94f906a1",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 判断题\n满二叉树指的是深度为k且含有2k-1个结点的二叉树\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "bf6bfbe8ce89bbf85cc3c6a9de9d98fd6f74c0274a46c984f9a6b78ab33386e1",
+      "sourceMeta": {
+        "title": "3. 判断题 满二叉树指的是深度为k且含有2k-1个结点的二叉树",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_68f7f8a372d428356a725b09",
+      "clientEntryId": "bank:a2230832",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 单选题\n设某哈夫曼树中有199个结点,则该哈夫曼树中有( )个叶子结点\nA. 99\nB. 100\nC. 101\nD. 102",
+      "answer": "B",
+      "fingerprint": "db5c53391a6742a56f13aae8a23b52fb6ca43640f9ad7038d36326ead02757ad",
+      "sourceMeta": {
+        "title": "5. 单选题 设某哈夫曼树中有199个结点，则该哈夫曼树中有（  ）个叶子结点",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_a08054a70dd039b7a79d9eca",
+      "clientEntryId": "bank:4a20468",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n广义表的元素可以是什么类型的数据?\nA. 只有原子\nB. 只有子表\nC. 既可以是原子,也可以是子表\nD. 只能是数字",
+      "answer": "C",
+      "fingerprint": "48582a1fbf7c451279663257b926939dab52d248feb6cb99fae53e125e03c264",
+      "sourceMeta": {
+        "title": "2. 单选题 广义表的元素可以是什么类型的数据？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_4d4be97c421b9306eadb0b28",
+      "clientEntryId": "bank:4091a5bd",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n下面哪种树结构不是二叉树( )\nA. 红黑树\nB. AVL树\nC. B-Tree\nD. 哈夫曼树",
+      "answer": "B",
+      "fingerprint": "a501c806423ad6fff93154dbb3820af8e830fe66cc3444fb576a606813f6a9ce",
+      "sourceMeta": {
+        "title": "2. 单选题 下面哪种树结构不是二叉树(  )",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_ad05bc440049b0ef89f7d36e",
+      "clientEntryId": "bank:30bd6fc2",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 多选题\n在图的存储结构中,哪些因素会影响存储空间的大小?",
+      "answer": "ABC",
+      "fingerprint": "42b51b6e7c8e31e145835cd6a20c356d4e7c7ecc57f9d4fa62545885d2145fb1",
+      "sourceMeta": {
+        "title": "3. 多选题 在图的存储结构中，哪些因素会影响存储空间的大小？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_df1868afd0f38665dbfe64e4",
+      "clientEntryId": "bank:d645b890",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n把一棵树转换为二叉树后,这棵二叉树的形态是( )。\nA. 唯一的\nB. 有多种\nC. 有多种,但根结点都没有左孩子\nD. 有多种,但根结点都没有右孩子",
+      "answer": "A",
+      "fingerprint": "d6a4989a0ca3697660d0b82ee462dade611f7610f55d597e386a25dbc6994673",
+      "sourceMeta": {
+        "title": "1. 单选题 把一棵树转换为二叉树后，这棵二叉树的形态是(   )。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_9facb565b90a580dc30ed0c7",
+      "clientEntryId": "bank:3a5d3d72",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n对于一个具有n个顶点的无向图,若采用邻接矩阵表示,则该矩阵的大小为\nA. n ×n\nB. (n-1)× (n-1)\nC. (n-1)×n\nD. n×(n+1)",
+      "answer": "A",
+      "fingerprint": "12101b52ebccff3370f68582e722bd988386198cb29be94f398632fb20856783",
+      "sourceMeta": {
+        "title": "3. 单选题 对于一个具有n个顶点的无向图,若采用邻接矩阵表示,则该矩阵的大小为",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_001c243ae9fd99184d1d8fdb",
+      "clientEntryId": "bank:822d6e41",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 判断题\n广义表的子表可以嵌套任意多层。\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "753735d6fedf737684a94d6d8acf1c2602de0590e7f0017bf2faf86ff7f66808",
+      "sourceMeta": {
+        "title": "1. 判断题 广义表的子表可以嵌套任意多层。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_c68073a2bae73c61bbdba45d",
+      "clientEntryId": "bank:3da12528",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n在离散事件的模拟中,( )采用队列结构来实现。\nA. 到达事件和离开事件\nB. 每个窗口的客户\nC. 其它",
+      "answer": "B",
+      "fingerprint": "858276eb4559dd273f73bf420820bfd361cffe5c84fa37e99589368726a81e7b",
+      "sourceMeta": {
+        "title": "2. 单选题 在离散事件的模拟中，（   ）采用队列结构来实现。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_596aeddbc11ad90da8460c21",
+      "clientEntryId": "bank:caedfe84",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n若采用三元组压缩技术存储稀疏矩阵,只要把每个元素的行下标和列下标互换,就完成了对该矩阵的转置运算,这种观点( )。\nA. 正确\nB. 错误",
+      "answer": "B",
+      "fingerprint": "9093530210fd478375455a3a0435d0a3c600aada36a7bec2ed5e0a95feee7530",
+      "sourceMeta": {
+        "title": "1. 单选题 若采用三元组压缩技术存储稀疏矩阵，只要把每个元素的行下标和列下标互换，就完成了对该矩阵的转置运算，这种观点（  ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.778Z",
+      "updatedAt": "2026-03-20T08:42:48.778Z"
+    },
+    {
+      "id": "contrib_b7b049bafdfc79f39a23fb16",
+      "clientEntryId": "bank:d1270dde",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n已知某二叉树的后序遍历序列是dabec, 中序遍历序列是debac , 它的前序遍历是\nA. acbed\nB. decab\nC. deabc\nD. cedba",
+      "answer": "D",
+      "fingerprint": "409c50756e3da42cf0fa00371d6f43b05d9b427f9e5ea8e50cd3aa25c2a76576",
+      "sourceMeta": {
+        "title": "6. 单选题 已知某二叉树的后序遍历序列是dabec, 中序遍历序列是debac ,  它的前序遍历是",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_5aa66ce3985fef7413b0d2d8",
+      "clientEntryId": "bank:ddd48752",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n树最适合用来表示\nA. 有序数据元素\nB. 无序数据元素\nC. 元素之间具有分支层次关系的数据\nD. 元素之间无联系的数据",
+      "answer": "C",
+      "fingerprint": "2cfae9c8dfa0bc42e079fa62cacb628b13a3509b71eb96807ea739e50abd6110",
+      "sourceMeta": {
+        "title": "3. 单选题 树最适合用来表示",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_be9ab4a2421cb7631e125449",
+      "clientEntryId": "bank:b5a8d6fa",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n已知一棵二叉树的前序遍历结果为ABCDEF,中序遍历结果为CBAEDF,则后序遍历的结果为( )。\nA. CBEFDA\nB. FEDCBA\nC. CBEDFA\nD. 不确定",
+      "answer": "A",
+      "fingerprint": "b7d90db4f2772ad0f65d8d3004eb6ad0521220fbb6723aa3b4ee7af6688e9427",
+      "sourceMeta": {
+        "title": "4. 单选题 已知一棵二叉树的前序遍历结果为ABCDEF,中序遍历结果为CBAEDF,则后序遍历的结果为（     ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_aee476d896c8fed2aecf6fa8",
+      "clientEntryId": "bank:775f11bb",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n若一棵具有n个结点的二叉树采用二叉链表存储结构,那么该二叉树所有结点共有( )个空指针域。\nA. n+1\nB. n\nC. n-1\nD. n-2",
+      "answer": "A",
+      "fingerprint": "d689908156be61b0c8e6ec5b5dc00fb7fba1ad29e9971cc79cf1028771690664",
+      "sourceMeta": {
+        "title": "3. 单选题 若一棵具有n个结点的二叉树采用二叉链表存储结构,那么该二叉树所有结点共有（   ）个空指针域。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_6d81b6ba6476aad70410e5e6",
+      "clientEntryId": "bank:b5a16fc4",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n广义表A=(a,b,(c,d),(e,(f,g))),则Head(Tail(Head(Tail(Tail(A)))))的值为( )\nA. (g)\nB. (d)\nC. c\nD. d",
+      "answer": "CD",
+      "fingerprint": "941c03f858f1119c46f749d222386e1de42f84b26b717e262f42d20828dde306",
+      "sourceMeta": {
+        "title": "1. 单选题 广义表A=(a,b,(c,d),(e,(f,g)))，则Head(Tail(Head(Tail(Tail(A)))))的值为（ ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_18812f8b841b08ecaf6b6ae4",
+      "clientEntryId": "bank:5ddc8a88",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n在图的存储结构中,邻接表表示法的主要优点是什么?\nA. 节省空间\nB. 便于随机访问\nC. 便于插入和删除操作\nD. 所有选项都正确",
+      "answer": "A",
+      "fingerprint": "34fc1c0860443cefdb930a6d9be2b6a201a493dd469e07a1b42665b3f844f96b",
+      "sourceMeta": {
+        "title": "2. 单选题 在图的存储结构中，邻接表表示法的主要优点是什么？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_4c65823aa2b4b9b000519034",
+      "clientEntryId": "bank:f516c721",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 判断题\n在二叉树的前序遍历中,节点的访问顺序是根-左-右。\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "d165e71e07640dfa940e281f8f272db78cc448b22cb1b14c43b62f5deb07a445",
+      "sourceMeta": {
+        "title": "3. 判断题 在二叉树的前序遍历中，节点的访问顺序是根-左-右。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_486bd05c546b870a39ecd643",
+      "clientEntryId": "bank:bff97e3c",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 单选题\n赫夫曼编码算法的时间复杂度是多少?\nA. O(n)\nB. O(nlogn)\nC. O(n^2)\nD. O(logn)",
+      "answer": "B",
+      "fingerprint": "d42aeab2d3835cc27dedb1df3617b45a25a8dd11b5328203d12d0b42f6df1088",
+      "sourceMeta": {
+        "title": "5. 单选题 赫夫曼编码算法的时间复杂度是多少？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_646651fe6e2ab7b48716ab82",
+      "clientEntryId": "bank:5641f7bb",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 判断题\n广义表具有线性结构( )。\nA. 对\nB. 错",
+      "answer": "错",
+      "fingerprint": "56a2455ce15df0579593d2162151a43d68028d584e1ae78f8233d14faf3b38be",
+      "sourceMeta": {
+        "title": "2. 判断题 广义表具有线性结构（    ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_f6ca517c00b21404a30c7583",
+      "clientEntryId": "bank:746503cd",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n引入二叉线索树的目的是( )\nA. 加快查找结点的前驱或后继的速度\nB. 为了能在二叉树中方便的进行插入与删除\nC. 为了能方便的找到双亲\nD. 使二叉树的遍历结果唯一",
+      "answer": "A",
+      "fingerprint": "31f155ff2d0b954587f1f4f76225a76fc95f875c638d7d6335a684665c463a61",
+      "sourceMeta": {
+        "title": "2. 单选题 引入二叉线索树的目的是（    ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_cf9ca390ee7207bf48a09bfa",
+      "clientEntryId": "bank:7b8e034e",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n以下数据结构中哪一个是非线性结构?\nA. 队列\nB. 栈\nC. 线性表\nD. 二叉树",
+      "answer": "D",
+      "fingerprint": "ecf609bac9b58eca249d2d4e342d34e7db446c8884b482c6eb613c01d3a73459",
+      "sourceMeta": {
+        "title": "6. 单选题 以下数据结构中哪一个是非线性结构？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_b7989f179f2433d7cfa3f1cc",
+      "clientEntryId": "bank:46a60ea0",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n在线索二叉树中,若一个节点的右孩子为空,那么该节点的右指针应该指向什么?\nA. 其左子节点\nB. 其右子节点\nC. 其前驱节点\nD. 其后继节点",
+      "answer": "D",
+      "fingerprint": "4ff87c08f508510ba7ff44b6be6fa915e8f5da5fb863ade854fcfc901d40dd99",
+      "sourceMeta": {
+        "title": "1. 单选题 在线索二叉树中，若一个节点的右孩子为空，那么该节点的右指针应该指向什么？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_91cc79995b6122407645ca1a",
+      "clientEntryId": "bank:307a87a3",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 判断题\n线索二叉树是一种特殊的二叉树,它通过给二叉树增加线索来提高查找效率。\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "1a1fd7e64ea036e71fbaf4860d1fd36484c4f5525ba10d52f9fe2df87a20da39",
+      "sourceMeta": {
+        "title": "1. 判断题 线索二叉树是一种特殊的二叉树，它通过给二叉树增加线索来提高查找效率。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_8a67c96433aa25f405a0f0cc",
+      "clientEntryId": "bank:627a036c",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n设 n行n列的下三角矩阵A已压缩到一维数组B[0..n*(n+1)/2-1]中,若按行为主序存储,则A[i,j](i>=j)对应的B中存储位置为_______。\nA. i(i-1)/2+j-1\nB. i*i/2+j\nC. i*i/2+j-1\nD. 其它",
+      "answer": "A",
+      "fingerprint": "273a27efa534b62a94106ab0146f2ddb1e1d6c6f8beb31170f8e3ff736c5f3a3",
+      "sourceMeta": {
+        "title": "3. 单选题 设 n行n列的下三角矩阵A已压缩到一维数组B[0..n*（n+1）/2-1]中，若按行为主序存储，则A[i,j](i>=j)对应的B中存储位置为_______。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_da20ff9d534f333a3adbfa9a",
+      "clientEntryId": "bank:ca5891af",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\nC语言中提供的串类型以( )存储方式实现。\nA. 定长顺序\nB. 堆\nC. 其它",
+      "answer": "B",
+      "fingerprint": "882744501fcef2bce646184504a33290d73b6059189c23f3e3816beb21030fd6",
+      "sourceMeta": {
+        "title": "3. 单选题 C语言中提供的串类型以（   ）存储方式实现。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_c0e443a821cd2cd97aa38399",
+      "clientEntryId": "bank:c4ec29f8",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n由于二叉树中每个结点的度最大为2,所以二叉树是一种特殊的树,这种说法( )\nA. 正确\nB. 错误\nC. 不确定",
+      "answer": "B",
+      "fingerprint": "379c7d964a2f4734f8dd2906c833e47b79aeda9be3cf212ea47a5793a69f6498",
+      "sourceMeta": {
+        "title": "1. 单选题 由于二叉树中每个结点的度最大为2,所以二叉树是一种特殊的树,这种说法（   ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_df1defb7a1db960a4e55e527",
+      "clientEntryId": "bank:509afb93",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n采用邻接表存储的图的深度优先遍历算法类似于二叉树的( )。\nA 先序遍历\nB 中序遍历\nC 后序遍历\nD 按层遍历",
+      "answer": "A",
+      "fingerprint": "e584f9ae25ca79c53cff5e03b4bd473aec0ed0666aec8486f81eaf7e93ffac0f",
+      "sourceMeta": {
+        "title": "2. 单选题 采用邻接表存储的图的深度优先遍历算法类似于二叉树的（   ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_1a75a3f9aa5ab722b7ab854f",
+      "clientEntryId": "bank:3dae1a12",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 单选题\n线索二叉树中,线索节点的指针域通常用于存储什么类型的信息?\nA. 节点的键值\nB. 节点的平衡因子\nC. 节点的前驱或后继节点的指针\nD. 节点的颜色(用于红黑树)",
+      "answer": "C",
+      "fingerprint": "27ef056656e137d932d4ee4052ab0aad7a1307243f4232ca805eb66f7478e1ae",
+      "sourceMeta": {
+        "title": "5. 单选题 线索二叉树中，线索节点的指针域通常用于存储什么类型的信息？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_fedc1b0b5a671e745198c41c",
+      "clientEntryId": "bank:88702be3",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n试写一个算法,为一棵二叉树建立后序线索二叉树。Status PostOrderThreading(BiThrTree& T,BiThrTree& pre);//首先建立后序线索树Status FindNextInBiThrTree(BiThrTree& q,TElemType *p);//再进行查找// 后序线索二叉树的算法Status PostOrderThreading(BiThrTree& Thrt,BiThrTree& T){ BiThrTree pre; Thrt=new BiThrNode; // 为线索二叉树建立头结点 if(!Thrt) exit(OVERFLOW); Thrt->LTag=Link; Thrt->RTag=Thread; Thrt->rchild=Thrt;// 右子树回指 if(!T) Thrt->lchild=Thrt;// 若二叉树空,左子树回指 else{ Thrt->lchild=T; pre=Thrt; PostThreading(T,pre); // 后序遍历进行后序线索化 pre->rchild=Thrt;// 最后一个结点线索化 pre->RTag=Thread; Thrt->rchild=pre; } return OK;}Status PostThreading(BiThrTree& T,BiThrTree& pre){ if(T){ if(T->LTag==Link) PostThreading(T->lchild,pre); if(T->RTag==Link) PostThreading(T->rchild,pre); if(!T->lchild){ T->LTag=Thread; ____ } if(pre && !pre->rchild){ pre->RTag=Thread; pre->rchild=T; } pre=T; } return OK;}\nA. T->lchild=pre;\nB. pre->lchild=T;\nC. T->rchild=pre;\nD. pre->rchild=T;",
+      "answer": "A",
+      "fingerprint": "78fb9f8b07787bb9e610b9e356bdbe579835fc3a66aee17905b4e732da3ed572",
+      "sourceMeta": {
+        "title": "3. 单选题 试写一个算法，为一棵二叉树建立后序线索二叉树。Status PostOrderThreading(BiThrTree& T,BiThrTree& pre);//首先建立后序线索树Status FindNextInBiThrTr",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_c35055a24f2496d3d8cd1440",
+      "clientEntryId": "bank:39ea183",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n下面结构中最适于表示稀疏无向图的是( )。\nA. 邻接矩阵\nB. 逆邻接表\nC. 邻接多重表\nD. 十字链表",
+      "answer": "C",
+      "fingerprint": "6f95b5e19cb1078b71a88d00007790d88319ddfcceb574f3571d7024d4b1589c",
+      "sourceMeta": {
+        "title": "4. 单选题 下面结构中最适于表示稀疏无向图的是（    ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_9ae8b0055b501413771c3e5d",
+      "clientEntryId": "bank:bf1943a3",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 判断题\n使用压缩存储表示稀疏矩阵时,可以通过遍历非零元素来快速计算矩阵的和。\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "d238cab7fe2f1bbf1000b6676ebf9eb31a3a38a639b9c658558be68a0bf61871",
+      "sourceMeta": {
+        "title": "4. 判断题 使用压缩存储表示稀疏矩阵时，可以通过遍历非零元素来快速计算矩阵的和。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_2e625f6426d838f4fdd813b0",
+      "clientEntryId": "bank:2af0020e",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n假设称正度和反读都相同的字符序列为“回文”,例如,‘abba’和‘abcba’是回文,‘abcde’和‘ababab’则不是回文。试写一个算法判别读入的一个以‘@’为结束符的字符序列是否是“回文”。Status SymmetryString(char* p){ Queue q; if(!InitQueue(q)) return 0; Stack s; InitStack(s); ElemType e1,e2; while(*p){ ____ EnQueue(q,*p); p++; } while(!StackEmpty(s)){ Pop(s,e1); DeQueue(q,e2); if(e1!=e2) return FALSE; } return OK;}\nA. Pop(s,e1)\nB. Push(s,*p)\nC. EnQueue(q,*p)\nD. P--",
+      "answer": "B",
+      "fingerprint": "afb8e41c6aaec043acf74544cc86f4419c12490a12a28e6e91a0ef8061f6dae1",
+      "sourceMeta": {
+        "title": "1. 单选题 假设称正度和反读都相同的字符序列为“回文”，例如，‘abba’和‘abcba’是回文，‘abcde’和‘ababab’则不是回文。试写一个算法判别读入的一个以‘@’为结束符的字符序列是否是“回文”。Status Symmetr",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_15572798704f9ae915bf0686",
+      "clientEntryId": "bank:2cc2fea6",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n深度为i的二叉树至少有( )结点\nA. 2ˆ(i-1 )\nB. 2ˆi-1\nC. 2ˆi\nD. 2ˆi-2",
+      "answer": "A",
+      "fingerprint": "8db468129bacb8db1f20fe069a66d33c12f7bacb7a26ee411221104d2d579a86",
+      "sourceMeta": {
+        "title": "2. 单选题 深度为i的二叉树至少有(   )结点",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_0384cb577414807ebc3025be",
+      "clientEntryId": "bank:ec60a90e",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n在构建赫夫曼树的过程中,以下哪个操作是必须的?\nA. 合并两个权重最大的节点\nB. 合并两个权重最小的节点\nC. 随机选择两个节点合并\nD. 按照字母表顺序选择两个节点合并",
+      "answer": "B",
+      "fingerprint": "556c4b987f2cb0ab0ac95caa62f9166185fb2dd14ec3cdfc920e53c1647fa969",
+      "sourceMeta": {
+        "title": "1. 单选题 在构建赫夫曼树的过程中，以下哪个操作是必须的？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_0ef641d35b3cac3100f8cac8",
+      "clientEntryId": "bank:44b45882",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n二维数组A[8][9]按行优先顺序存储,若数组元素A[2][3]的存储地址为1087,A[4][7]的存储地址为1153,则数组元素A[6][7]的存储地址为( )\nA. 1207\nB. 1209\nC. 1211\nD. 1213",
+      "answer": "A",
+      "fingerprint": "538f18a989538eae68eddf27820cfe2cb21cb8100afd72e81f84c6301ed41078",
+      "sourceMeta": {
+        "title": "6. 单选题 二维数组A[8][9]按行优先顺序存储，若数组元素A[2][3]的存储地址为1087，A[4][7]的存储地址为1153，则数组元素A[6][7]的存储地址为（　　）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_661fa3685c8bb5bf70724040",
+      "clientEntryId": "bank:e9234639",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n采用邻接表存储的图的宽度优先遍历算法类似于二叉树的( )。\nA 先序遍历\nB 中序遍历\nC 后序遍历\nD 层次遍历",
+      "answer": "D",
+      "fingerprint": "ec1e69116395a27e1d6f9f3cb645a4c38fe98271eaafd87641f76bae55df48a8",
+      "sourceMeta": {
+        "title": "1. 单选题 采用邻接表存储的图的宽度优先遍历算法类似于二叉树的（   ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_85aa48547ffea25104ed5993",
+      "clientEntryId": "bank:b556881e",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n设哈夫曼树中的叶子结点总数为m,若用二叉链表作为存储结构,则该哈夫曼树中总共有( )个空指针域。\nA. 2m-1\nB. 2m\nC. 2m+1\nD. 4m",
+      "answer": "B",
+      "fingerprint": "86d64ab776fd1deede2c51680a00383ddbbf19afa2cf6b287749f4257efffe6d",
+      "sourceMeta": {
+        "title": "2. 单选题 设哈夫曼树中的叶子结点总数为m，若用二叉链表作为存储结构，则该哈夫曼树中总共有（   ）个空指针域。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_b1572a6e03689aaaeb3fb1a7",
+      "clientEntryId": "bank:456f753a",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n三元组用来存储( )\nA. 稠密矩阵\nB. 稀疏矩阵\nC. 广义表\nD. 特殊矩阵",
+      "answer": "B",
+      "fingerprint": "8a723b80177a3667430d785f8dcc6e64f75d4f558eee4cb813a3183441288699",
+      "sourceMeta": {
+        "title": "2. 单选题 三元组用来存储（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_a37b7a2aa461070b8557b3a6",
+      "clientEntryId": "bank:8e053148",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n已知一棵树边的集合为{<I,M>, <I,N>, <E,I>, <B,E>, <B,D>, <A,B>, <G,J>, <G,K>, <C,G>, <C,F>, <H,L>, <C,H>, <A,C>},将此树转化为二叉树后,E的左孩子为( )\nA. A\nB. C\nC. I\nD. B",
+      "answer": "C",
+      "fingerprint": "fdebac61a74caf60d70f72013013b1d8b05acdd50b98a927681602084c929b2a",
+      "sourceMeta": {
+        "title": "1. 单选题 已知一棵树边的集合为{<I,M>, <I,N>, <E,I>, <B,E>, <B,D>, <A,B>, <G,J>, <G,K>, <C,G>, <C,F>, <H,L>, <C,H>, <A,C>},将此树转化为二叉树后，",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_bf1e6cdeddcb2084377696ae",
+      "clientEntryId": "bank:a8b6d87c",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n有关二叉树下列说法正确的是( )。\nA. 二叉树的度为2\nB. 一棵二叉树的度可以小于2\nC. 二叉树中至少有一个结点的度为2\nD. 二叉树中任何一个结点的度都为2",
+      "answer": "B",
+      "fingerprint": "3503857fc800d46f874a22d6531047b22fef0c9fcee2f29aaacae9015224ae3d",
+      "sourceMeta": {
+        "title": "1. 单选题 有关二叉树下列说法正确的是（     ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_d397ecb5cde9297fb962da66",
+      "clientEntryId": "bank:f8ce4117",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n下面结构中最适于表示稀疏有向图的是( )。\nA. 邻接矩阵\nB. 逆邻接表\nC. 邻接多重表\nD. 十字链表",
+      "answer": "D",
+      "fingerprint": "42b5d610410678b4965a816ea986e758bd3c3dd5407616055f0e1252d6f5e06f",
+      "sourceMeta": {
+        "title": "3. 单选题 下面结构中最适于表示稀疏有向图的是（    ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_5657c4d1b6dc8d947ddfaaef",
+      "clientEntryId": "bank:cef5541",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n哈夫曼编码得到的是定长编码。( )\nA. 对\nB. 错",
+      "answer": "错",
+      "fingerprint": "9a3383fc0551edd81c2a9c7abb234495fcc379aef2023ec830f7d37b175fe457",
+      "sourceMeta": {
+        "title": "2. 单选题 哈夫曼编码得到的是定长编码。（   ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_3b40d07498cccba7bb48c2d2",
+      "clientEntryId": "bank:f55bfbed",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n常对数组进行的两种基本操作是____。\nA. 建立与删除\nB. 索引和修改\nC. 查找和修改\nD. 查找与索引",
+      "answer": "C",
+      "fingerprint": "40e071646e8843ca268cbe069a1f39d193cab21dc7a37089c2ff666489a80a88",
+      "sourceMeta": {
+        "title": "2. 单选题 常对数组进行的两种基本操作是____。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_477641cea354a1e1dbb1c616",
+      "clientEntryId": "bank:cdadcf69",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n一棵二叉树中,叶子的个数为10,则其度为2的结点的个数为( )\nA. 9\nB. 10\nC. 11\nD. 12",
+      "answer": "A",
+      "fingerprint": "f34b4ef8ccd1badf5854717248783435bef80b74010f2dfdaa8febb0e06a50b8",
+      "sourceMeta": {
+        "title": "6. 单选题 一棵二叉树中，叶子的个数为10，则其度为2的结点的个数为(  )",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_9a431c20497e2a91cab7ec3b",
+      "clientEntryId": "bank:569eb2e2",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n已知一棵树的先根次序访问序列为GFKDAIEBCHJ;数的后根次序访问序列为DIAEKFCJHBG。请问这棵树中结点I的双亲为( )。\nA. A\nB. B\nC. C\nD. D",
+      "answer": "A",
+      "fingerprint": "071cb6b14419478166c6d7900421839200dc338a02d7798fe27081e332e620c6",
+      "sourceMeta": {
+        "title": "1. 单选题 已知一棵树的先根次序访问序列为GFKDAIEBCHJ;数的后根次序访问序列为DIAEKFCJHBG。请问这棵树中结点I的双亲为(   )。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_daa3e2e476117ce83dc16aff",
+      "clientEntryId": "bank:f8115211",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 判断题\n完全二叉树指的是树中所含的 n 个结点和满二叉树中编号为 1 至 n 的结点一一对应\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "1764d83f6eee06777e3b66b98b499b8093abde8357be50679722fbbe86d2d003",
+      "sourceMeta": {
+        "title": "4. 判断题 完全二叉树指的是树中所含的 n 个结点和满二叉树中编号为 1 至 n 的结点一一对应",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_b3dcffe33cb2cfac7efcd52b",
+      "clientEntryId": "bank:2d98d265",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n广义表((a,b,c,d))的表头是( )。\nA. a\nB. ()\nC. (a,b,c,d)\nD. (b,c,d)",
+      "answer": "C",
+      "fingerprint": "bcbe3c3ead82604c27267d963fe43eb23a93ad7fdf929a7f7f46cd20a609604a",
+      "sourceMeta": {
+        "title": "2. 单选题 广义表((a,b,c,d))的表头是（ ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_d0c7a8784f5caaeb6f80c82d",
+      "clientEntryId": "bank:5618bc02",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n按照二叉树的定义,具有3个结点的二叉树有( )种。\nA. 3\nB. 4\nC. 5\nD. 6",
+      "answer": "C",
+      "fingerprint": "e8baa6781c08e534549458482fcfd59183272e2ac9c1ebb6d4afcd02e6e964d9",
+      "sourceMeta": {
+        "title": "1. 单选题 按照二叉树的定义，具有3个结点的二叉树有（    ）种。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.779Z",
+      "updatedAt": "2026-03-20T08:42:48.779Z"
+    },
+    {
+      "id": "contrib_eddfec1bbea4b6da7834ac9f",
+      "clientEntryId": "bank:d08bf08",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n假如一棵二叉树的中序遍历结果为ABCD,则结点A和结点D的关系一定不是( )\nA. 结点A是结点D的双亲结点\nB. 结点A是结点D的右子树上的结点\nC. 结点A是结点D的左子树上的结点\nD. 结点A与结点D具有共同的双亲的右子树上的结",
+      "answer": "B",
+      "fingerprint": "453dce6b1a9425837ae1100293a4aa7803fe519e3b15a3e65fe1428599a4a223",
+      "sourceMeta": {
+        "title": "2. 单选题 假如一棵二叉树的中序遍历结果为ABCD，则结点A和结点D的关系一定不是（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_6886cd414835f007fe52e1c0",
+      "clientEntryId": "bank:3bbe059b",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 判断题\n由于二叉树中每个结点的度最大为2,所以二叉树是一棵度为2的树.( )\nA. 对\nB. 错",
+      "answer": "错",
+      "fingerprint": "375102014b8a1a34886e16c8b2a422464bf6d8e8d16eda96e1eedca5535ccb49",
+      "sourceMeta": {
+        "title": "5. 判断题 由于二叉树中每个结点的度最大为2,所以二叉树是一棵度为2的树.（ ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_98eb7acd5174c9ff7f92cf0e",
+      "clientEntryId": "bank:33e75962",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n空串与空格串是相同的,这种说法____。\nA. 正确\nB. 不正确",
+      "answer": "B",
+      "fingerprint": "bea0dbdaa595e9933ac29c207cd56be091c86f0526009eb4902e0981b448183e",
+      "sourceMeta": {
+        "title": "1. 单选题 空串与空格串是相同的，这种说法____。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_99ddaf684003c99b06b8612d",
+      "clientEntryId": "bank:57c3fc5c",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "作业考试",
+      "answer": "A",
+      "fingerprint": "4190aa68d3434fd5035e7da41943816769f8a719d4507354901d7a3f6521ff5e",
+      "sourceMeta": {
+        "title": "作业考试",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_09e3e9880b9cd84db6261323",
+      "clientEntryId": "bank:6cee73c1",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 判断题\n数组的顺序表示中,每个元素的存储位置是连续的。\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "a3ac6ccb11520ebe2a8114a9afbbb8898394355054568827811608f6a2e8c041",
+      "sourceMeta": {
+        "title": "3. 判断题 数组的顺序表示中，每个元素的存储位置是连续的。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_a6cb89975178eff846cd89ce",
+      "clientEntryId": "bank:58188eec",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n试按教科书5.5节图5.10所示的结点结构编写复制广义表的递归算法。// 由广义表L复制广义表Tint CopyGList(GList& T,GList& L){ if(!L) T=NULL; else{ T=new GLNode; if(!T) exit(OVERFLOW); T->tag=L->tag; if(L->tag==ATOM) T->atom=L->atom; else{ ____ CopyGList(T->tp,L->tp); } } return OK;}\nA. CopyGList(T,L);\nB. CopyGList(L->tp,T->tp);\nC. CopyGList(L->hp,T->hp);\nD. CopyGList(T->hp,L->hp);",
+      "answer": "D",
+      "fingerprint": "338afd66cf1d972a168bc4885387d436fbff73b2a2e4e9accfe9f5425c398e20",
+      "sourceMeta": {
+        "title": "2. 单选题 试按教科书5.5节图5.10所示的结点结构编写复制广义表的递归算法。// 由广义表L复制广义表Tint CopyGList(GList& T,GList& L){    if(!L) T=NULL;    else{",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_46037169aa0396ce526d0268",
+      "clientEntryId": "bank:7978418c",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n一棵二叉树的前序遍历序列为ABCDEFG,它的中序遍历序列可能是\nA. CABDEFG\nB. ABCDEFG\nC. DACEFBG\nD. ADCFEG",
+      "answer": "B",
+      "fingerprint": "576eb58f3e8a5858ee297410aff62c673b47ebacefc2ab0d675e90b6cb5535c1",
+      "sourceMeta": {
+        "title": "4. 单选题 一棵二叉树的前序遍历序列为ABCDEFG，它的中序遍历序列可能是",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_d0fe4d707fc2f329a4cf9cc8",
+      "clientEntryId": "bank:fd69c214",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n用二叉链表表示具有n个结点的二叉树时,值为空的指针域的个数为( )\nA. n-1\nB. n\nC. n+1\nD. 2n",
+      "answer": "C",
+      "fingerprint": "ef85eb68dbf82c711351683ca470444907a5f2514a0f668c27857884d363da87",
+      "sourceMeta": {
+        "title": "2. 单选题 用二叉链表表示具有n个结点的二叉树时，值为空的指针域的个数为（     ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_40beb237ffbc3962843a5f55",
+      "clientEntryId": "bank:d1c59260",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n具有 n 个结点的完全二叉树的深度为( )\nA.\nB.\nC.\nD.",
+      "answer": "B",
+      "fingerprint": "a0cb8a190ba634a88e7c9b554e201db918a4a02cfb45ab7604c3aa9ff17f3cda",
+      "sourceMeta": {
+        "title": "4. 单选题 具有 n 个结点的完全二叉树的深度为（ )",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_0e190b1b96cbfac29b06e27b",
+      "clientEntryId": "bank:12151e4b",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 判断题\n动态数组在插入元素时,如果空间不足,需要重新分配内存并复制原有元素到新内存空间。\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "6fb6684b33c22baa889df0f3df82a009da63f16158f5085f142c4f90361e03f3",
+      "sourceMeta": {
+        "title": "4. 判断题 动态数组在插入元素时，如果空间不足，需要重新分配内存并复制原有元素到新内存空间。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_b90092d9c53e471a9cdb80c7",
+      "clientEntryId": "bank:e2a2edb7",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n一棵二叉树中有7个叶子结点和5个单分支结点,其总共有( )结点。\nA. 16\nB. 18\nC. 12\nD. 31",
+      "answer": "B",
+      "fingerprint": "2e854f0ad58bb10a74daed932e8be84be34699d38f15e81975b0bec5e99d309c",
+      "sourceMeta": {
+        "title": "4. 单选题 一棵二叉树中有7个叶子结点和5个单分支结点，其总共有（  ）结点。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_053708e6aa9a26e80aaa3544",
+      "clientEntryId": "bank:3396c12f",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 单选题\n深度为5的二叉树至多有 个结点\nA. 16\nB. 32\nC. 31\nD. 10",
+      "answer": "C",
+      "fingerprint": "c82833215e49e4c30e88ea7e8d5dd03bc23a4bc57d0136ed5fd3b93f8078a39b",
+      "sourceMeta": {
+        "title": "5. 单选题 深度为5的二叉树至多有    个结点",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_55f0c5ecf49160c418c7cae7",
+      "clientEntryId": "bank:bc61c5bd",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n设有一个10阶的对称矩阵A,采用压缩存储方式,以行序为主存储,a11为第一元素,其存储地址为1,每个元素占一个地址空间,则a85的地址为( )。\nA 13\nB 32\nC 33\nD 40",
+      "answer": "C",
+      "fingerprint": "580d7b094ad0da9ff321912692aa884f8a76ccd3da70a271d5c55e2b50bb85db",
+      "sourceMeta": {
+        "title": "1. 单选题 设有一个10阶的对称矩阵A，采用压缩存储方式，以行序为主存储，a11为第一元素，其存储地址为1，每个元素占一个地址空间，则a85的地址为（ ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_66039a5da6e10dc92f734dc1",
+      "clientEntryId": "bank:344810d1",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 单选题\n图的深度优先遍历算法类似于二又树的算法( )\nA. 先序遍历\nB. 中序遍历\nC. 后序遍历\nD. 层次遍历",
+      "answer": "A",
+      "fingerprint": "9b6216af0ad8e1f3783c646c52dae8791758ec87f8b3ecc3530b9719604ba7cf",
+      "sourceMeta": {
+        "title": "5. 单选题 图的深度优先遍历算法类似于二又树的算法( )",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_bf612e33a8bae7ee6a43a034",
+      "clientEntryId": "bank:53db6d61",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 判断题\n使用三元组表表示稀疏矩阵时,可以省略矩阵的行数和列数信息。\nA. 对\nB. 错",
+      "answer": "B",
+      "fingerprint": "c4294e1bf4c200b08f99c3416f9c4a98d003006e19cd204975851748340d7f96",
+      "sourceMeta": {
+        "title": "6. 判断题 使用三元组表表示稀疏矩阵时，可以省略矩阵的行数和列数信息。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_1806e7477ee859b32d07c21d",
+      "clientEntryId": "bank:8ed96176",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n赫夫曼编码中,节点的权重是如何决定的?\nA. 随机分配\nB. 根据字符出现的频率\nC. 根据字符的ASCII值\nD. 按照字母表顺序",
+      "answer": "B",
+      "fingerprint": "0a75046a52c66da414674ca4823ed8829dbd43f6410c8a4d21162ac24c310493",
+      "sourceMeta": {
+        "title": "3. 单选题 赫夫曼编码中，节点的权重是如何决定的？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_88af6e32abf184bb1f4568e4",
+      "clientEntryId": "bank:a432b793",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 判断题\n从树根到每个结点的路径长度之和叫做结点的路径长度\nA. 对\nB. 错",
+      "answer": "错",
+      "fingerprint": "ee1e34b1d7d8338d108d6857549456ea9848d23d37eb5d7f62b377edeaf9f18f",
+      "sourceMeta": {
+        "title": "1. 判断题 从树根到每个结点的路径长度之和叫做结点的路径长度",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_96c5815579269aa1b12e48ea",
+      "clientEntryId": "bank:36141e22",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 多选题\n线索二叉树的线索化方法有哪些?",
+      "answer": "ABC",
+      "fingerprint": "72b1f5339b9f29eb61f395aebb03932bfd25babc3c4cd495991209220490d99c",
+      "sourceMeta": {
+        "title": "4. 多选题 线索二叉树的线索化方法有哪些？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_95802a3ac22e1d5ba0276179",
+      "clientEntryId": "bank:dabcccd3",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 判断题\n用树的前序遍历和后序遍历可以导出树的中序遍历。( )\nA. 对\nB. 错",
+      "answer": "错",
+      "fingerprint": "c52e1e8ee09342e5755ddeb3e23edd74ce813c7a872ef20c11d6603aedfc0279",
+      "sourceMeta": {
+        "title": "5. 判断题 用树的前序遍历和后序遍历可以导出树的中序遍历。（ ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_cdca8cc6328cebf400489c2a",
+      "clientEntryId": "bank:69f7dbf",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n赫夫曼编码适用于以下哪种情况?\nA. 所有字符出现频率相同\nB. 所有字符出现频率不同\nC. 只有一种字符出现\nD. 没有任何字符出现",
+      "answer": "B",
+      "fingerprint": "0b44756d6dcfacaa066aab2b5a650d82a2de988f8682cf2ba2bf3f3c4d2340a1",
+      "sourceMeta": {
+        "title": "1. 单选题 赫夫曼编码适用于以下哪种情况？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_bcd10c1bc06d24f934615e02",
+      "clientEntryId": "bank:dc8b4598",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n具有10个叶子结点的二叉树中有( )个度为2的结点\nA. 8\nB. 9\nC. 10\nD. 11",
+      "answer": "B",
+      "fingerprint": "d7b3ab552b9839e665af583a6a59e5d816e27d904ae90bbce7fac0434dc17e7c",
+      "sourceMeta": {
+        "title": "2. 单选题 具有10个叶子结点的二叉树中有（  ）个度为2的结点",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_e2d80da9c1fd2ad237e00d94",
+      "clientEntryId": "bank:b7d97961",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n由权值分别为3,8,6,2,5的叶子结点生成一棵哈夫曼树,它的带权路径长度为( )\nA. 24\nB. 48\nC. 72\nD. 53",
+      "answer": "D",
+      "fingerprint": "da23c80b34c7e67e1efc2d071d97e9efb2102512eb89fc05c2cd1ef3bee8a03d",
+      "sourceMeta": {
+        "title": "3. 单选题 由权值分别为3，8，6，2，5的叶子结点生成一棵哈夫曼树，它的带权路径长度为(    )",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_f2440d68285a77eeca3a5f52",
+      "clientEntryId": "bank:c8ad6af",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n一棵哈夫曼树有17个结点,则其叶子结点的个数是____。\nA. 7\nB. 8\nC. 9\nD. 10",
+      "answer": "C",
+      "fingerprint": "c77642b6cff74be1db8209f44456111ba714c8455023be977987b24f32265a6a",
+      "sourceMeta": {
+        "title": "4. 单选题 一棵哈夫曼树有17个结点，则其叶子结点的个数是____。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_3c53e56f6ac8c9448aed52bc",
+      "clientEntryId": "bank:d23ff8dd",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n若一个广义表的表头为空表,则此广义表亦为空表。( )\nA. 对\nB. 错",
+      "answer": "A",
+      "fingerprint": "694008d45d7f66c46cda135ae7e2529e06a7a3b3b8ee29ecbf77ce8cb7bf8f39",
+      "sourceMeta": {
+        "title": "1. 单选题 若一个广义表的表头为空表，则此广义表亦为空表。（   ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_fe1ba9f698016ade711c1452",
+      "clientEntryId": "bank:5179eba7",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n二叉树的先序遍历序列中,任意一个结点均处在其子女结点的( )位置。\nA. 后面\nB. 前面\nC. 中间\nD. 不确定",
+      "answer": "B",
+      "fingerprint": "9aadf69ee7530a29bc6544513b9d1d983fefc06234eb8c3881e88d95bd6a7577",
+      "sourceMeta": {
+        "title": "2. 单选题 二叉树的先序遍历序列中,任意一个结点均处在其子女结点的（    ）位置。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_dbb5ea7dfa622fbb0abf2acb",
+      "clientEntryId": "bank:a69881d9",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n图的广度优先遍历算法需要采用( )结构来实现。\nA 栈\nB 队列\nC 链表\nD 其它",
+      "answer": "B",
+      "fingerprint": "36923d47c7f857c37ea7b627e4e427a749308c76e6e3b693ef8a93afa784d491",
+      "sourceMeta": {
+        "title": "3. 单选题 图的广度优先遍历算法需要采用（    ）结构来实现。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_110e71e364ec0cf1ac87de0f",
+      "clientEntryId": "bank:315ebdb5",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n下列陈述中正确的是( )\nA. 二叉树是度为2的有序树\nB. 二叉树中结点只有一个孩子时无左右之分\nC. 二叉树中必有度为2的结点\nD. 二叉树中最多只有两棵子树,并且有左右之分",
+      "answer": "D",
+      "fingerprint": "67634d30972318d2253a6d8c4e4ed398ea0b70df5ecad0d0638f708274fe37e2",
+      "sourceMeta": {
+        "title": "2. 单选题 下列陈述中正确的是(    )",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_4d2cec5d3cdf4bfeea9dd1da",
+      "clientEntryId": "bank:3f603fa2",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 多选题\n二叉树可以是( )",
+      "answer": "ABCD",
+      "fingerprint": "da2651c7171b7cb24ef11a895d72df730a2f045165e305ed64b2e0564be2cfb9",
+      "sourceMeta": {
+        "title": "3. 多选题 二叉树可以是（ )",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_eb103bf390e26fb82b97ce00",
+      "clientEntryId": "bank:8e842217",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n用链表存储时,通常一个结点中可以存放一个字符,也可以存放多个字符。( )\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "2d29734f8390da6735a6315cc3111902d3dc8da7e0adfe6cc360aa99f0cdd058",
+      "sourceMeta": {
+        "title": "4. 单选题 用链表存储时，通常一个结点中可以存放一个字符，也可以存放多个字符。（   ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_b03e86d08cd5d338f6499546",
+      "clientEntryId": "bank:24f875f7",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "5. 判断题\n树具有非线性数据结构( )\nA. 对\nB. 错",
+      "answer": "对",
+      "fingerprint": "b6d54eec75ecfe276a07501b139de1b0b22d2c5662e4fe8e4c692dff411af039",
+      "sourceMeta": {
+        "title": "5. 判断题 树具有非线性数据结构（    ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_66fcb074ace56d74622d5c0c",
+      "clientEntryId": "bank:cb2d0cc2",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 多选题\n二叉树遍历的方式有( )",
+      "answer": "ABC",
+      "fingerprint": "3b36b6bb5c640b4fef59a9e5eb1af013430f127dda13c685a0e3509e7730b516",
+      "sourceMeta": {
+        "title": "2. 多选题 二叉树遍历的方式有（ ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.787Z",
+      "updatedAt": "2026-03-20T08:42:48.787Z"
+    },
+    {
+      "id": "contrib_345a9883743c0aff324b2078",
+      "clientEntryId": "bank:4cda6d45",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "4. 单选题\n用邻接表存储图所用所用的空间大小( )\nA. 与图的顶点和边数有关\nB. 只与图的边数有关\nC. 只与图的顶点数有关\nD. 与边数的平方有关",
+      "answer": "A",
+      "fingerprint": "a802f6d282f80d690a474073da7ce01ec71f0e3f3bd561f6767f78f2b8ca8ec7",
+      "sourceMeta": {
+        "title": "4. 单选题 用邻接表存储图所用所用的空间大小（  ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.788Z",
+      "updatedAt": "2026-03-20T08:42:48.788Z"
+    },
+    {
+      "id": "contrib_0e80bbb651716b55101a16a7",
+      "clientEntryId": "bank:38c9f21d",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n执行( )操作时,需要使用队列做辅助存储空间。\nA. 查找哈希(Hash)表\nB. 广度优先搜索网\nC. 前序(根)遍历二叉树\nD. 深度优先搜索网",
+      "answer": "B",
+      "fingerprint": "8e7f2e69f5c630c4e7adf335c7414391d8c034039c2ba251b322159359a344e2",
+      "sourceMeta": {
+        "title": "3. 单选题 执行（  ）操作时，需要使用队列做辅助存储空间。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.788Z",
+      "updatedAt": "2026-03-20T08:42:48.788Z"
+    },
+    {
+      "id": "contrib_68ffec84840288d724ee9a74",
+      "clientEntryId": "bank:e91e7867",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n利用二叉链表存储树,则根结点的右指针是( )。\nA. 指向最左孩子\nB. 指向最右孩子\nC. 空\nD. 非空",
+      "answer": "C",
+      "fingerprint": "cd1a9070436f1fbc6ebe25179557065f17551ad0c65a809d8f278b2d200f424f",
+      "sourceMeta": {
+        "title": "2. 单选题 利用二叉链表存储树，则根结点的右指针是（   ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.788Z",
+      "updatedAt": "2026-03-20T08:42:48.788Z"
+    },
+    {
+      "id": "contrib_a5ef42a267054ed64c3a39e7",
+      "clientEntryId": "bank:9a7e1ba6",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 多选题\n以下哪些操作可以在二叉树中实现?",
+      "answer": "ABCD",
+      "fingerprint": "915204800fc6aac3d416f16ee5a572a8ac2a2f6994101d315ad5e297d07c82be",
+      "sourceMeta": {
+        "title": "1. 多选题 以下哪些操作可以在二叉树中实现？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.788Z",
+      "updatedAt": "2026-03-20T08:42:48.788Z"
+    },
+    {
+      "id": "contrib_572b873a55a773fb544a7084",
+      "clientEntryId": "bank:8249515",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n在数组的顺序存储中,如果已知数组的起始地址和元素大小,如何计算任意元素的地址?\nA. 起始地址 + 元素大小 * 索引\nB. 起始地址 + 索引\nC. 起始地址 + 元素大小 * (索引 - 1)\nD. 起始地址 + 索引 / 元素大小",
+      "answer": "C",
+      "fingerprint": "f4b7cf2a15f130ea1ac099f6072a9a628a0111d88b654b30537ba2eb374572ca",
+      "sourceMeta": {
+        "title": "2. 单选题 在数组的顺序存储中，如果已知数组的起始地址和元素大小，如何计算任意元素的地址？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.788Z",
+      "updatedAt": "2026-03-20T08:42:48.788Z"
+    },
+    {
+      "id": "contrib_edcf710806b5d21a01cc84e6",
+      "clientEntryId": "bank:64d202cd",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n如何表示一个空的广义表?\nA. ()\nB. []\nC. {}\nD. \"\"",
+      "answer": "A",
+      "fingerprint": "88d2fc60ac3dca27eebd5b4bdd30fa40a8045afe16ad5149a45419a1cfa3498d",
+      "sourceMeta": {
+        "title": "6. 单选题 如何表示一个空的广义表？",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.788Z",
+      "updatedAt": "2026-03-20T08:42:48.788Z"
+    },
+    {
+      "id": "contrib_7318b2f7d0d160de99c9beae",
+      "clientEntryId": "bank:973b21e8",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "1. 单选题\n下面说法不正确的是 ( )。\nA. 广义表的表头总是一个广义表\nB. 广义表的表尾总是一个广义表\nC. 广义表难以用顺序存储结构\nD. 广义表可以是一个多层次的结构",
+      "answer": "A",
+      "fingerprint": "9d5597a5a3bdef0a5759741b09f2e0277e72970020e0290903eddde3f56a672a",
+      "sourceMeta": {
+        "title": "1. 单选题 下面说法不正确的是 (  )。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.788Z",
+      "updatedAt": "2026-03-20T08:42:48.788Z"
+    },
+    {
+      "id": "contrib_db93a97b8e6217af75b50139",
+      "clientEntryId": "bank:43684da9",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "2. 单选题\n在一棵度数为4的树T中,若有20个度为4的结点,10个度为3的结点,1个度为2的结点,10个度为1的结点,则树T的叶结点个数是( B )\nA. 41\nB. 82\nC. 113\nD. 122",
+      "answer": "B",
+      "fingerprint": "5f1077c61b71414d9d5494f252517097a196279ef7c40a1208beebbbf229b750",
+      "sourceMeta": {
+        "title": "2. 单选题 在一棵度数为4的树T中，若有20个度为4的结点，10个度为3的结点，1个度为2的结点，10个度为1的结点，则树T的叶结点个数是（  B   ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.788Z",
+      "updatedAt": "2026-03-20T08:42:48.788Z"
+    },
+    {
+      "id": "contrib_0986c04cca73651ba91c48c9",
+      "clientEntryId": "bank:d581ee43",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "3. 单选题\n下面关于串的叙述中,哪一个是不正确的?( )\nA. 串是字符的有限序列\nB. 空串是由空格构成的串\nC. 模式匹配是串的一种重要运算\nD. 串既可以采用顺序存储,也可以采用链式存储",
+      "answer": "B",
+      "fingerprint": "3cfdce4d1a522fdf4e1fef5bec09e6aa86582717393ef3f2e6813e3653c37077",
+      "sourceMeta": {
+        "title": "3. 单选题 下面关于串的叙述中，哪一个是不正确的？（    ）",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "pending",
+      "isUnique": null,
+      "createdAt": "2026-03-20T08:42:48.788Z",
+      "updatedAt": "2026-03-20T08:42:48.788Z"
+    },
+    {
+      "id": "contrib_d7190bbd52c3e8db4b48ac2a",
+      "clientEntryId": "bank:5de278a4",
+      "userId": "user_5f5e6a815e2985a94a75fee9",
+      "category": "zhihuishu",
+      "stem": "6. 单选题\n\n若采用三元组压缩技术存储稀疏矩阵,只要把每个元素的行下标和列下标互换,就完成了对该矩阵的转置运算,这种观点( )。\n\nA.\n\n正确\n\nB.\n\n错误\nA 正确\nB 错误",
+      "answer": "B",
+      "fingerprint": "cb7db4cf35b03edec680821a0500f7091cace6f99853e73daabb92bedce391be",
+      "sourceMeta": {
+        "title": "6. 单选题 若采用三元组压缩技术存储稀疏矩阵，只要把每个元素的行下标和列下标互换，就完成了对该矩阵的转置运算，这种观点（  ）。",
+        "category": "zhihuishu",
+        "source": "extension-question-bank",
+        "site": "studentexamcomh5.zhihuishu.com",
+        "pageUrl": "https://studentexamcomh5.zhihuishu.com/studentReviewTestOrExam/2498273/1/1/2027013600826703872/JTIyJUU3JTlGJUE5JUU5JTk4JUI1JUU3JTlBJTg0JUU1JThFJThCJUU3JUJDJUE5JUU1JUFEJTk4JUU1JTgyJUE4JTIy/1/true/true/true/1?mapUid=1811598619497861120&foAiRun=1&point=1&classId=184741&pointId=1821437955768717312&paperId=254882037&examPaperId=254882037&reviewQ=2"
+      },
+      "status": "issue_created",
+      "issueNumber": 1,
+      "issueUrl": "https://github.com/liuhexiong/question-bank/issues/1",
+      "issueTitle": "[题库贡献][zhihuishu] 6. 单选题 若采用三元组压缩技术存储稀疏矩阵,只要把每个元素的行下标和列下标互换,就完成了对该矩阵的转置运算,这种观点( )。 A. 正确 B",
+      "submittedAt": "2026-03-20T14:11:05.194Z",
+      "createdAt": "2026-03-20T14:11:05.194Z",
+      "updatedAt": "2026-03-20T14:11:05.194Z"
+    }
+  ],
+  "questionBankEntries": [],
+  "creditLedger": [],
+  "solveUsage": [],
+  "reviewActions": [],
+  "createdAt": "2026-03-20T08:39:59.439Z",
+  "updatedAt": "2026-03-20T14:26:12.082Z"
+}

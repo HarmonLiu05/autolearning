@@ -3,3 +3,4 @@ dist
 .env
 playwright/.auth
 artifacts
+.DS_Store

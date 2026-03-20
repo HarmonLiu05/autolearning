@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "智拓",
+  "version": "0.1.0",
+  "description": "智启新知，拓学无界。识别算法题面、读取编辑器代码、调用大模型并回填代码的学习辅助插件。",
+  "permissions": ["storage", "clipboardRead", "clipboardWrite", "activeTab", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "智拓"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "all_frames": true,
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["page-bridge.js", "assets/ai-status.svg", "assets/close-cross.svg", "assets/newaistatus.png", "assets/launcher-logo.png", "assets/spinner-logo.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

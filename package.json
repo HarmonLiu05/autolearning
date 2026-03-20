@@ -1,13 +1,17 @@
 {
   "name": "autolearning",
   "version": "1.0.0",
-  "description": "Minimal Playwright prototype for programming problem extraction",
+  "description": "Browser extension MVP for extracting coding problems and filling AI-generated answers",
   "main": "dist/main.js",
   "scripts": {
     "dev": "tsx src/main.ts",
+    "dev:server": "node server/index.js",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
-    "codegen": "playwright codegen"
+    "codegen": "playwright codegen",
+    "educoder:login": "node scripts/educoder-login-with-extension.mjs",
+    "check:extension": "node --check extension/background.js && node --check extension/content.js && node --check extension/options.js && node --check extension/page-bridge.js",
+    "test:extension": "node scripts/extension-smoke.mjs"
   },
   "keywords": [],
   "author": "",
