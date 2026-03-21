@@ -4173,6 +4173,9 @@
       const importedCount = mergeCloudQuestionBank(response.cloudBank);
       if (importedCount > 0) {
         await persistQuestionBank();
+        if (typeof state.reviewModalRefresh === "function") {
+          state.reviewModalRefresh({ preserveNotice: true });
+        }
       }
       setStatus(`云端题库下载完成，已合并 ${importedCount} 条记录。`, {
         hint: "云端题库已缓存到本地，可直接参与匹配。",
@@ -7620,6 +7623,56 @@
     return sampleText ? `samples:${hashText(sampleText)}` : "";
   }
 
+  function resolveChoiceCloudDuplicateState(entry) {
+    if (!entry || normalizeQuestionBankSource(entry.source) === "cloud") {
+      return { duplicated: false, reason: "" };
+    }
+    const normalizedQuestionType = String(entry.questionType || entry.promptMode || "").trim();
+    if (normalizedQuestionType !== "choice") {
+      return { duplicated: false, reason: "" };
+    }
+    const entryCategory = normalizeQuestionBankCategory(entry.category);
+    const entryStatementFingerprint = String(entry.statementFingerprint || "").trim();
+    const entryCloudFingerprint = String(entry.cloudFingerprint || entry.fingerprint || "").trim();
+    const entryStem = normalizeQuestionStem(entry.statementPreview || entry.title || "");
+    const entryAnswerText = normalizeText(entry.answerText || "");
+    for (const candidate of Object.values(state.questionBank || {})) {
+      if (!candidate || normalizeQuestionBankSource(candidate.source) !== "cloud") {
+        continue;
+      }
+      if (String(candidate.questionType || candidate.promptMode || "").trim() !== "choice") {
+        continue;
+      }
+      const candidateCategory = normalizeQuestionBankCategory(candidate.category || candidate.cloudCategory);
+      if (entryCategory !== candidateCategory) {
+        continue;
+      }
+      const candidateStatementFingerprint = String(candidate.statementFingerprint || "").trim();
+      if (
+        entryStatementFingerprint &&
+        candidateStatementFingerprint &&
+        entryStatementFingerprint === candidateStatementFingerprint
+      ) {
+        return { duplicated: true, reason: "Already in cloud" };
+      }
+      const candidateCloudFingerprint = String(candidate.cloudFingerprint || candidate.fingerprint || "").trim();
+      if (
+        entryCloudFingerprint &&
+        candidateCloudFingerprint &&
+        entryCloudFingerprint === candidateCloudFingerprint
+      ) {
+        return { duplicated: true, reason: "Already in cloud" };
+      }
+      const candidateStem = normalizeQuestionStem(candidate.statementPreview || candidate.title || "");
+      if (entryStem && candidateStem && entryStem === candidateStem) {
+        const candidateAnswerText = normalizeText(candidate.answerText || "");
+        if (!entryAnswerText || !candidateAnswerText || entryAnswerText === candidateAnswerText) {
+          return { duplicated: true, reason: "Already in cloud" };
+        }
+      }
+    }
+    return { duplicated: false, reason: "" };
+  }
   function applyContributionResults(items, results, category) {
     const resultMap = new Map();
     for (const item of Array.isArray(results) ? results : []) {
@@ -8269,6 +8322,8 @@
           cloudStatus: payload.cloudStatus || "",
           cloudFingerprint: payload.cloudFingerprint || "",
           cloudCategory: payload.cloudCategory || "",
+          cloudDuplicate: Boolean(payload.cloudDuplicate),
+          cloudDuplicateReason: String(payload.cloudDuplicateReason || ""),
         });
         return;
       }
@@ -8301,6 +8356,12 @@
       }
       if (payload.cloudCategory) {
         current.cloudCategory = payload.cloudCategory;
+      }
+      if (payload.cloudDuplicate) {
+        current.cloudDuplicate = true;
+      }
+      if (payload.cloudDuplicateReason) {
+        current.cloudDuplicateReason = String(payload.cloudDuplicateReason || "");
       }
       if (payload.source && current.source !== "local") {
         current.source = normalizeQuestionBankSource(payload.source);
@@ -8340,6 +8401,7 @@
       const entryKeys = Array.from(
         new Set([primaryKey, storageKey, ...(Array.isArray(entry.keys) ? entry.keys : [])].filter(Boolean)),
       );
+      const cloudDuplicateState = resolveChoiceCloudDuplicateState(entry);
       upsertItem(
         buildQuestionBankEditorDedupeKey({
           primaryKey,
@@ -8366,6 +8428,8 @@
         cloudStatus: entry.cloudStatus || "",
         cloudFingerprint: entry.cloudFingerprint || "",
         cloudCategory: entry.cloudCategory || "",
+        cloudDuplicate: cloudDuplicateState.duplicated,
+        cloudDuplicateReason: cloudDuplicateState.reason,
         statementFingerprint: entry.statementFingerprint || "",
       });
     }
@@ -8765,7 +8829,9 @@
         (item) =>
           item.source === "local" &&
           item.status === "verified" &&
-          normalizeQuestionBankCategory(item.category) === selectedCategory,
+          item.questionType === "choice" &&
+          normalizeQuestionBankCategory(item.category) === selectedCategory &&
+          !item.cloudDuplicate,
       ).length;
       tabPanel.innerHTML = `
         ${
@@ -8810,11 +8876,14 @@
                   .map((item, index) => {
                     const globalIndex = items.indexOf(item);
                     const categoryValue = normalizeQuestionBankCategory(item.category);
+                    const cloudDuplicateReason = item.cloudDuplicateReason || (item.cloudDuplicate ? "Already in cloud" : "");
                     const canContribute =
                       isMineTab &&
                       item.source === "local" &&
                       item.status === "verified" &&
-                      categoryValue === selectedCategory;
+                      item.questionType === "choice" &&
+                      categoryValue === selectedCategory &&
+                      !item.cloudDuplicate;
                     const sourceText =
                       item.source === "cloud" ? "云端同步" : item.source === "imported" ? "手动导入" : "本地提取";
                     const statusText =
@@ -8825,23 +8894,24 @@
                           : item.status === "rejected"
                             ? "已弃用"
                             : "待补答案";
-                    const cloudStatusText =
-                      item.cloudStatus === "approved"
-                        ? "云端已收录"
+                    const cloudStatusText = item.cloudDuplicate
+                      ? cloudDuplicateReason
+                      : item.cloudStatus === "approved"
+                        ? "Cloud synced"
                         : item.cloudStatus === "issue_opened"
-                          ? "待 GitHub 审核"
-                        : item.cloudStatus === "issue_created" || item.cloudStatus === "submitted"
-                          ? "已创建 Issue"
-                          : item.cloudStatus === "duplicate"
-                            ? "云端疑似重复"
-                            : "未上传";
+                          ? "Waiting for GitHub review"
+                          : item.cloudStatus === "issue_created" || item.cloudStatus === "submitted"
+                            ? "Issue created"
+                            : item.cloudStatus === "duplicate"
+                              ? "Possible cloud duplicate"
+                              : "Not uploaded";
                     return `
                       <article class="al-bank-item">
                         ${
                           isMineTab
                             ? `<label class="al-bank-item-pick">
                                 <input type="checkbox" data-role="bank-pick-input" data-index="${globalIndex}" ${canContribute ? "" : "disabled"} />
-                                <span>${canContribute ? "贡献" : "不可贡献"}</span>
+                                <span>${canContribute ? "Contribute" : cloudDuplicateReason ? `Unavailable (${escapeHtml(cloudDuplicateReason)})` : "Unavailable"}</span>
                               </label>`
                             : ""
                         }
@@ -9033,6 +9103,7 @@
           : contributionEmailDraft || state.settings.contributionEmail || "",
       ).trim();
       contributionEmailDraft = contributorEmail;
+      let skippedCloudDuplicateCount = 0;
       const entries = pickedInputs
         .map((input) => {
           const index = Number(input.getAttribute("data-index"));
@@ -9046,6 +9117,11 @@
             item.questionType !== "choice" ||
             normalizeQuestionBankCategory(item.category) !== submitCategory
           ) {
+            return null;
+          }
+          const cloudDuplicateState = resolveChoiceCloudDuplicateState(item);
+          if (cloudDuplicateState.duplicated) {
+            skippedCloudDuplicateCount += 1;
             return null;
           }
           const normalizedStem = String(item.statementPreview || item.title || "").trim();
@@ -9078,12 +9154,30 @@
         .filter(Boolean);
 
       if (entries.length === 0) {
-        setSaveIndicator("没有可提交内容", "idle", true);
-        setStatus("当前选中的题目没有可提交内容。");
-        setBankNotice("当前选中的题目没有可提交内容。", "info", true);
+        const duplicateOnly = skippedCloudDuplicateCount > 0;
+        setSaveIndicator(duplicateOnly ? "Already in cloud" : "Nothing to submit", "idle", true);
+        setStatus(
+          duplicateOnly
+            ? "All selected questions already exist in the cloud and cannot be contributed again."
+            : "The selected questions have nothing to submit.",
+        );
+        setBankNotice(
+          duplicateOnly
+            ? "All selected questions already exist in the cloud and cannot be contributed again."
+            : "The selected questions have nothing to submit.",
+          "info",
+          true,
+        );
         return;
       }
 
+      if (skippedCloudDuplicateCount > 0) {
+        setBankNotice(
+          "Skipped " + skippedCloudDuplicateCount + " question(s) already in the cloud; only the remaining items will be submitted.",
+          "info",
+          true,
+        );
+      }
       if (!contributorEmail) {
         setBankNotice("未填写贡献邮箱，后续将无法按邮箱人工发放额度。", "info", true);
       }
