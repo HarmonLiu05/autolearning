@@ -18,7 +18,7 @@
 
 3. 点击“加载已解压的扩展程序”
 
-4. 选择项目下的 [`extension`](./extension) 目录 
+4. 选择relese下的 [`extension`](./extension) 目录 
 
 
 ## 推荐使用方式
