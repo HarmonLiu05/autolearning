@@ -500,6 +500,24 @@ function normalizeBatchContributionEntry(entry) {
     clientEntryId: String(entry.clientEntryId || "").trim() || randomId("client"),
     stem,
     answer,
+    fingerprint: String(entry.fingerprint || buildFingerprint(stem, answer)).trim(),
+    questionType: String(entry.questionType || "choice").trim() || "choice",
+    statementFingerprint: String(entry.statementFingerprint || "").trim(),
+    answerText: normalizeText(entry.answerText || ""),
+    optionMapSnapshot: Array.isArray(entry.optionMapSnapshot)
+      ? entry.optionMapSnapshot
+          .map((item) =>
+            item && typeof item === "object"
+              ? {
+                  label: String(item.label || "").trim(),
+                  text: normalizeText(item.text || ""),
+                }
+              : null,
+          )
+          .filter((item) => item && item.label && item.text)
+      : [],
+    formatStrength: String(entry.formatStrength || "").trim(),
+    contributorEmail: String(entry.contributorEmail || "").trim(),
     sourceMeta: {
       title: String(rawSourceMeta.title || "").trim(),
       category: String(rawSourceMeta.category || "").trim(),
@@ -542,16 +560,27 @@ async function handleBatchContributionIssue(req, res) {
 
   const submittedAt = String(body.submittedAt || "").trim() || nowIso();
   const source = String(body.source || "").trim() || "autolearning-extension";
+  const contributorEmail =
+    String(body.contributorEmail || "").trim() ||
+    String(entries.find((entry) => entry.contributorEmail)?.contributorEmail || "").trim();
   const sourceMeta = buildBatchSourceMeta(entries, body.sourceMeta);
   const payload = {
     version: 1,
     category,
     exportedAt: submittedAt,
     source,
+    contributorEmail,
     questions: entries.map((entry) => ({
       clientEntryId: entry.clientEntryId,
       stem: entry.stem,
       answer: entry.answer,
+      fingerprint: entry.fingerprint,
+      questionType: entry.questionType,
+      statementFingerprint: entry.statementFingerprint,
+      answerText: entry.answerText,
+      optionMapSnapshot: entry.optionMapSnapshot,
+      formatStrength: entry.formatStrength,
+      contributorEmail: entry.contributorEmail || contributorEmail,
       sourceMeta: entry.sourceMeta,
     })),
   };
@@ -567,6 +596,7 @@ async function handleBatchContributionIssue(req, res) {
       source,
       sourceMeta,
       payload,
+      contributorEmail,
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
