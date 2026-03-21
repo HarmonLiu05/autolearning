@@ -7,6 +7,11 @@
       return false;
     }
     return SUPPORTED_SITE_HOSTS.some((suffix) => host === suffix || host.endsWith(`.${suffix}`));
+    if (mode === "choice") {
+      renderGeneratedCode("");
+    } else {
+      renderCompactCodeCopyStatus(false);
+    }
   }
 
   if (window.top !== window) {
@@ -53,7 +58,7 @@
   const DEFAULT_CHOICE_PROMPT =
     "当前页面大概率是选择题、判断题、概念题或简答型理论题。请优先输出最终答案，而不是写完整程序。若题目是单选题，code 字段只放最终选项，例如 A、B、C、D；若是多选题，code 字段只放选项组合，例如 AC；若是判断题，code 字段只放“对”或“错”；若是简短填空或概念问答，code 字段只放最终可直接填写的简短答案。不要输出 main 函数，不要伪造代码。approach 用 3 到 5 句简洁说明你的判断依据，重点使用关键词匹配、概念定义和排除法。";
   const DEFAULT_CODE_PROMPT =
-    "当前页面大概率是编程题、代码填空题或需要补全模板的题。请优先保留题目指定语言、函数签名、输入输出格式和已有代码骨架，只补上真正缺失的部分。若页面自带代码与题面冲突，优先相信题面和样例。code 字段只放最终可提交或可复制的内容，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
+    "当前页面大概率是编程题、代码填空题或需要补全模板的题。只要当前编辑器里已经有非空代码模板，你就必须基于这份模板补全，不能擅自重写整体结构。不要改函数签名、类名、输入输出格式、主流程结构、已有辅助函数名和注释约定；只补全 TODO、空函数、占位返回值、核心逻辑以及必要 import。若题面与模板冲突，优先遵循题面和样例，但仍尽量在原模板内修正，不要另起一份独立实现。若当前编辑器为空，再正常生成完整答案。code 字段只放最终可提交或可复制的完整代码，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
 
   const SUPPORTED_SOLVE_MODELS = [
     "gemini-3-flash",
@@ -104,7 +109,9 @@
     questionBank: {},
     questionBankLoaded: false,
     questionBankReviewQueue: [],
+    lastQuestionBankHit: null,
     reviewModalOpen: false,
+    reviewModalRefresh: null,
     cloudSyncStarted: false,
     githubAuth: null,
     settings: {
@@ -126,6 +133,7 @@
       cloudRepoName: "question-bank",
       cloudRepoBranch: "main",
       cloudAutoSync: false,
+      contributionEmail: "",
     },
   };
 
@@ -170,6 +178,7 @@
         state.lastUrl = location.href;
         state.problem = null;
         state.result = null;
+        state.lastQuestionBankHit = null;
         state.lastAutoSolveCode = "";
         state.promptPreview = null;
         state.panelManualPosition = null;
@@ -197,6 +206,7 @@
         state.lastUrl = location.href;
         state.problem = null;
         state.result = null;
+        state.lastQuestionBankHit = null;
         state.lastAutoSolveCode = "";
         state.promptPreview = null;
         state.panelManualPosition = null;
@@ -271,9 +281,11 @@
           <div class="al-actions al-actions-primary">
             <button data-role="extract" type="button">提取题面</button>
             <button data-role="solve" type="button" class="al-primary">生成答案</button>
+            <button data-role="capture-primary" type="button" hidden>框选截图</button>
             <button data-role="full-auto" type="button">开启全自动</button>
             <button data-role="edit-question-bank" type="button">编辑题库</button>
           </div>
+          <div class="al-summary" data-role="mode-flow-hint">先选题型，再提取题面或生成答案。</div>
 
           <section class="al-section">
             <div class="al-code-head">
@@ -294,9 +306,10 @@
             <div data-role="choice-answer" class="al-choice-answer">还没有生成答案。</div>
           </section>
 
-          <section class="al-section" data-role="compact-code-wrap" hidden>
+          <section class="al-section" data-role="compact-code-wrap">
             <div class="al-code-head">
-              <h3>代码速览</h3>
+              <h3 data-role="compact-preview-title">代码速览</h3>
+              <button data-role="copy-compact-preview" type="button" class="al-link">复制</button>
               <span data-role="compact-code-copy-status" class="al-mini-status" hidden>已自动复制</span>
             </div>
             <pre data-role="compact-code" class="al-compact-code">还没有生成代码。</pre>
@@ -323,7 +336,7 @@
                 <button data-role="prompt-mode-code" type="button" class="al-mode-button">代码题</button>
               </div>
             </div>
-            <div class="al-summary">先选题型，再提取题面或生成答案。</div>
+            <div class="al-summary" data-role="prompt-mode-summary">先选题型，再提取题面或生成答案。</div>
           </section>
 
           <details class="al-section al-details">
@@ -402,7 +415,7 @@
           <section class="al-section" data-role="code-wrap">
             <div class="al-code-head">
               <h3>生成代码</h3>
-              <button data-role="copy" type="button" class="al-link">复制</button>
+              <button data-role="copy-code" type="button" class="al-link">复制</button>
             </div>
             <textarea
               data-role="code"
@@ -439,8 +452,11 @@
     elements.code = host.querySelector('[data-role="code"]');
     elements.compactCode = host.querySelector('[data-role="compact-code"]');
     elements.compactCodeCopyStatus = host.querySelector('[data-role="compact-code-copy-status"]');
+    elements.compactPreviewTitle = host.querySelector('[data-role="compact-preview-title"]');
     elements.choiceAnswerWrap = host.querySelector('[data-role="choice-answer-wrap"]');
     elements.choiceAnswer = host.querySelector('[data-role="choice-answer"]');
+    elements.modeFlowHint = host.querySelector('[data-role="mode-flow-hint"]');
+    elements.promptModeSummary = host.querySelector('[data-role="prompt-mode-summary"]');
     elements.promptModeChoice = host.querySelector('[data-role="prompt-mode-choice"]');
     elements.promptModeCode = host.querySelector('[data-role="prompt-mode-code"]');
     elements.fullAutoModeCapture = host.querySelector('[data-role="full-auto-mode-capture"]');
@@ -452,9 +468,14 @@
     elements.customStatementRuleStatus = host.querySelector('[data-role="custom-statement-rule-status"]');
     elements.clearScreenshotBuffer = host.querySelector('[data-role="clear-screenshot-buffer"]');
     elements.shortcutTip = host.querySelector('[data-role="shortcut-tip"]');
+    elements.capturePrimaryButton = host.querySelector('[data-role="capture-primary"]');
+    elements.captureMoreButton = host.querySelector('[data-role="capture"]');
     elements.fullAutoButton = host.querySelector('[data-role="full-auto"]');
     elements.platformSummary = host.querySelector('[data-role="platform-summary"]');
     elements.cloudSync = host.querySelector('[data-role="cloud-sync"]');
+    elements.editQuestionBank = host.querySelector('[data-role="edit-question-bank"]');
+    elements.openContribution = host.querySelector('[data-role="open-contribution"]');
+    elements.questionBankSection = elements.platformSummary?.closest(".al-section") || null;
     elements.header = host.querySelector(".al-header");
     elements.ocrText = host.querySelector('[data-role="ocr-text"]');
     elements.historyList = host.querySelector('[data-role="history-list"]');
@@ -481,6 +502,9 @@
       void handleOpenQuestionBankEditor({ activeTab: "mine" });
     });
     bindIfPresent('[data-role="capture"]', "click", () => {
+      void handleCaptureScreenshot();
+    });
+    bindIfPresent('[data-role="capture-primary"]', "click", () => {
       void handleCaptureScreenshot();
     });
     bindIfPresent('[data-role="define-capture-region"]', "click", () => {
@@ -525,7 +549,10 @@
     bindIfPresent('[data-role="copy-preview"]', "click", () => {
       void handleCopyPromptPreview();
     });
-    bindIfPresent('[data-role="copy"]', "click", () => {
+    bindIfPresent('[data-role="copy-compact-preview"]', "click", () => {
+      void handleCopyCompactPreview();
+    });
+    bindIfPresent('[data-role="copy-code"]', "click", () => {
       void handleCopy();
     });
     bindIfPresent('[data-role="copy-approach"]', "click", () => {
@@ -1806,6 +1833,7 @@
 
   async function handleExtract() {
     openPanel();
+    const mode = getPromptMode();
 
     const activeCustomRule = getUsableCustomStatementRule();
     if (!activeCustomRule) {
@@ -1822,11 +1850,38 @@
       await handlePickCustomStatementElement({
         autoExtractAfterSave: true,
         skipOpenPanel: true,
-      });
+        },
+      );
       return;
     }
 
     startBusyStatus("正在识别题面和当前代码...", "正在优先按已保存的题面规则读取页面内容。");
+
+    if (false && mode !== "choice") {
+      state.statusHint = "姝ｅ湪鐩存帴璇锋眰 AI 鐢熸垚浠ｇ爜缁撴灉銆?";
+      syncStatusIndicator();
+    }
+
+    if (false && mode === "code") {
+      const codeModeScreenshotCount = state.problem ? getProblemScreenshotItems(state.problem).length : 0;
+      const codeModeHint =
+        Number(state.problem?.currentCodeLineCount) > 0
+          ? codeModeScreenshotCount > 0
+            ? `先检查本地题库，再决定是否调用 AI。当前会附带题面文本、代码和 ${codeModeScreenshotCount} 张截图。`
+            : "先检查本地题库，再决定是否调用 AI。当前会附带题面文本和代码；如果题面里还有图片，也可以稍后补截图。"
+          : codeModeScreenshotCount > 0
+            ? `先检查本地题库，再决定是否调用 AI。当前会附带题面文本和 ${codeModeScreenshotCount} 张截图，但还没有同步编辑器代码。`
+            : "先检查本地题库，再决定是否调用 AI。当前只有题面文本，若右侧编辑器有代码，建议先复制后再生成。";
+      startBusyStatus("正在准备答案...", codeModeHint);
+    }
+
+    if (false && mode === "code") {
+      startBusyStatus("正在准备答案...", state.statusHint || "先检查本地题库，再决定是否调用 AI。");
+    }
+
+    if (false && mode === "code") {
+      startBusyStatus("正在准备答案...", state.statusHint || "先检查本地题库，再决定是否调用 AI。");
+    }
 
     try {
       const problem = await extractProblem();
@@ -1843,14 +1898,19 @@
       renderCompactCodeCopyStatus(false);
       renderChoiceAnswer("");
       await refreshPromptPreview({ silent: true });
+      const mode = getPromptMode();
       const successMessage =
         problem.statementSource === "custom"
           ? "已按当前页面的自定义题面规则提取内容。"
-          : "题面已提取，可以直接生成答案。";
+          : mode === "code"
+            ? "题面已提取，下一步建议先复制编辑器代码。"
+            : "题面已提取，可以直接生成答案。";
       const successHint =
         problem.customRuleRequested && !problem.customRuleMatched
           ? "当前页面自定义题面规则未命中，已自动回退到内置提取逻辑。"
-          : "题面已识别完成。";
+          : mode === "code"
+            ? "代码题流程：先复制编辑器代码，再按需框选题面图片，最后生成答案。"
+            : "题面已识别完成。";
       stopBusyStatus(successMessage, successHint);
     } catch (error) {
       stopBusyStatus(error instanceof Error ? error.message : String(error), "提取失败，请检查当前页面。");
@@ -1932,6 +1992,7 @@
   function handleClearProblemState() {
     state.problem = null;
     state.result = null;
+    state.lastQuestionBankHit = null;
     state.lastAutoSolveCode = "";
     state.promptPreview = null;
     markResultReady(false);
@@ -1947,6 +2008,7 @@
       elements.approach.textContent = "还没有生成内容。";
     }
     renderGeneratedCode("");
+    renderStatusActionButton();
     if (elements.details) {
       elements.details.textContent = "还没有提取内容。";
     }
@@ -1956,6 +2018,8 @@
   async function handleSolve(options = {}) {
     const auto = Boolean(options.auto);
     const autoNavigate = options.autoNavigate !== false;
+    const skipQuestionBank = Boolean(options.skipQuestionBank);
+    const rejectHitBeforeRetry = Boolean(options.rejectHitBeforeRetry);
     const sourceCode = typeof options.sourceCode === "string" ? options.sourceCode : "";
     const extraInstructions = getStoredExtraInstructions();
     const mode = getPromptMode();
@@ -1980,21 +2044,48 @@
     state.solving = true;
     state.solveCancelRequested = false;
     state.currentSolveRequestId = requestId;
+    state.lastQuestionBankHit = null;
     renderStatusActionButton();
+    if (mode === "code") {
+      const codeModeScreenshotCount = state.problem ? getProblemScreenshotItems(state.problem).length : 0;
+      const codeModeHint =
+        Number(state.problem?.currentCodeLineCount) > 0
+          ? codeModeScreenshotCount > 0
+            ? `先检查本地题库，再决定是否调用 AI。当前会附带题面文本、代码和 ${codeModeScreenshotCount} 张截图。`
+            : "先检查本地题库，再决定是否调用 AI。当前会附带题面文本和代码；如果题面里还有图片，也可以稍后补截图。"
+          : codeModeScreenshotCount > 0
+            ? `先检查本地题库，再决定是否调用 AI。当前会附带题面文本和 ${codeModeScreenshotCount} 张截图，但还没有同步编辑器代码。`
+            : "先检查本地题库，再决定是否调用 AI。当前只有题面文本，若右侧编辑器有代码，建议先复制后再生成。";
+      state.statusHint = codeModeHint;
+    }
+    if (false && mode !== "choice") {
+      state.statusHint = "姝ｅ湪鐩存帴璇锋眰 AI 鐢熸垚浠ｇ爜缁撴灉銆?";
+    }
     startBusyStatus("正在准备答案...", "先检查本地题库，再决定是否调用 AI。");
 
     try {
       await ensureQuestionBankLoaded();
-      const questionBankHit = findQuestionBankAnswer(state.problem, mode);
+      let questionBankHit = null;
+      if (!skipQuestionBank && mode === "choice") {
+        questionBankHit = findChoiceQuestionBankAnswer(state.problem);
+      }
+      if (rejectHitBeforeRetry && questionBankHit?.entry && questionBankHit.entry.source !== "cloud") {
+        await markQuestionBankEntryStatus(questionBankHit, "rejected");
+        questionBankHit = null;
+      }
+      state.lastQuestionBankHit = questionBankHit;
       const usedQuestionBank = Boolean(questionBankHit?.entry);
       let solveResult = null;
 
       if (usedQuestionBank) {
-        setStatus("题库命中，正在直接使用本地答案...", {
+        setStatus("题库命中，正在使用本地记录...", {
           busy: true,
-          hint: "已命中本地题库，本题不会调用 AI。",
+          hint:
+            questionBankHit?.matchStrength === "strong"
+              ? "已命中已确认题库答案，本题不会调用 AI。"
+              : "当前只命中了弱匹配记录，本次仅展示历史疑似答案。",
         });
-        solveResult = buildQuestionBankResult(questionBankHit.entry, state.problem);
+        solveResult = buildQuestionBankResult(questionBankHit, state.problem);
       } else {
         setStatus("本地题库未命中，正在请求 AI...", {
           busy: true,
@@ -2013,6 +2104,11 @@
         solveResult = response.result || {};
       }
 
+      solveResult = enrichSolveResultForQuestionBank(state.problem, mode, solveResult, {
+        fromQuestionBank: usedQuestionBank,
+        matchStrength: questionBankHit?.matchStrength || "",
+        },
+      );
       state.result = solveResult;
       const choiceAnswerText = String(solveResult.answer || solveResult.code || "").trim();
       renderGeneratedTitle(solveResult.generatedTitle || solveResult.summary || "");
@@ -2021,15 +2117,18 @@
       renderGeneratedCode(solveResult.code || "");
       renderChoiceAnswer(choiceAnswerText);
 
-      if (!usedQuestionBank) {
-        await upsertQuestionBankEntry(state.problem, mode, solveResult, { source: "ai" });
+      if (!usedQuestionBank && mode === "choice") {
+        await upsertQuestionBankEntry(state.problem, mode, solveResult, {
+          source: "local",
+          status: "candidate",
+        });
       }
-      if (mode === "choice" && choiceAnswerText) {
+      if (mode === "choice" && choiceAnswerText && !usedQuestionBank) {
         queueQuestionBankReviewItem(state.problem, mode, choiceAnswerText);
       }
 
       let autoPickResult = null;
-      if (mode === "choice" && choiceAnswerText) {
+      if (mode === "choice" && choiceAnswerText && questionBankHit?.matchStrength !== "weak") {
         autoPickResult = await pickChoiceOptions(choiceAnswerText);
       }
       if (auto && sourceCode) {
@@ -2065,7 +2164,9 @@
         copied
           ? `已生成答案${autoPickSuffix}${manualPickSuffix}${nextQuestionSuffix}并自动复制，来源：${usedQuestionBank ? "本地题库" : solveResult.model || "AI"}`
           : `已生成答案${autoPickSuffix}${manualPickSuffix}${nextQuestionSuffix}，来源：${usedQuestionBank ? "本地题库" : solveResult.model || "AI"}`,
-        autoPickResult?.manualRequired
+        questionBankHit?.matchStrength === "weak"
+          ? "本题只命中了弱匹配题库记录，已展示历史答案但没有自动勾选。"
+          : autoPickResult?.manualRequired
           ? autoPickResult?.multiChoiceUnsupported
             ? "多选题当前不支持自动勾选。请先查看解析，再到“编辑题库”修正答案并手动勾选。"
             : autoPickResult.labels.length > 0
@@ -2073,10 +2174,14 @@
               : "这题没有稳定匹配到可点击选项，请手动确认；看完解析后也可以到“编辑题库”修正答案。"
           : usedQuestionBank
             ? "答案来自本地题库。"
-            : "AI 已返回结果。",
+            : solveResult.needsVerification
+              ? "AI 已返回候选结果，确认无误后可再入库。"
+              : "AI 已返回结果。",
       );
       showToast(
-        autoPickResult?.manualRequired
+        questionBankHit?.matchStrength === "weak"
+          ? `本题仅命中弱匹配记录，当前展示的历史答案是 ${choiceAnswerText}，请先人工确认。`
+          : autoPickResult?.manualRequired
           ? autoPickResult?.multiChoiceUnsupported
             ? `这是多选题，答案是 ${choiceAnswerText}。当前请手动勾选。`
             : autoPickResult.labels.length > 0
@@ -2302,6 +2407,25 @@
     } else {
       setStatus("复制失败，请手动选择代码。");
     }
+  }
+
+  async function handleCopyCompactPreview() {
+    const mode = getPromptMode();
+    if (mode === "choice") {
+      const preview = buildChoiceAnswerPreview(state.problem, state.result);
+      if (!preview || preview === "还没有生成答案映射。") {
+        setStatus("还没有可复制的答案映射。");
+        return;
+      }
+      if (await copyTextToClipboard(preview)) {
+        setStatus("答案映射已复制到剪贴板。");
+      } else {
+        setStatus("复制答案映射失败，请手动选择。");
+      }
+      return;
+    }
+
+    await handleCopy();
   }
 
   async function handleCopyApproach() {
@@ -2717,7 +2841,8 @@
         const aScore = a instanceof Element && a.matches("input[type='checkbox'], .el-checkbox, .ant-checkbox-wrapper") ? 1 : 0;
         const bScore = b instanceof Element && b.matches("input[type='checkbox'], .el-checkbox, .ant-checkbox-wrapper") ? 1 : 0;
         return bScore - aScore;
-      });
+        },
+      );
     }
 
     for (const candidate of candidates) {
@@ -3435,6 +3560,7 @@
       cloudRepoName: "question-bank",
       cloudRepoBranch: "main",
       cloudAutoSync: Boolean(settings?.cloudAutoSync),
+      contributionEmail: String(settings?.contributionEmail || state.settings.contributionEmail || "").trim(),
     };
     state.settings.textModel = activeSolveModel;
     state.settings.imageModel = activeSolveModel;
@@ -3500,6 +3626,9 @@
     }
     if (changes.cloudAutoSync) {
       nextSettings.cloudAutoSync = Boolean(changes.cloudAutoSync.newValue);
+    }
+    if (changes.contributionEmail) {
+      nextSettings.contributionEmail = String(changes.contributionEmail.newValue || "").trim();
     }
     if (changes[GITHUB_AUTH_STORAGE_KEY]) {
       state.githubAuth = normalizeGitHubAuthSession(changes[GITHUB_AUTH_STORAGE_KEY].newValue);
@@ -3672,23 +3801,32 @@
       elements.codeWrap.hidden = mode === "choice";
     }
     if (elements.compactCodeWrap) {
-      elements.compactCodeWrap.hidden = mode !== "code";
+      elements.compactCodeWrap.hidden = false;
     }
-    if (mode !== "code") {
-      renderCompactCodeCopyStatus(false);
+    if (elements.compactPreviewTitle) {
+      elements.compactPreviewTitle.textContent = mode === "choice" ? "答案映射速览" : "代码速览";
     }
     if (elements.choiceAnswer) {
       elements.choiceAnswer.textContent = value || "还没有生成答案。";
+    }
+    if (mode === "choice") {
+      renderGeneratedCode("");
+    } else {
+      renderCompactCodeCopyStatus(false);
     }
   }
 
   function renderGeneratedCode(text) {
     const value = String(text || "");
+    const mode = getPromptMode();
     if (elements.code) {
       elements.code.value = value;
     }
     if (elements.compactCode) {
-      elements.compactCode.textContent = buildCompactCodePreview(value);
+      elements.compactCode.textContent =
+        mode === "choice"
+          ? buildChoiceAnswerPreview(state.problem, state.result)
+          : buildCompactCodePreview(value);
     }
   }
 
@@ -3697,7 +3835,7 @@
       return;
     }
 
-    elements.compactCodeCopyStatus.hidden = !visible || getPromptMode() !== "code";
+    elements.compactCodeCopyStatus.hidden = !visible;
   }
 
   function buildCompactCodePreview(text) {
@@ -3722,6 +3860,44 @@
     }
 
     return `${preview.trimEnd()}\n...`;
+  }
+
+  function buildChoiceAnswerPreview(problem, result) {
+    const lines = resolveChoiceAnswerPreviewLines(problem, result);
+    if (lines.length === 0) {
+      const fallback = String(result?.answer || result?.code || "").trim();
+      return fallback || "还没有生成答案映射。";
+    }
+    return lines.join("\n");
+  }
+
+  function resolveChoiceAnswerPreviewLines(problem, result) {
+    const answer = normalizeChoiceAnswerForBank(result?.answerLetter || result?.answer || result?.code || "");
+    if (!answer) {
+      return [];
+    }
+
+    const labels = extractChoiceLabels(answer);
+    if (labels.length === 0) {
+      return [];
+    }
+
+    const currentOptions = normalizeChoiceOptionSnapshot(problem?.choiceOptions || []);
+    const snapshotOptions = normalizeChoiceOptionSnapshot(result?.optionMapSnapshot || []);
+    const answerTextParts = String(result?.answerText || "")
+      .split("|")
+      .map((item) => normalizeText(item))
+      .filter(Boolean);
+
+    return labels
+      .map((label, index) => {
+        const currentMatch = currentOptions.find((option) => option.label === label)?.text || "";
+        const snapshotMatch = snapshotOptions.find((option) => option.label === label)?.text || "";
+        const answerTextMatch = answerTextParts[index] || "";
+        const finalText = normalizeText(currentMatch || answerTextMatch || snapshotMatch);
+        return finalText ? `${label}: ${finalText}` : label;
+      })
+      .filter(Boolean);
   }
 
   function renderGeneratedTitle(text) {
@@ -3857,6 +4033,10 @@
     if (!elements.platformSummary) {
       return;
     }
+    if (!isQuestionBankEnabledForCurrentMode()) {
+      elements.platformSummary.textContent = "代码题模式暂不支持题库功能，当前直接使用 AI 生成结果。";
+      return;
+    }
     const activeSolveModel = sanitizeActiveSolveModel(state.settings.activeSolveModel);
     const owner = String(state.settings.cloudRepoOwner || "").trim();
     const repo = String(state.settings.cloudRepoName || "").trim();
@@ -3976,6 +4156,10 @@
   }
 
   async function handleCloudSync(options = {}) {
+    if (!isQuestionBankEnabledForCurrentMode()) {
+      setStatus("浠ｇ爜棰樻ā寮忔殏涓嶆敮鎸佷簯绔搴撳姛鑳斤紝褰撳墠鐩存帴浣跨敤 AI 鐢熸垚缁撴灉銆?");
+      return;
+    }
     const silent = Boolean(options.silent);
     setStatus("正在从 GitHub 下载云端题库...", {
       busy: !silent,
@@ -4055,6 +4239,22 @@
     elements.fullAutoButton.classList.toggle("al-primary", !state.fullAutoRunning);
   }
 
+  function buildCodeModeAssetHint(problem) {
+    const codeReady = Number(problem?.currentCodeLineCount) > 0;
+    const screenshotCount = getProblemScreenshotItems(problem).length;
+
+    if (codeReady && screenshotCount > 0) {
+      return `已准备题面、代码和 ${screenshotCount} 张截图，生成答案时会一起发送给 AI。`;
+    }
+    if (codeReady) {
+      return "已准备题面和代码；如果题面里还有图片信息，可以继续框选截图后再生成答案。";
+    }
+    if (screenshotCount > 0) {
+      return `已准备题面和 ${screenshotCount} 张截图，但还没有同步编辑器代码；生成前建议先复制代码。`;
+    }
+    return "已准备题面；下一步建议先从编辑器复制代码，再按需框选题面图片。";
+  }
+
   function renderScreenshotStatus(problem) {
     if (!elements.screenshotStatus) {
       return;
@@ -4067,11 +4267,17 @@
       const directImageCount = screenshotItems.filter((item) => item.ocrSkipped).length;
       const modeText = screenshotItems[0]?.mode === "fixedRegion" ? "固定区域截图" : "题面截图";
       if (directImageCount === screenshotItems.length) {
-        elements.screenshotStatus.textContent = `已缓冲 ${screenshotItems.length} 张${modeText}，提交时会一并发给 AI，不会自动提交。`;
+        elements.screenshotStatus.textContent =
+          getPromptMode() === "code"
+            ? `已缓冲 ${screenshotItems.length} 张${modeText}，生成答案时会连同题面文本和代码一起发给 AI。`
+            : `已缓冲 ${screenshotItems.length} 张${modeText}，提交时会一并发给 AI，不会自动提交。`;
         return;
       }
       if (ocrReadyCount === screenshotItems.length) {
-        elements.screenshotStatus.textContent = `已缓冲 ${screenshotItems.length} 张${modeText}，OCR 文本已准备好，等待你手动提交。`;
+        elements.screenshotStatus.textContent =
+          getPromptMode() === "code"
+            ? `已缓冲 ${screenshotItems.length} 张${modeText}，OCR 文本已准备好，生成答案时会连同题面文本和代码一起发送。`
+            : `已缓冲 ${screenshotItems.length} 张${modeText}，OCR 文本已准备好，等待你手动提交。`;
         return;
       }
       elements.screenshotStatus.textContent = `已缓冲 ${screenshotItems.length} 张${modeText}，其中 ${ocrReadyCount} 张已完成 OCR。`;
@@ -4082,8 +4288,12 @@
       if (problem?.ocrSkipped) {
         elements.screenshotStatus.textContent =
           problem?.screenshotMode === "fixedRegion"
-            ? "已截取固定区域截图，生成时将直接发送图片，不再调用 OCR。"
-            : "已截取题面截图，生成时将直接发送图片，不再调用 OCR。";
+            ? getPromptMode() === "code"
+              ? "已截取固定区域截图，生成答案时会把图片、题面文本和代码一起发给 AI，不再调用 OCR。"
+              : "已截取固定区域截图，生成时将直接发送图片，不再调用 OCR。"
+            : getPromptMode() === "code"
+              ? "已截取题面截图，生成答案时会把图片、题面文本和代码一起发给 AI，不再调用 OCR。"
+              : "已截取题面截图，生成时将直接发送图片，不再调用 OCR。";
         return;
       }
 
@@ -4250,7 +4460,59 @@
     }
     renderChoiceAnswer(mode === "choice" ? state.result?.answer || state.result?.code || "" : "");
     renderGeneratedCode(state.result?.code || "");
+    renderPromptModeDependentUi(mode);
     renderFullAutoButton();
+    syncQuestionBankUiByMode(mode);
+  }
+
+  function renderPromptModeDependentUi(mode = getPromptMode()) {
+    const isCodeMode = sanitizePromptMode(mode) === "code";
+    if (elements.capturePrimaryButton instanceof HTMLButtonElement) {
+      elements.capturePrimaryButton.hidden = !isCodeMode;
+      elements.capturePrimaryButton.disabled = !isCodeMode;
+      elements.capturePrimaryButton.classList.toggle("al-primary", isCodeMode);
+    }
+    if (elements.fullAutoButton instanceof HTMLButtonElement) {
+      elements.fullAutoButton.hidden = isCodeMode;
+      elements.fullAutoButton.disabled = isCodeMode;
+    }
+    if (elements.captureMoreButton instanceof HTMLButtonElement) {
+      elements.captureMoreButton.hidden = isCodeMode;
+      elements.captureMoreButton.disabled = isCodeMode;
+    }
+    if (elements.modeFlowHint instanceof HTMLElement) {
+      elements.modeFlowHint.textContent = isCodeMode
+        ? "代码题流程：1. 提取题面 2. 从编辑器复制代码 3. 框选题面图片后生成答案。代码、题面文本、截图会一起发给 AI。"
+        : "选择题流程：提取题面后生成答案；如需连续答题，可直接开启全自动。";
+    }
+    if (elements.promptModeSummary instanceof HTMLElement) {
+      elements.promptModeSummary.textContent = isCodeMode
+        ? "代码题建议先提取题面，再复制编辑器代码，按需框选题面图片，最后生成答案。"
+        : "先选题型，再提取题面或生成答案。";
+    }
+  }
+
+  function isQuestionBankEnabledForCurrentMode(mode = getPromptMode()) {
+    return sanitizePromptMode(mode) === "choice";
+  }
+
+  function syncQuestionBankUiByMode(mode = getPromptMode()) {
+    const enabled = isQuestionBankEnabledForCurrentMode(mode);
+    if (elements.editQuestionBank instanceof HTMLElement) {
+      elements.editQuestionBank.hidden = !enabled;
+      elements.editQuestionBank.disabled = !enabled;
+    }
+    if (elements.cloudSync instanceof HTMLElement) {
+      elements.cloudSync.hidden = !enabled;
+      elements.cloudSync.disabled = !enabled;
+    }
+    if (elements.openContribution instanceof HTMLElement) {
+      elements.openContribution.hidden = !enabled;
+      elements.openContribution.disabled = !enabled;
+    }
+    if (elements.questionBankSection instanceof HTMLElement) {
+      elements.questionBankSection.hidden = !enabled;
+    }
   }
 
   async function handleActiveSolveModelChange(event) {
@@ -4948,9 +5210,18 @@
       markResultReady(false);
       renderProblem(problem);
       await refreshPromptPreview({ silent: true });
-      setStatus(`${statusPrefix}剪贴板代码。`);
+      setStatus(`${statusPrefix}剪贴板代码。`, {
+        hint:
+          getPromptMode() === "code"
+            ? "代码题现在会把题面文本、编辑器代码和截图一起发给 AI；如果题面里有图片，可继续框选截图。"
+            : "代码已同步到当前题目上下文。",
+      });
       if (auto) {
-        showToast("代码已提交，正在后台生成答案。");
+        showToast(
+          getPromptMode() === "code"
+            ? "代码已同步，若题面里还有图片可先框选截图，再回到面板生成答案。"
+            : "代码成功复制，请去主面板点击生成答案。",
+        );
       }
       return { updated: true, text: clipboardText };
     } catch {
@@ -5413,10 +5684,14 @@
     const statementHead = summarizeEdgeText(statementText, "start", 48);
     const statementTail = summarizeEdgeText(statementText, "end", 36);
     const optionCount = Array.isArray(problem.choiceOptions) ? problem.choiceOptions.length : 0;
+    const mode = getPromptMode();
+    const screenshotItems = getProblemScreenshotItems(problem);
     const screenshotText = problem.screenshotDataUrl
-      ? problem.screenshotMode === "fixedRegion"
-        ? "已附带固定区域截图"
-        : "已附带局部截图"
+      ? screenshotItems.length > 1
+        ? `已附带 ${screenshotItems.length} 张截图`
+        : problem.screenshotMode === "fixedRegion"
+          ? "已附带固定区域截图"
+          : "已附带局部截图"
       : "未附带";
     const extractSourceText =
       problem.statementSource === "custom"
@@ -5436,6 +5711,7 @@
           ${buildSummaryRow("样例数量", `${problem.samples.length}`)}
           ${buildSummaryRow("选项数量", `${optionCount}`)}
           ${buildSummaryRow("截图", screenshotText)}
+          ${mode === "code" ? buildSummaryHint(buildCodeModeAssetHint(problem)) : ""}
           ${
             problem.customRuleRequested && !problem.customRuleMatched
               ? buildSummaryHint("当前页面自定义题面规则未命中，已自动回退到内置提取逻辑。", "warning")
@@ -5480,10 +5756,14 @@
 
   function buildCurrentCodeHint(problem) {
     if (Number(problem.currentCodeLineCount) > 0) {
-      return "如果当前代码识别不对，请到右侧编辑器里全选代码后复制到剪贴板，插件就能重新识别原有代码模板。";
+      return getPromptMode() === "code"
+        ? "已识别到编辑器代码；生成答案时会要求 AI 基于这份现有框架补全，而不是另起一份重写。若内容不对，请先在右侧编辑器全选后重新复制。"
+        : "如果当前代码识别不对，请到右侧编辑器里全选代码后复制到剪贴板，插件就能重新识别原有代码模板。";
     }
 
-    return "当前没有识别到代码模板。如果右侧编辑器其实有代码，请先全选后复制到剪贴板，插件就能重新识别题面和原有代码模板。";
+    return getPromptMode() === "code"
+      ? "当前还没有识别到编辑器代码。代码题建议先在右侧编辑器里全选并复制代码，再生成答案。"
+      : "当前没有识别到代码模板。如果右侧编辑器其实有代码，请先全选后复制到剪贴板，插件就能重新识别题面和原有代码模板。";
   }
 
   function summarizeEdgeText(text, side = "start", maxLength = 40) {
@@ -5651,19 +5931,96 @@
     if (!(elements.statusAction instanceof HTMLButtonElement)) {
       return;
     }
+    const mode = getPromptMode();
 
-    const isCancel = state.solving;
-    elements.statusAction.textContent = isCancel ? "取消" : "提交";
-    elements.statusAction.setAttribute("data-variant", isCancel ? "cancel" : "submit");
+    if (state.solving) {
+      elements.statusAction.textContent = "取消";
+      elements.statusAction.setAttribute("data-variant", "cancel");
+      return;
+    }
+
+    const currentResult = state.result;
+    if (mode === "choice" && currentResult?.needsVerification) {
+      elements.statusAction.textContent = "设为当前可用答案";
+      elements.statusAction.setAttribute("data-variant", "submit");
+      return;
+    }
+
+    if (mode === "choice" && currentResult?.fromQuestionBank) {
+      elements.statusAction.textContent = "重问 AI";
+      elements.statusAction.setAttribute("data-variant", "submit");
+      return;
+    }
+
+    elements.statusAction.textContent = "提交";
+    elements.statusAction.setAttribute("data-variant", "submit");
   }
 
   async function handleStatusAction() {
+    const mode = getPromptMode();
     if (state.solving) {
       await cancelCurrentSolve();
       return;
     }
 
+    if (mode === "choice" && state.result?.needsVerification) {
+      await confirmCurrentResultIntoQuestionBank();
+      return;
+    }
+
+    if (mode === "choice" && state.result?.fromQuestionBank) {
+      await retryCurrentProblemWithAi();
+      return;
+    }
+
     await handleSolve();
+  }
+
+  async function retryCurrentProblemWithAi() {
+    await handleSolve({
+      skipQuestionBank: true,
+      rejectHitBeforeRetry: Boolean(state.lastQuestionBankHit?.entry && state.lastQuestionBankHit.entry.source !== "cloud"),
+    });
+  }
+
+  async function confirmCurrentResultIntoQuestionBank() {
+    if (!state.problem || !state.result) {
+      setStatus("当前没有可设为可用答案的结果。");
+      return;
+    }
+
+    const mode = getPromptMode();
+    if (mode !== "choice") {
+      setStatus("浠ｇ爜棰樻ā寮忔殏涓嶆敮鎸侀搴撲繚瀛橈紝褰撳墠鐩存帴浣跨敤 AI 缁撴灉銆?");
+      return;
+    }
+    try {
+      await upsertQuestionBankEntry(state.problem, mode, state.result, {
+        source: "local",
+        status: "verified",
+      });
+      if (mode === "choice") {
+        removeQuestionBankReviewQueueItem({
+          primaryKey: buildQuestionBankLookupKeys(state.problem, mode)[0] || "",
+          statementFingerprint: buildStatementFingerprint(state.problem),
+          title: state.problem.title || "",
+          statementPreview: normalizeText(state.problem.statementText || "").slice(0, 240),
+        });
+      }
+      state.result = {
+        ...state.result,
+        needsVerification: false,
+      };
+      if (typeof state.reviewModalRefresh === "function") {
+        state.reviewModalRefresh({ preserveNotice: true });
+      }
+      renderStatusActionButton();
+      setStatus("当前结果已设为可用答案，并写入题库。", {
+        hint: "后续仍可在题库管理里继续修改、撤销或重新问 AI。",
+      });
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : String(error));
+    }
   }
 
   async function cancelCurrentSolve() {
@@ -6814,7 +7171,12 @@
       if (!syncResult?.updated || !hasMeaningfulCode(syncResult.text)) {
         return;
       }
-      setStatus("已自动同步剪贴板代码。点击“生成答案”后再提交。");
+      setStatus("已自动同步剪贴板代码。", {
+        hint:
+          getPromptMode() === "code"
+            ? "代码题可继续框选题面图片，准备好后点击“生成答案”，会把题面文本、代码和截图一起提交。"
+            : "点击“生成答案”后再提交。",
+      });
     } finally {
       state.clipboardSyncPending = false;
     }
@@ -6944,6 +7306,7 @@
   function resetProblemForNextAutoRound() {
     state.problem = null;
     state.result = null;
+    state.lastQuestionBankHit = null;
     state.lastAutoSolveCode = "";
     state.promptPreview = null;
     markResultReady(false);
@@ -6991,25 +7354,58 @@
         continue;
       }
       
-      const rawAnswer = String(value.answer || value.code || "");
+      const rawAnswer = String(value.answer || value.answerLetter || value.code || "");
       const isChoiceAnswer = /^[A-Fa-f]+$/.test(rawAnswer) || /^(对|错|正确|错误|true|false)$/i.test(rawAnswer);
-      const promptMode = value.promptMode === "choice" || value.promptMode === "code"
-        ? value.promptMode
-        : isChoiceAnswer ? "choice" : "code";
+      const promptMode =
+        value.promptMode === "choice" || value.promptMode === "code"
+          ? value.promptMode
+          : value.questionType === "choice" || value.questionType === "code"
+            ? value.questionType
+            : isChoiceAnswer
+              ? "choice"
+              : "code";
+      const normalizedChoiceOptions = normalizeChoiceOptionSnapshot(value.optionMapSnapshot || value.choiceOptions || []);
+      const normalizedAnswerLetter =
+        promptMode === "choice"
+          ? normalizeChoiceAnswerForBank(value.answerLetter || value.answer || value.code || "")
+          : "";
+      const normalizedAnswerText =
+        promptMode === "choice"
+          ? normalizeText(value.answerText || resolveChoiceAnswerTextFromSnapshot(normalizedAnswerLetter, normalizedChoiceOptions))
+          : "";
+      const defaultStatus = promptMode === "choice" || promptMode === "code"
+        ? String(rawAnswer || value.finalCode || "").trim()
+          ? (value.source === "cloud" ? "verified" : "verified")
+          : "draft"
+        : "draft";
       
       normalized[key] = {
         key: String(value.key || key),
         promptMode,
+        questionType: promptMode,
         title: String(value.title || ""),
         statementPreview: String(value.statementPreview || ""),
-        answer: rawAnswer,
-        code: promptMode === "choice" ? rawAnswer : String(value.code || rawAnswer || ""),
+        answer: promptMode === "choice" ? normalizedAnswerLetter : "",
+        answerLetter: promptMode === "choice" ? normalizedAnswerLetter : "",
+        answerText: normalizedAnswerText,
+        optionMapSnapshot: normalizedChoiceOptions,
+        code:
+          promptMode === "choice"
+            ? normalizedAnswerLetter
+            : String(value.finalCode || value.code || rawAnswer || ""),
+        finalCode:
+          promptMode === "code"
+            ? String(value.finalCode || value.code || rawAnswer || "")
+            : "",
+        language: String(value.language || ""),
+        samplesFingerprint: String(value.samplesFingerprint || ""),
+        statementFingerprint: String(value.statementFingerprint || ""),
         summary: String(value.summary || ""),
         approach: String(value.approach || ""),
         generatedTitle: String(value.generatedTitle || ""),
         model: String(value.model || ""),
         source: normalizeQuestionBankSource(value.source),
-        status: normalizeQuestionBankStatus(value.status, rawAnswer),
+        status: normalizeQuestionBankStatus(value.status || defaultStatus, rawAnswer || value.finalCode || ""),
         category: normalizeQuestionBankCategory(value.category),
         pageUrl: String(value.pageUrl || ""),
         cloudFingerprint: String(value.cloudFingerprint || ""),
@@ -7048,6 +7444,14 @@
         const existing = state.questionBank[key] || {};
         const source = existing.source === "local" || existing.source === "imported" ? existing.source : "cloud";
         const status = normalizeQuestionBankStatus(existing.status, existing.answer || answer);
+        const cloudOptionMapSnapshot = normalizeChoiceOptionSnapshot(item?.optionMapSnapshot || item?.choiceOptions || []);
+        const cloudAnswerText = normalizeText(
+          item?.answerText || resolveChoiceAnswerTextFromSnapshot(answer, cloudOptionMapSnapshot),
+        );
+        const existingOptionMapSnapshot = normalizeChoiceOptionSnapshot(existing.optionMapSnapshot || []);
+        const optionMapSnapshot =
+          existingOptionMapSnapshot.length >= cloudOptionMapSnapshot.length ? existingOptionMapSnapshot : cloudOptionMapSnapshot;
+        const answerText = normalizeText(existing.answerText || cloudAnswerText);
         const categoryValue =
           existing.category && existing.category !== "general"
             ? existing.category
@@ -7056,16 +7460,24 @@
           ...existing,
           key,
           promptMode: "choice",
+          questionType: "choice",
           title: String(existing.title || stem.split("\n")[0] || "云端题库题目").slice(0, 300),
           statementPreview: stem,
           answer: existing.answer || answer,
+          answerLetter: existing.answerLetter || existing.answer || answer,
+          answerText,
+          optionMapSnapshot,
           code: existing.code || existing.answer || answer,
+          finalCode: "",
+          language: String(existing.language || ""),
+          samplesFingerprint: String(existing.samplesFingerprint || ""),
+          statementFingerprint: String(existing.statementFingerprint || item?.statementFingerprint || buildStatementFingerprintFromText(stem)),
           summary: String(existing.summary || "命中云端题库答案。"),
           approach: String(existing.approach || "已同步云端题库记录，优先使用云端答案。"),
           generatedTitle: String(existing.generatedTitle || ""),
           model: String(existing.model || "cloud-question-bank"),
           source,
-          status,
+          status: "verified",
           category: categoryValue,
           pageUrl: String(existing.pageUrl || ""),
           cloudFingerprint: String(item?.fingerprint || existing.cloudFingerprint || ""),
@@ -7153,10 +7565,59 @@
 
   function normalizeQuestionBankStatus(status, answer) {
     const normalizedStatus = String(status || "").trim().toLowerCase();
-    if (normalizedStatus === "draft" || normalizedStatus === "answered") {
+    if (
+      normalizedStatus === "draft" ||
+      normalizedStatus === "candidate" ||
+      normalizedStatus === "verified" ||
+      normalizedStatus === "rejected"
+    ) {
       return normalizedStatus;
     }
-    return String(answer || "").trim() ? "answered" : "draft";
+    if (normalizedStatus === "answered") {
+      return "verified";
+    }
+    return String(answer || "").trim() ? "verified" : "draft";
+  }
+
+  function normalizeChoiceOptionSnapshot(options) {
+    return Array.isArray(options)
+      ? options
+          .map((option) => ({
+            label: normalizeChoiceOptionLabel(option?.label || ""),
+            text: normalizeText(option?.text || ""),
+          }))
+          .filter((option) => option.label || option.text)
+      : [];
+  }
+
+  function resolveChoiceAnswerTextFromSnapshot(answerLetter, optionMapSnapshot) {
+    const labels = extractChoiceLabels(answerLetter);
+    if (labels.length === 0) {
+      return "";
+    }
+    const snapshot = normalizeChoiceOptionSnapshot(optionMapSnapshot);
+    const matchedTexts = labels
+      .map((label) => snapshot.find((option) => option.label === label)?.text || "")
+      .filter(Boolean);
+    return matchedTexts.join(" | ");
+  }
+
+  function buildStatementFingerprint(problem) {
+    return buildStatementFingerprintFromText(extractQuestionCoreText(problem));
+  }
+
+  function buildStatementFingerprintFromText(text) {
+    const normalized = normalizeQuestionStem(text || "");
+    return normalized ? `stem:${hashText(normalized)}` : "";
+  }
+
+  function buildSamplesFingerprint(problem) {
+    const sampleText = Array.isArray(problem?.samples)
+      ? problem.samples
+          .map((sample) => `${normalizeQuestionStem(sample?.input || "")}=>${normalizeQuestionStem(sample?.output || "")}`)
+          .join("|")
+      : "";
+    return sampleText ? `samples:${hashText(sampleText)}` : "";
   }
 
   function applyContributionResults(items, results, category) {
@@ -7234,48 +7695,99 @@
     return Array.from(new Set(keys.filter(Boolean)));
   }
 
-  function findQuestionBankAnswer(problem, mode = "choice") {
-    const keys = buildQuestionBankLookupKeys(problem, mode);
+  function findChoiceQuestionBankAnswer(problem) {
+    const keys = buildQuestionBankLookupKeys(problem, "choice");
     for (const key of keys) {
       const entry = state.questionBank[key];
-      if (!entry) {
+      const strongHit = buildChoiceHitFromEntry(problem, entry, key, keys);
+      if (strongHit) {
+        return strongHit;
+      }
+    }
+
+    const targetStem = extractQuestionCoreText(problem);
+    if (!targetStem) {
+      return null;
+    }
+
+    for (const [bankKey, entry] of Object.entries(state.questionBank || {})) {
+      const fallbackHit = buildChoiceHitFromEntry(problem, entry, bankKey, keys);
+      if (!fallbackHit) {
         continue;
       }
-      const candidate = mode === "choice" ? String(entry.answer || entry.code || "").trim() : String(entry.code || "").trim();
-      if (!candidate) {
+      const candidateStems = buildQuestionBankEntryCoreTexts(entry);
+      if (candidateStems.some((candidateStem) => stemsLooselyMatch(targetStem, candidateStem))) {
+        return fallbackHit;
+      }
+    }
+
+    return null;
+  }
+
+  function buildChoiceHitFromEntry(problem, entry, key, keys) {
+    if (!entry || entry.promptMode !== "choice" || entry.status !== "verified") {
+      return null;
+    }
+    const answerLetter = normalizeChoiceAnswerForBank(entry.answerLetter || entry.answer || entry.code || "");
+    if (!answerLetter) {
+      return null;
+    }
+
+    const currentOptions = normalizeChoiceOptionSnapshot(problem?.choiceOptions || []);
+    const snapshot = normalizeChoiceOptionSnapshot(entry.optionMapSnapshot || []);
+    const answerText = normalizeText(entry.answerText || resolveChoiceAnswerTextFromSnapshot(answerLetter, snapshot));
+    const remappedLetter = remapChoiceAnswerByText(answerText, currentOptions);
+    const hasSnapshot = snapshot.length > 0;
+    const optionSetChanged = hasSnapshot && haveChoiceOptionSetsDiverged(snapshot, currentOptions);
+
+    if (hasSnapshot && currentOptions.length > 0 && !remappedLetter && optionSetChanged) {
+      return null;
+    }
+
+    return {
+      key,
+      keys,
+      entry,
+      matchStrength: remappedLetter ? "strong" : "weak",
+      answer: remappedLetter || answerLetter,
+      answerText,
+      optionMapSnapshot: snapshot,
+      currentOptions,
+    };
+  }
+
+  function findCodeQuestionBankAnswer(problem) {
+    const keys = buildQuestionBankLookupKeys(problem, "code");
+    const statementFingerprint = buildStatementFingerprint(problem);
+    const samplesFingerprint = buildSamplesFingerprint(problem);
+    const language = String(problem?.limits?.language || "").trim().toLowerCase();
+
+    for (const key of keys) {
+      const entry = state.questionBank[key];
+      if (!entry || entry.promptMode !== "code" || entry.status !== "verified") {
+        continue;
+      }
+      if (!String(entry.finalCode || entry.code || "").trim()) {
+        continue;
+      }
+      const entryLanguage = String(entry.language || "").trim().toLowerCase();
+      if (entryLanguage && language && entryLanguage !== language) {
+        continue;
+      }
+      if (entry.statementFingerprint && statementFingerprint && entry.statementFingerprint !== statementFingerprint) {
+        continue;
+      }
+      if (entry.samplesFingerprint && samplesFingerprint && entry.samplesFingerprint !== samplesFingerprint) {
         continue;
       }
       return {
         key,
         keys,
         entry,
+        matchStrength: "strong",
       };
     }
-    if (mode === "choice") {
-      const targetStem = extractQuestionCoreText(problem);
-      if (targetStem) {
-        for (const [bankKey, entry] of Object.entries(state.questionBank || {})) {
-          if (!entry || entry.promptMode !== "choice") {
-            continue;
-          }
-          const candidate = String(entry.answer || entry.code || "").trim();
-          if (!candidate) {
-            continue;
-          }
-          const candidateStems = buildQuestionBankEntryCoreTexts(entry);
-          if (candidateStems.length === 0) {
-            continue;
-          }
-          if (candidateStems.some((candidateStem) => stemsLooselyMatch(targetStem, candidateStem))) {
-            return {
-              key: bankKey,
-              keys,
-              entry,
-            };
-          }
-        }
-      }
-    }
+
     return null;
   }
 
@@ -7380,20 +7892,54 @@
       .trim();
   }
 
-  function buildQuestionBankResult(entry, problem) {
-    const answer = String(entry?.answer || "").trim();
-    const code = String(entry?.code || "").trim();
+  function buildQuestionBankResult(hit, problem) {
+    const entry = hit?.entry || null;
+    const answer = String(hit?.answer || entry?.answerLetter || entry?.answer || "").trim();
+    const code = String(entry?.finalCode || entry?.code || "").trim();
     return {
       generatedTitle: entry?.generatedTitle || problem?.title || "本地题库答案",
-      summary: entry?.summary || "命中本地题库答案。",
+      summary:
+        hit?.matchStrength === "weak"
+          ? entry?.summary || "命中历史疑似答案，请优先人工确认。"
+          : entry?.summary || "命中本地题库答案。",
       problemType: entry?.promptMode === "choice" ? "选择题" : "代码题",
       problemDefinition: "",
-      approach: entry?.approach || "已命中本地题库记录，优先使用本地答案。",
+      approach:
+        hit?.matchStrength === "weak"
+          ? entry?.approach || "当前只命中了弱匹配记录，插件不会把它当作稳定答案自动勾选。"
+          : entry?.approach || "已命中本地题库记录，优先使用本地答案。",
       answer,
+      answerText: String(hit?.answerText || entry?.answerText || ""),
       code: code || (entry?.promptMode === "choice" ? answer : ""),
       model: "local-question-bank",
       fromQuestionBank: true,
+      matchStrength: hit?.matchStrength || "strong",
+      needsVerification: false,
     };
+  }
+
+  function enrichSolveResultForQuestionBank(problem, mode, solveResult, options = {}) {
+    const nextResult = solveResult && typeof solveResult === "object" ? { ...solveResult } : {};
+    if (mode === "choice") {
+      const answerLetter = normalizeChoiceAnswerForBank(nextResult.answerLetter || nextResult.answer || nextResult.code || "");
+      const optionMapSnapshot = normalizeChoiceOptionSnapshot(problem?.choiceOptions || nextResult.optionMapSnapshot || []);
+      const answerText = normalizeText(
+        nextResult.answerText || resolveChoiceAnswerTextFromSnapshot(answerLetter, optionMapSnapshot),
+      );
+      nextResult.answer = answerLetter;
+      nextResult.answerLetter = answerLetter;
+      nextResult.answerText = answerText;
+      nextResult.optionMapSnapshot = optionMapSnapshot;
+    } else {
+      nextResult.finalCode = String(nextResult.finalCode || nextResult.code || "");
+      nextResult.language = String(problem?.limits?.language || nextResult.language || "");
+      nextResult.samplesFingerprint = buildSamplesFingerprint(problem);
+      nextResult.statementFingerprint = buildStatementFingerprint(problem);
+    }
+    nextResult.fromQuestionBank = mode === "choice" && Boolean(options.fromQuestionBank || nextResult.fromQuestionBank);
+    nextResult.matchStrength = String(options.matchStrength || nextResult.matchStrength || "");
+    nextResult.needsVerification = mode === "choice" && !nextResult.fromQuestionBank;
+    return nextResult;
   }
 
   async function upsertQuestionBankEntry(problem, mode, solveResult, options = {}) {
@@ -7411,25 +7957,45 @@
     const existing = state.questionBank[firstKey] || state.questionBank[keys[1]] || null;
     const normalizedAnswer =
       mode === "choice"
-        ? normalizeChoiceAnswerForBank(solveResult.answer || solveResult.code || "")
+        ? normalizeChoiceAnswerForBank(solveResult.answerLetter || solveResult.answer || solveResult.code || "")
+        : "";
+    const optionMapSnapshot = normalizeChoiceOptionSnapshot(problem?.choiceOptions || solveResult.optionMapSnapshot || []);
+    const answerText =
+      mode === "choice"
+        ? normalizeText(
+            solveResult.answerText ||
+              resolveChoiceAnswerTextFromSnapshot(normalizedAnswer, optionMapSnapshot),
+          )
         : "";
     const inferredCategory = resolvePreferredQuestionBankCategory(problem);
     const existingCategory = normalizeQuestionBankCategory(existing?.category);
     const finalCategory =
       existingCategory && existingCategory !== "general" ? existingCategory : inferredCategory;
+    const nextStatus = normalizeQuestionBankStatus(
+      options.status || existing?.status || (mode === "choice" ? "candidate" : "candidate"),
+      normalizedAnswer || solveResult.code || solveResult.finalCode || "",
+    );
     const nextEntry = {
       key: firstKey,
       promptMode: mode === "choice" ? "choice" : "code",
+      questionType: mode === "choice" ? "choice" : "code",
       title: String(problem.title || "").slice(0, 300),
       statementPreview: normalizeText(problem.statementText || "").slice(0, 1600),
-      answer: normalizedAnswer,
-      code: mode === "choice" ? normalizedAnswer : String(solveResult.code || ""),
+      answer: mode === "choice" ? normalizedAnswer : "",
+      answerLetter: mode === "choice" ? normalizedAnswer : "",
+      answerText,
+      optionMapSnapshot,
+      code: mode === "choice" ? normalizedAnswer : String(solveResult.finalCode || solveResult.code || ""),
+      finalCode: mode === "code" ? String(solveResult.finalCode || solveResult.code || "") : "",
+      language: String(problem?.limits?.language || existing?.language || ""),
+      samplesFingerprint: mode === "code" ? buildSamplesFingerprint(problem) : "",
+      statementFingerprint: buildStatementFingerprint(problem),
       summary: String(solveResult.summary || ""),
       approach: String(solveResult.approach || ""),
       generatedTitle: String(solveResult.generatedTitle || ""),
       model: String(solveResult.model || ""),
       source: normalizeQuestionBankSource(existing?.source || options.source || "local"),
-      status: normalizeQuestionBankStatus("answered", normalizedAnswer || solveResult.code || ""),
+      status: nextStatus,
       category: finalCategory,
       pageUrl: String(problem.url || existing?.pageUrl || ""),
       cloudFingerprint: existing?.cloudFingerprint || "",
@@ -7448,6 +8014,60 @@
     await persistQuestionBank();
   }
 
+  async function markQuestionBankEntryStatus(hit, nextStatus) {
+    if (!hit?.entry) {
+      return;
+    }
+    const keys = Array.isArray(hit.keys) && hit.keys.length > 0 ? hit.keys : [hit.key];
+    const now = Date.now();
+    for (const key of keys) {
+      const existing = state.questionBank[key];
+      if (!existing) {
+        continue;
+      }
+      state.questionBank[key] = {
+        ...existing,
+        status: normalizeQuestionBankStatus(nextStatus, existing.answer || existing.code || existing.finalCode || ""),
+        updatedAt: now,
+      };
+    }
+    await persistQuestionBank();
+  }
+
+  function remapChoiceAnswerByText(answerText, currentOptions) {
+    const expectedTexts = String(answerText || "")
+      .split("|")
+      .map((item) => normalizeQuestionStem(item))
+      .filter(Boolean);
+    if (expectedTexts.length === 0 || !Array.isArray(currentOptions) || currentOptions.length === 0) {
+      return "";
+    }
+    const matchedLabels = [];
+    for (const expectedText of expectedTexts) {
+      const match = currentOptions.find((option) => normalizeQuestionStem(option.text || "") === expectedText);
+      if (!match?.label) {
+        return "";
+      }
+      matchedLabels.push(match.label);
+    }
+    return normalizeChoiceAnswerForBank(matchedLabels.join(""));
+  }
+
+  function haveChoiceOptionSetsDiverged(leftOptions, rightOptions) {
+    const left = normalizeChoiceOptionSnapshot(leftOptions)
+      .map((option) => normalizeQuestionStem(option.text || ""))
+      .filter(Boolean)
+      .sort();
+    const right = normalizeChoiceOptionSnapshot(rightOptions)
+      .map((option) => normalizeQuestionStem(option.text || ""))
+      .filter(Boolean)
+      .sort();
+    if (left.length === 0 || right.length === 0) {
+      return false;
+    }
+    return left.join("|") !== right.join("|");
+  }
+
   function queueQuestionBankReviewItem(problem, mode, answerText) {
     if (mode !== "choice" || !problem) {
       return;
@@ -7463,20 +8083,92 @@
     }
 
     const primaryKey = keys[0];
-    const existingIndex = state.questionBankReviewQueue.findIndex((item) => item.primaryKey === primaryKey);
+    const statementPreview = normalizeText(problem.statementText || "").slice(0, 240);
+    const normalizedTitle = normalizeText(problem.title || "");
+    const statementFingerprint = buildStatementFingerprint(problem);
+    const hasStableDecision = Object.values(state.questionBank || {}).some((entry) => {
+      if (!entry || normalizeQuestionBankSource(entry.source) === "cloud") {
+        return false;
+      }
+      const status = normalizeQuestionBankStatus(entry.status, entry.answer || entry.code || entry.finalCode || "");
+      if (status !== "verified" && status !== "rejected") {
+        return false;
+      }
+      if (statementFingerprint && String(entry.statementFingerprint || "").trim() === statementFingerprint) {
+        return true;
+      }
+      const entryKey = String(entry.key || "").trim();
+      if (primaryKey && entryKey === primaryKey) {
+        return true;
+      }
+      return (
+        normalizeText(entry.title || "") === normalizedTitle &&
+        normalizeText(entry.statementPreview || "").slice(0, 240) === statementPreview
+      );
+    });
+    if (hasStableDecision) {
+      return;
+    }
+    const existingIndex = state.questionBankReviewQueue.findIndex((item) => {
+      if (item.primaryKey === primaryKey) {
+        return true;
+      }
+      if (statementFingerprint && String(item.statementFingerprint || "").trim() === statementFingerprint) {
+        return true;
+      }
+      return (
+        normalizeText(item.title || "") === normalizedTitle &&
+        normalizeText(item.statementPreview || "") === statementPreview
+      );
+    });
     const nextItem = {
       primaryKey,
       keys,
       mode: "choice",
       title: String(problem.title || "未命名题目"),
-      statementPreview: normalizeText(problem.statementText || "").slice(0, 240),
+      statementPreview,
+      statementFingerprint,
       answer,
+      answerText: normalizeText(resolveChoiceAnswerTextFromSnapshot(answer, problem?.choiceOptions || [])),
+      optionMapSnapshot: normalizeChoiceOptionSnapshot(problem?.choiceOptions || []),
     };
     if (existingIndex >= 0) {
       state.questionBankReviewQueue[existingIndex] = nextItem;
       return;
     }
     state.questionBankReviewQueue.push(nextItem);
+  }
+
+  function removeQuestionBankReviewQueueItem(target) {
+    const primaryKey = String(target?.primaryKey || "").trim();
+    const statementFingerprint = String(target?.statementFingerprint || "").trim();
+    const normalizedTitle = normalizeText(target?.title || "");
+    const statementPreview = normalizeText(target?.statementPreview || "");
+    const originalLength = Array.isArray(state.questionBankReviewQueue) ? state.questionBankReviewQueue.length : 0;
+    if (!originalLength) {
+      return false;
+    }
+    state.questionBankReviewQueue = state.questionBankReviewQueue.filter((item) => {
+      if (!item) {
+        return false;
+      }
+      if (primaryKey && String(item.primaryKey || "").trim() === primaryKey) {
+        return false;
+      }
+      if (statementFingerprint && String(item.statementFingerprint || "").trim() === statementFingerprint) {
+        return false;
+      }
+      if (
+        normalizedTitle &&
+        statementPreview &&
+        normalizeText(item.title || "") === normalizedTitle &&
+        normalizeText(item.statementPreview || "") === statementPreview
+      ) {
+        return false;
+      }
+      return true;
+    });
+    return state.questionBankReviewQueue.length !== originalLength;
   }
 
   async function persistQuestionBank() {
@@ -7513,6 +8205,10 @@
   }
 
   async function handleOpenQuestionBankEditor(options = {}) {
+    if (!isQuestionBankEnabledForCurrentMode()) {
+      setStatus("浠ｇ爜棰樻ā寮忔殏涓嶆敮鎸侀搴撳姛鑳斤紝褰撳墠鐩存帴浣跨敤 AI 鐢熸垚缁撴灉銆?");
+      return;
+    }
     await ensureQuestionBankLoaded();
     const items = buildQuestionBankEditorItems();
     openQuestionBankReviewModal(items, options);
@@ -7520,12 +8216,43 @@
 
   function buildQuestionBankEditorItems() {
     const map = new Map();
+    const getStatusPriority = (status) => {
+      const normalized = normalizeQuestionBankStatus(status, "");
+      if (normalized === "candidate") {
+        return 4;
+      }
+      if (normalized === "verified") {
+        return 3;
+      }
+      if (normalized === "rejected") {
+        return 2;
+      }
+      return 1;
+    };
+    const resolveQuestionBankEditorPrimaryKey = (payload) => {
+      const fingerprint = String(payload?.statementFingerprint || "").trim();
+      if (fingerprint) {
+        return `fingerprint:${fingerprint}`;
+      }
+      const stableKey =
+        String(payload?.primaryKey || "").trim() ||
+        (Array.isArray(payload?.keys) ? String(payload.keys[0] || "").trim() : "");
+      if (stableKey) {
+        return `key:${stableKey}`;
+      }
+      return `text:${hashText(
+        `${normalizeText(payload?.title || "").toLowerCase()}\n${normalizeText(payload?.statementPreview || "").toLowerCase()}`,
+      )}`;
+    };
+    const buildQuestionBankEditorDedupeKey = (payload) => `question:${resolveQuestionBankEditorPrimaryKey(payload)}`;
 
     const upsertItem = (key, payload) => {
       const current = map.get(key);
       if (!current) {
         map.set(key, {
           id: key,
+          primaryKey: String(payload.primaryKey || ""),
+          statementFingerprint: String(payload.statementFingerprint || ""),
           title: payload.title || "未命名题目",
           statementPreview: payload.statementPreview || "",
           answer: payload.answer || "",
@@ -7536,6 +8263,9 @@
           status: normalizeQuestionBankStatus(payload.status, payload.answer),
           category: normalizeQuestionBankCategory(payload.category),
           pageUrl: String(payload.pageUrl || ""),
+          questionType: payload.questionType || "choice",
+          answerText: payload.answerText || "",
+          optionMapSnapshot: normalizeChoiceOptionSnapshot(payload.optionMapSnapshot || []),
           cloudStatus: payload.cloudStatus || "",
           cloudFingerprint: payload.cloudFingerprint || "",
           cloudCategory: payload.cloudCategory || "",
@@ -7544,7 +8274,13 @@
       }
 
       current.keys = Array.from(new Set([...current.keys, ...(payload.keys || [])]));
-      if (payload.answer) {
+      if (payload.primaryKey && !current.primaryKey) {
+        current.primaryKey = String(payload.primaryKey || "");
+      }
+      if (payload.statementFingerprint && !current.statementFingerprint) {
+        current.statementFingerprint = String(payload.statementFingerprint || "");
+      }
+      if (payload.answer && (payload.preferred || !current.answer)) {
         current.answer = payload.answer;
       }
       if (payload.statementPreview && !current.statementPreview) {
@@ -7569,14 +8305,28 @@
       if (payload.source && current.source !== "local") {
         current.source = normalizeQuestionBankSource(payload.source);
       }
-      if (payload.status && current.status !== "answered") {
-        current.status = normalizeQuestionBankStatus(payload.status, payload.answer || current.answer);
+      if (payload.status) {
+        const nextStatus = normalizeQuestionBankStatus(payload.status, payload.answer || current.answer);
+        const currentStatus = normalizeQuestionBankStatus(current.status, current.answer);
+        const currentIsStable = currentStatus === "verified" || currentStatus === "rejected";
+        const nextIsCandidateFromQueue = Boolean(payload.preferred) && nextStatus === "candidate";
+        if (!currentIsStable || !nextIsCandidateFromQueue) {
+          if (getStatusPriority(nextStatus) >= getStatusPriority(currentStatus)) {
+            current.status = nextStatus;
+          }
+        }
       }
       if (payload.category && current.category === "general") {
         current.category = normalizeQuestionBankCategory(payload.category);
       }
       if (payload.pageUrl && !current.pageUrl) {
         current.pageUrl = String(payload.pageUrl || "");
+      }
+      if (payload.answerText && (payload.preferred || !current.answerText)) {
+        current.answerText = payload.answerText;
+      }
+      if (Array.isArray(payload.optionMapSnapshot) && payload.optionMapSnapshot.length >= current.optionMapSnapshot.length) {
+        current.optionMapSnapshot = normalizeChoiceOptionSnapshot(payload.optionMapSnapshot);
       }
     };
 
@@ -7586,35 +8336,51 @@
         continue;
       }
       const answer = normalizeChoiceAnswerForBank(entry.answer || entry.code || "");
-      const dedupeKey = hashText(
-        `bank:${normalizeText(entry.title || "").toLowerCase()}\n${normalizeText(
-          entry.statementPreview || "",
-        ).toLowerCase()}`,
+      const primaryKey = String(entry.statementFingerprint || entry.key || storageKey || "").trim() || storageKey;
+      const entryKeys = Array.from(
+        new Set([primaryKey, storageKey, ...(Array.isArray(entry.keys) ? entry.keys : [])].filter(Boolean)),
       );
-      upsertItem(`bank:${dedupeKey}`, {
+      upsertItem(
+        buildQuestionBankEditorDedupeKey({
+          primaryKey,
+          keys: entryKeys,
+          title: entry.title,
+          statementPreview: entry.statementPreview,
+          statementFingerprint: entry.statementFingerprint,
+        }),
+        {
+          primaryKey,
         title: String(entry.title || "未命名题目"),
         statementPreview: String(entry.statementPreview || ""),
         answer,
-        keys: [storageKey],
+        keys: entryKeys,
         updatedAt: entry.updatedAt,
         preferred: false,
         source: entry.source || "local",
-        status: entry.status || (answer ? "answered" : "draft"),
+        status: entry.status || (answer ? "verified" : "draft"),
         category: entry.category || inferQuestionBankCategory(entry.pageUrl || ""),
         pageUrl: entry.pageUrl || "",
+        questionType: entry.questionType || entry.promptMode || "choice",
+        answerText: entry.answerText || "",
+        optionMapSnapshot: entry.optionMapSnapshot || [],
         cloudStatus: entry.cloudStatus || "",
         cloudFingerprint: entry.cloudFingerprint || "",
         cloudCategory: entry.cloudCategory || "",
+        statementFingerprint: entry.statementFingerprint || "",
       });
     }
 
     for (const queueItem of state.questionBankReviewQueue || []) {
-      const dedupeKey = hashText(
-        `queue:${normalizeText(queueItem.title || "").toLowerCase()}\n${normalizeText(
-          queueItem.statementPreview || "",
-        ).toLowerCase()}`,
-      );
-      upsertItem(`queue:${dedupeKey}`, {
+      upsertItem(
+        buildQuestionBankEditorDedupeKey({
+          primaryKey: queueItem.primaryKey,
+          keys: queueItem.keys,
+          title: queueItem.title,
+          statementPreview: queueItem.statementPreview,
+          statementFingerprint: queueItem.statementFingerprint,
+        }),
+        {
+          primaryKey: queueItem.primaryKey,
         title: String(queueItem.title || "未命名题目"),
         statementPreview: String(queueItem.statementPreview || ""),
         answer: normalizeChoiceAnswerForBank(queueItem.answer || ""),
@@ -7622,10 +8388,14 @@
         updatedAt: Date.now(),
         preferred: true,
         source: "local",
-        status: queueItem.answer ? "answered" : "draft",
+        status: queueItem.answer ? "candidate" : "draft",
         category: resolvePreferredQuestionBankCategory(state.problem),
         pageUrl: String(state.problem?.url || location.href || ""),
-      });
+          questionType: "choice",
+          answerText: queueItem.answerText || "",
+          optionMapSnapshot: queueItem.optionMapSnapshot || [],
+          statementFingerprint: queueItem.statementFingerprint || "",
+        });
     }
 
     return Array.from(map.values()).sort((a, b) => {
@@ -7677,6 +8447,9 @@
     const closeModal = () => {
       modal.remove();
       state.reviewModalOpen = false;
+      if (state.reviewModalRefresh) {
+        state.reviewModalRefresh = null;
+      }
     };
 
     const autoSaveTimers = new Map();
@@ -7686,6 +8459,15 @@
     const bankNotice = modal.querySelector('[data-role="bank-notice"]');
     const importInput = modal.querySelector('[data-role="bank-import-input"]');
     const tabPanel = modal.querySelector('[data-role="bank-tab-panel"]');
+    const toolButtonGroups = Array.from(modal.querySelectorAll(".al-bank-modal-tool-buttons"));
+
+    if (toolButtonGroups[1] instanceof HTMLElement) {
+      const clearButton = document.createElement("button");
+      clearButton.type = "button";
+      clearButton.setAttribute("data-role", "bank-clear");
+      clearButton.textContent = "清空题库";
+      toolButtonGroups[1].appendChild(clearButton);
+    }
 
     const setSaveIndicator = (text, stateName = "idle", autoReset = false) => {
       if (!(saveIndicator instanceof HTMLElement)) {
@@ -7729,6 +8511,94 @@
       }
     };
 
+    const refreshQuestionBankEditorItems = (options = {}) => {
+      items.splice(0, items.length, ...buildQuestionBankEditorItems());
+      if (!options.preserveNotice) {
+        setBankNotice("", "info");
+      }
+      renderTabPanel();
+      return items;
+    };
+    state.reviewModalRefresh = refreshQuestionBankEditorItems;
+
+    const clearQuestionBankForTesting = async () => {
+      const confirmed = window.confirm(
+        "这会清空当前浏览器里的本地题库和待确认记录，但不会清空设置、历史记录或 GitHub 登录状态。确定继续吗？",
+      );
+      if (!confirmed) {
+        return false;
+      }
+
+      try {
+        state.questionBank = {};
+        state.questionBankReviewQueue = [];
+        state.lastQuestionBankHit = null;
+        state.questionBankLoaded = true;
+        await persistQuestionBank();
+        refreshQuestionBankEditorItems({ preserveNotice: true });
+        setSaveIndicator("本地题库已清空", "saved", true);
+        setStatus("本地题库已清空。", {
+          hint: "后续题目会重新从 AI 候选结果开始。",
+        });
+        setBankNotice("本地题库已清空。", "success", true);
+        return true;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        setSaveIndicator("清空题库失败", "idle", true);
+        setStatus(`清空题库失败：${message}`);
+        setBankNotice(`清空题库失败：${message}`, "error", true);
+        return false;
+      }
+    };
+
+    const updateEditorItemStatus = async (editorItem, nextStatus) => {
+      if (!editorItem || !Array.isArray(editorItem.keys) || editorItem.keys.length === 0) {
+        return false;
+      }
+      const now = Date.now();
+      let changed = false;
+      const normalizedEditorStatus = normalizeQuestionBankStatus(nextStatus, editorItem.answer || "");
+      for (const aliasKey of editorItem.keys) {
+        const existing = state.questionBank[aliasKey];
+        if (!existing) {
+          continue;
+        }
+        const normalizedStatus = normalizeQuestionBankStatus(
+          nextStatus,
+          existing.answer || existing.code || existing.finalCode || "",
+        );
+        if (existing.status === normalizedStatus) {
+          continue;
+        }
+        state.questionBank[aliasKey] = {
+          ...existing,
+          status: normalizedStatus,
+          updatedAt: now,
+        };
+        changed = true;
+      }
+      const removedQueue = normalizedEditorStatus === "verified"
+        ? removeQuestionBankReviewQueueItem({
+            primaryKey: editorItem.primaryKey || editorItem.keys[0] || "",
+            statementFingerprint: editorItem.statementFingerprint || "",
+            title: editorItem.title || "",
+            statementPreview: editorItem.statementPreview || "",
+          })
+        : false;
+      const needsUiSync = editorItem.status !== normalizedEditorStatus || removedQueue;
+      if (!changed && !needsUiSync) {
+        return false;
+      }
+      editorItem.status = normalizedEditorStatus;
+      if (changed || removedQueue) {
+        await persistQuestionBank();
+      }
+      if (typeof state.reviewModalRefresh === "function") {
+        state.reviewModalRefresh({ preserveNotice: true });
+      }
+      return true;
+    };
+
     const applySingleUpdate = (editorItem, normalizedAnswer) => {
       if (!normalizedAnswer || !Array.isArray(editorItem.keys) || editorItem.keys.length === 0) {
         return false;
@@ -7736,6 +8606,7 @@
 
       let changed = false;
       const now = Date.now();
+      let latestAnswerText = "";
 
       for (const aliasKey of editorItem.keys) {
         const existing = state.questionBank[aliasKey];
@@ -7743,19 +8614,30 @@
         if (previousAnswer === normalizedAnswer) {
           continue;
         }
+        const nextOptionSnapshot = normalizeChoiceOptionSnapshot(
+          existing?.optionMapSnapshot || editorItem.optionMapSnapshot || [],
+        );
+        const nextAnswerText = resolveChoiceAnswerTextFromSnapshot(normalizedAnswer, nextOptionSnapshot);
+        if (nextAnswerText) {
+          latestAnswerText = nextAnswerText;
+        }
         state.questionBank[aliasKey] = {
           key: aliasKey,
           promptMode: "choice",
+          questionType: "choice",
           title: editorItem.title || existing?.title || "",
           statementPreview: editorItem.statementPreview || existing?.statementPreview || "",
           answer: normalizedAnswer,
+          answerLetter: normalizedAnswer,
           code: normalizedAnswer,
+          answerText: nextAnswerText || editorItem.answerText || existing?.answerText || "",
+          optionMapSnapshot: nextOptionSnapshot,
           summary: existing?.summary || "",
           approach: existing?.approach || "",
           generatedTitle: existing?.generatedTitle || "",
           model: existing?.model || "",
           source: normalizeQuestionBankSource(existing?.source || editorItem.source || "local"),
-          status: "answered",
+          status: "verified",
           category:
             normalizeQuestionBankCategory(existing?.category) !== "general"
               ? normalizeQuestionBankCategory(existing?.category)
@@ -7774,12 +8656,14 @@
         const intersects = queueItem.keys?.some((key) => editorItem.keys.includes(key));
         if (intersects) {
           queueItem.answer = normalizedAnswer;
+          queueItem.answerText = latestAnswerText || queueItem.answerText || "";
         }
       }
 
       if (changed) {
         editorItem.answer = normalizedAnswer;
-        editorItem.status = "answered";
+        editorItem.answerText = latestAnswerText || editorItem.answerText || "";
+        editorItem.status = "verified";
       }
       return changed;
     };
@@ -7870,7 +8754,7 @@
       const contributableCount = visibleItems.filter(
         (item) =>
           item.source === "local" &&
-          item.status === "answered" &&
+          item.status === "verified" &&
           normalizeQuestionBankCategory(item.category) === selectedCategory,
       ).length;
       tabPanel.innerHTML = `
@@ -7906,11 +8790,18 @@
                     const canContribute =
                       isMineTab &&
                       item.source === "local" &&
-                      item.status === "answered" &&
+                      item.status === "verified" &&
                       categoryValue === selectedCategory;
                     const sourceText =
                       item.source === "cloud" ? "云端同步" : item.source === "imported" ? "手动导入" : "本地提取";
-                    const statusText = item.status === "draft" ? "待补答案" : "已有答案";
+                    const statusText =
+                      item.status === "candidate"
+                        ? "待确认"
+                        : item.status === "verified"
+                          ? "已确认"
+                          : item.status === "rejected"
+                            ? "已弃用"
+                            : "待补答案";
                     const cloudStatusText =
                       item.cloudStatus === "approved"
                         ? "云端已收录"
@@ -7938,6 +8829,14 @@
                           <label>答案</label>
                           <input type="text" data-role="bank-answer-input" data-index="${globalIndex}" value="${escapeHtml(item.answer)}" placeholder="例如 A / AC / 对 / 错" ${isMineTab ? "" : "disabled"} />
                         </div>
+                        ${
+                          isMineTab
+                            ? `<div class="al-inline-actions">
+                                <button type="button" class="al-link-button" data-role="bank-mark-verified" data-index="${globalIndex}" ${item.status === "verified" ? "disabled" : ""}>设为可用</button>
+                                <button type="button" class="al-link-button" data-role="bank-mark-rejected" data-index="${globalIndex}" ${item.status === "rejected" ? "disabled" : ""}>标记错误</button>
+                              </div>`
+                            : ""
+                        }
                       </article>
                     `;
                   })
@@ -8067,9 +8966,7 @@
         };
         state.questionBankLoaded = true;
         await persistQuestionBank();
-        const latestItems = buildQuestionBankEditorItems();
-        items.splice(0, items.length, ...latestItems);
-        renderTabPanel();
+        refreshQuestionBankEditorItems({ preserveNotice: true });
         setStatus(`题库导入成功，共合并 ${importedKeys.length} 条记录。`);
         setBankNotice(`题库已导入 ${importedKeys.length} 条。`, "success", true);
         setSaveIndicator(`已导入 ${importedKeys.length} 条`, "saved", true);
@@ -8095,6 +8992,7 @@
         return;
       }
 
+      const contributorEmail = String(state.settings.contributionEmail || "").trim();
       const entries = pickedInputs
         .map((input) => {
           const index = Number(input.getAttribute("data-index"));
@@ -8104,15 +9002,30 @@
           }
           if (
             item.source !== "local" ||
-            item.status !== "answered" ||
+            item.status !== "verified" ||
+            item.questionType !== "choice" ||
             normalizeQuestionBankCategory(item.category) !== submitCategory
           ) {
             return null;
           }
+          const normalizedStem = String(item.statementPreview || item.title || "").trim();
+          const normalizedAnswer = normalizeChoiceAnswerForBank(item.answer || "");
+          const optionMapSnapshot = normalizeChoiceOptionSnapshot(item.optionMapSnapshot || []);
+          const answerText = normalizeText(
+            item.answerText || resolveChoiceAnswerTextFromSnapshot(normalizedAnswer, optionMapSnapshot),
+          );
+          const statementFingerprint = String(item.statementFingerprint || buildStatementFingerprintFromText(normalizedStem)).trim();
           return {
             clientEntryId: item.id,
-            stem: String(item.statementPreview || item.title || "").trim(),
-            answer: normalizeChoiceAnswerForBank(item.answer || ""),
+            stem: normalizedStem,
+            answer: normalizedAnswer,
+            fingerprint: String(item.cloudFingerprint || item.fingerprint || statementFingerprint).trim(),
+            questionType: "choice",
+            statementFingerprint,
+            answerText,
+            optionMapSnapshot,
+            formatStrength: answerText && optionMapSnapshot.length > 0 ? "strong" : "weak",
+            contributorEmail,
             sourceMeta: {
               title: item.title,
               category: normalizeQuestionBankCategory(item.category),
@@ -8131,6 +9044,10 @@
         return;
       }
 
+      if (!contributorEmail) {
+        setBankNotice("未填写贡献邮箱，后续将无法按邮箱人工发放额度。", "info", true);
+      }
+
       isSubmittingContribution = true;
       renderTabPanel();
       setSaveIndicator("提交贡献中...", "saving");
@@ -8140,6 +9057,7 @@
           type: "autolearning:submit-contribution",
           category: submitCategory,
           entries,
+          contributorEmail,
         });
         if (!response?.ok) {
           throw new Error(response?.error || "贡献提交失败");
@@ -8207,6 +9125,10 @@
         }
         return;
       }
+      if (target.getAttribute("data-role") === "bank-clear") {
+        void clearQuestionBankForTesting();
+        return;
+      }
       if (target.getAttribute("data-role") === "bank-close" || target.getAttribute("data-role") === "bank-cancel") {
         closeModal();
         return;
@@ -8239,6 +9161,40 @@
           setSaveIndicator("提交失败", "idle", true);
           setStatus(error instanceof Error ? error.message : String(error));
           setBankNotice(`贡献提交失败：${error instanceof Error ? error.message : String(error)}`, "error");
+        });
+        return;
+      }
+      if (target.getAttribute("data-role") === "bank-mark-verified") {
+        const index = Number(target.getAttribute("data-index"));
+        const editorItem = items[index];
+        if (!editorItem) {
+          return;
+        }
+        void updateEditorItemStatus(editorItem, "verified").then((changed) => {
+          if (!changed) {
+            return;
+          }
+          renderTabPanel();
+          setStatus(`已将“${editorItem.title}”设为当前可用答案。`);
+          setBankNotice(`已将“${editorItem.title}”设为当前可用答案。`, "success", true);
+          setSaveIndicator("状态已更新", "saved", true);
+        });
+        return;
+      }
+      if (target.getAttribute("data-role") === "bank-mark-rejected") {
+        const index = Number(target.getAttribute("data-index"));
+        const editorItem = items[index];
+        if (!editorItem) {
+          return;
+        }
+        void updateEditorItemStatus(editorItem, "rejected").then((changed) => {
+          if (!changed) {
+            return;
+          }
+          renderTabPanel();
+          setStatus(`已将“${editorItem.title}”标记为错误，不再参与命中。`);
+          setBankNotice(`已将“${editorItem.title}”标记为错误，不再参与命中。`, "success", true);
+          setSaveIndicator("状态已更新", "saved", true);
         });
       }
     });

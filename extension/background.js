@@ -1,7 +1,7 @@
 const DEFAULT_CHOICE_PROMPT =
   "当前页面大概率是选择题、判断题、概念题或简答型理论题。请优先输出最终答案，而不是写完整程序。若题目是单选题，code 字段只放最终选项，例如 A、B、C、D；若是多选题，code 字段只放选项组合，例如 AC；若是判断题，code 字段只放“对”或“错”；若是简短填空或概念问答，code 字段只放最终可直接填写的简短答案。不要输出 main 函数，不要伪造代码。approach 用 3 到 5 句简洁说明你的判断依据，重点使用关键词匹配、概念定义和排除法。";
 const DEFAULT_CODE_PROMPT =
-  "当前页面大概率是编程题、代码填空题或需要补全模板的题。请优先保留题目指定语言、函数签名、输入输出格式和已有代码骨架，只补上真正缺失的部分。若页面自带代码与题面冲突，优先相信题面和样例。code 字段只放最终可提交或可复制的内容，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
+  "当前页面大概率是编程题、代码填空题或需要补全模板的题。只要当前编辑器里已经有非空代码模板，你就必须基于这份模板补全，不能擅自重写整体结构。不要改函数签名、类名、输入输出格式、主流程结构、已有辅助函数名和注释约定；只补全 TODO、空函数、占位返回值、核心逻辑以及必要 import。若题面与模板冲突，优先遵循题面和样例，但仍尽量在原模板内修正，不要另起一份独立实现。若当前编辑器为空，再正常生成完整答案。code 字段只放最终可提交或可复制的完整代码，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
 const QUESTION_BANK_CATEGORIES = ["educoder", "zhihuishu", "leetcode", "general"];
 const FIXED_SERVER_ORIGIN = "http://03hhhx.dpdns.org";
 const FIXED_API_BASE_URL = "http://03hhhx.dpdns.org:18317/v1";
@@ -51,6 +51,7 @@ const DEFAULT_SETTINGS = {
   cloudRepoName: FIXED_CLOUD_REPO_NAME,
   cloudRepoBranch: FIXED_CLOUD_REPO_BRANCH,
   cloudAutoSync: false,
+  contributionEmail: "",
 };
 const HISTORY_STORAGE_KEY = "autolearningSolveHistory";
 const MIN_HISTORY_ITEMS = 10;
@@ -229,6 +230,7 @@ function normalizeSettingsShape(settings = {}) {
     model: activeSolveModel,
     textModel: activeSolveModel,
     imageModel: activeSolveModel,
+    contributionEmail: String(settings?.contributionEmail || "").trim(),
   };
 }
 
@@ -263,6 +265,7 @@ function buildSolverPrompt(problem, extraInstructions, promptMode = "code") {
 
   const currentCode = String(problem?.currentCode || "").trim();
   const currentCodeBlock = currentCode ? currentCode : "[当前编辑器为空]";
+  const hasCurrentCode = Boolean(currentCode);
   const mode = getPromptMode({ promptMode });
   const choiceOptionText =
     Array.isArray(problem?.choiceOptions) && problem.choiceOptions.length > 0
@@ -307,6 +310,9 @@ function buildSolverPrompt(problem, extraInstructions, promptMode = "code") {
     "请严格返回 JSON，不要使用 markdown 代码块。",
     'JSON 格式：{"summary":"一句话总结","approach":"分步思路","answer":"选择题最终答案","code":"代码题最终可复制内容"}',
     "summary 请简洁说明你最终依据了什么题意；approach 请简洁说明关键思路；answer 只在选择题、判断题、填空题这类非代码题里填写最终答案，例如 A、B、C、D、AC、对、错；code 只在代码题里放最终可复制代码，非代码题时留空字符串。",
+    hasCurrentCode
+      ? "当前代码不是空的。你必须把下面的“当前代码”视为必须保留的提交模板，在这份模板上补全并返回完整代码，不得改成另一套结构。不要改函数签名、类名、输入输出框架、主流程结构或已有注释约定；除非某些 import 明显缺失，否则优先保留现有框架。"
+      : "当前代码为空。此时可以按题面、样例和语言要求直接生成一份完整可提交代码。",
     extraInstructions ? `额外要求：${extraInstructions}` : "",
     "",
     `标题：${problem?.title || "未识别标题"}`,
@@ -331,6 +337,8 @@ function buildSolverPrompt(problem, extraInstructions, promptMode = "code") {
     "",
     "样例：",
     sampleText,
+    "",
+    hasCurrentCode ? "模板约束：请严格基于下面这份当前代码补全，不要整体重写。" : "模板约束：当前没有可保留模板，可直接生成完整代码。",
     "",
     "当前代码：",
     currentCodeBlock,
@@ -455,6 +463,9 @@ async function submitContributionWithServerFallback(category, entries) {
         .map((entry) => normalizeContributionEntry(entry))
         .filter((entry) => entry && entry.stem && entry.answer)
     : [];
+  const contributorEmail = Array.isArray(entries)
+    ? String(entries.find((entry) => entry && typeof entry === "object" && entry.contributorEmail)?.contributorEmail || "").trim()
+    : "";
   if (!normalizedCategory) {
     throw new Error("请选择题库分类。");
   }
@@ -474,10 +485,18 @@ async function submitContributionWithServerFallback(category, entries) {
     category: normalizedCategory,
     exportedAt: new Date().toISOString(),
     source: "autolearning-extension",
+    contributorEmail,
     questions: normalizedEntries.map((entry) => ({
       clientEntryId: entry.clientEntryId,
       stem: entry.stem,
       answer: entry.answer,
+      fingerprint: entry.fingerprint,
+      questionType: entry.questionType,
+      statementFingerprint: entry.statementFingerprint,
+      answerText: entry.answerText,
+      optionMapSnapshot: entry.optionMapSnapshot,
+      formatStrength: entry.formatStrength,
+      contributorEmail: entry.contributorEmail,
       sourceMeta: entry.sourceMeta,
     })),
   };
@@ -504,7 +523,7 @@ async function submitContributionWithServerFallback(category, entries) {
       results: normalizedEntries.map((entry) => ({
         clientEntryId: entry.clientEntryId,
         status: "issue_created",
-        fingerprint: "",
+        fingerprint: entry.fingerprint || "",
         issueNumber: serverIssue.issueNumber,
         issueUrl: serverIssue.issueUrl,
         issueTitle: serverIssue.issueTitle,
@@ -525,6 +544,7 @@ async function createContributionIssueViaServer(settings, category, entries, pay
     body: JSON.stringify({
       category,
       entries,
+      contributorEmail,
       sourceMeta: collectContributionSourceMeta(entries),
       submittedAt: payload.exportedAt,
       source: payload.source,
@@ -580,6 +600,9 @@ async function submitContribution(category, entries) {
         .map((entry) => normalizeContributionEntry(entry))
         .filter((entry) => entry && entry.stem && entry.answer)
     : [];
+  const contributorEmail = Array.isArray(entries)
+    ? String(entries.find((entry) => entry && typeof entry === "object" && entry.contributorEmail)?.contributorEmail || "").trim()
+    : "";
   if (!normalizedCategory) {
     throw new Error("请选择贡献分类。");
   }
@@ -598,10 +621,18 @@ async function submitContribution(category, entries) {
     category: normalizedCategory,
     exportedAt: new Date().toISOString(),
     source: "autolearning-extension",
+    contributorEmail,
     questions: normalizedEntries.map((entry) => ({
       clientEntryId: entry.clientEntryId,
       stem: entry.stem,
       answer: entry.answer,
+      fingerprint: entry.fingerprint,
+      questionType: entry.questionType,
+      statementFingerprint: entry.statementFingerprint,
+      answerText: entry.answerText,
+      optionMapSnapshot: entry.optionMapSnapshot,
+      formatStrength: entry.formatStrength,
+      contributorEmail: entry.contributorEmail,
       sourceMeta: entry.sourceMeta,
     })),
   };
@@ -613,6 +644,7 @@ async function submitContribution(category, entries) {
     `- 题目数量: ${normalizedEntries.length}`,
     `- 提交时间: ${payload.exportedAt}`,
     `- 来源: ${payload.source}`,
+    `- 贡献邮箱: ${contributorEmail || "未提供"}`,
     "",
     "## JSON",
     "",
@@ -625,6 +657,7 @@ async function submitContribution(category, entries) {
     "",
     `- 分类: ${normalizedCategory}`,
     `- 题目数量: ${normalizedEntries.length}`,
+    `- 贡献邮箱: ${contributorEmail || "未提供"}`,
     "",
     "预填 JSON 过长，插件已经把完整内容复制到剪贴板。",
     "请把 JSON 粘贴到下方代码块后再提交 issue。",
@@ -651,7 +684,7 @@ async function submitContribution(category, entries) {
     results: normalizedEntries.map((entry) => ({
       clientEntryId: entry.clientEntryId,
       status: "issue_opened",
-      fingerprint: "",
+      fingerprint: entry.fingerprint || "",
     })),
   };
 }
@@ -660,6 +693,14 @@ function normalizeContributionEntry(entry) {
   if (!entry || typeof entry !== "object") {
     return null;
   }
+  const optionMapSnapshot = Array.isArray(entry.optionMapSnapshot)
+    ? entry.optionMapSnapshot
+        .map((option) => ({
+          label: String(option?.label || "").trim(),
+          text: String(option?.text || "").trim(),
+        }))
+        .filter((option) => option.label || option.text)
+    : [];
   const sourceMeta =
     entry.sourceMeta && typeof entry.sourceMeta === "object"
       ? {
@@ -674,6 +715,13 @@ function normalizeContributionEntry(entry) {
     clientEntryId: String(entry.clientEntryId || "").trim(),
     stem: String(entry.stem || "").trim(),
     answer: String(entry.answer || "").trim(),
+    fingerprint: String(entry.fingerprint || "").trim(),
+    questionType: String(entry.questionType || "").trim(),
+    statementFingerprint: String(entry.statementFingerprint || "").trim(),
+    answerText: String(entry.answerText || "").trim(),
+    optionMapSnapshot,
+    formatStrength: String(entry.formatStrength || "").trim(),
+    contributorEmail: String(entry.contributorEmail || "").trim(),
     sourceMeta,
   };
 }

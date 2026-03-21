@@ -1,7 +1,7 @@
 const DEFAULT_CHOICE_PROMPT =
   "当前页面大概率是选择题、判断题、概念题或简答型理论题。请优先输出最终答案，而不是写完整程序。若题目是单选题，code 字段只放最终选项，例如 A、B、C、D；若是多选题，code 字段只放选项组合，例如 AC；若是判断题，code 字段只放“对”或“错”；若是简短填空或概念问答，code 字段只放最终可直接填写的简短答案。不要输出 main 函数，不要伪造代码。approach 用 3 到 5 句简洁说明你的判断依据，重点使用关键词匹配、概念定义和排除法。";
 const DEFAULT_CODE_PROMPT =
-  "当前页面大概率是编程题、代码填空题或需要补全模板的题。请优先保留题目指定语言、函数签名、输入输出格式和已有代码骨架，只补上真正缺失的部分。若页面自带代码与题面冲突，优先相信题面和样例。code 字段只放最终可提交或可复制的内容，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
+  "当前页面大概率是编程题、代码填空题或需要补全模板的题。只要当前编辑器里已经有非空代码模板，你就必须基于这份模板补全，不能擅自重写整体结构。不要改函数签名、类名、输入输出格式、主流程结构、已有辅助函数名和注释约定；只补全 TODO、空函数、占位返回值、核心逻辑以及必要 import。若题面与模板冲突，优先遵循题面和样例，但仍尽量在原模板内修正，不要另起一份独立实现。若当前编辑器为空，再正常生成完整答案。code 字段只放最终可提交或可复制的完整代码，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
 
 function normalizeBaseUrl(baseUrl) {
   const trimmed = String(baseUrl || "").trim().replace(/\/+$/, "");
@@ -59,6 +59,7 @@ function buildSolverPrompt(problem, extraInstructions, promptMode) {
 
   const currentCode = String(problem?.currentCode || "").trim();
   const currentCodeBlock = currentCode ? currentCode : "[当前编辑器为空]";
+  const hasCurrentCode = Boolean(currentCode);
   const choiceOptionText =
     Array.isArray(problem?.choiceOptions) && problem.choiceOptions.length > 0
       ? problem.choiceOptions
@@ -92,6 +93,10 @@ function buildSolverPrompt(problem, extraInstructions, promptMode) {
     "你是一个帮助学生学习算法题的编程助手。",
     "请严格返回 JSON，不要使用 markdown 代码块。",
     '{"summary":"一句话总结","approach":"分步思路","answer":"选择题最终答案","code":"代码题最终可复制内容"}',
+    "summary 请简洁说明你最终依据了什么题意；approach 请简洁说明关键思路；answer 只在选择题、判断题、填空题这类非代码题里填写最终答案；code 只在代码题里放最终可复制代码，非代码题时留空字符串。",
+    hasCurrentCode
+      ? "当前代码不是空的。你必须把下面的“当前代码”视为必须保留的提交模板，在这份模板上补全并返回完整代码，不得改成另一套结构。不要改函数签名、类名、输入输出框架、主流程结构或已有注释约定；除非某些 import 明显缺失，否则优先保留现有框架。"
+      : "当前代码为空。此时可以按题面、样例和语言要求直接生成一份完整可提交代码。",
     extraInstructions ? `额外要求：${extraInstructions}` : "",
     "",
     `标题：${problem?.title || "未识别标题"}`,
@@ -105,6 +110,8 @@ function buildSolverPrompt(problem, extraInstructions, promptMode) {
     "",
     "样例：",
     sampleText,
+    "",
+    hasCurrentCode ? "模板约束：请严格基于下面这份当前代码补全，不要整体重写。" : "模板约束：当前没有可保留模板，可直接生成完整代码。",
     "",
     "当前代码：",
     currentCodeBlock,
