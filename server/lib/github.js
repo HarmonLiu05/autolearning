@@ -61,28 +61,28 @@ function buildIssueTitle(category, stem) {
 function buildIssueBody({ category, stem, answer, fingerprint, sourceMeta, user, submittedAt, contributorEmail }) {
   const source = sourceMeta && typeof sourceMeta === "object" ? sourceMeta : {};
   const contributor = String(user?.login || "").trim() || "unknown";
-  const contributorLine = `- ????: ${String(contributorEmail || "").trim() || "???"}`;
+  const contributorLine = `- 贡献邮箱: ${String(contributorEmail || "").trim() || "未提供"}`;
 
   return [
-    "## ????",
+    "## 题库贡献",
     "",
-    `- ???: @${contributor}`,
+    `- 提交者: @${contributor}`,
     contributorLine,
-    `- ??: ${String(category || "").trim() || "general"}`,
-    `- ??: ${String(fingerprint || "").trim() || "(empty)"}`,
-    `- ????: ${String(submittedAt || "").trim() || "(empty)"}`,
-    `- ????: ${String(source.site || "").trim() || "(empty)"}`,
-    `- ????: ${String(source.pageUrl || "").trim() || "(empty)"}`,
-    `- ????: ${String(source.source || "").trim() || "(empty)"}`,
-    `- ????: ${String(source.title || "").trim() || "(empty)"}`,
+    `- 分类: ${String(category || "").trim() || "general"}`,
+    `- 指纹: ${String(fingerprint || "").trim() || "(empty)"}`,
+    `- 提交时间: ${String(submittedAt || "").trim() || "(empty)"}`,
+    `- 来源站点: ${String(source.site || "").trim() || "(empty)"}`,
+    `- 来源页面: ${String(source.pageUrl || "").trim() || "(empty)"}`,
+    `- 来源标签: ${String(source.source || "").trim() || "(empty)"}`,
+    `- 页面标题: ${String(source.title || "").trim() || "(empty)"}`,
     "",
-    "## ??",
+    "## 题目",
     "",
     "```text",
     String(stem || "").trim(),
     "```",
     "",
-    "## ??",
+    "## 答案",
     "",
     "```text",
     String(answer || "").trim(),
@@ -92,18 +92,18 @@ function buildIssueBody({ category, stem, answer, fingerprint, sourceMeta, user,
 
 function buildBatchContributionIssueBody({ category, entryCount, exportedAt, source, sourceMeta, payload, contributorEmail }) {
   const meta = sourceMeta && typeof sourceMeta === "object" ? sourceMeta : {};
-  const contributorLine = `- ????: ${String(contributorEmail || "").trim() || "???"}`;
+  const contributorLine = `- 贡献邮箱: ${String(contributorEmail || "").trim() || "未提供"}`;
   return [
-    "## ????",
+    "## 题库贡献",
     "",
-    `- ??: ${String(category || "").trim() || "general"}`,
-    `- ????: ${Number(entryCount) || 0}`,
-    `- ????: ${String(exportedAt || "").trim() || "(empty)"}`,
-    `- ??: ${String(source || "").trim() || "autolearning-extension"}`,
+    `- 分类: ${String(category || "").trim() || "general"}`,
+    `- 题目数量: ${Number(entryCount) || 0}`,
+    `- 提交时间: ${String(exportedAt || "").trim() || "(empty)"}`,
+    `- 来源: ${String(source || "").trim() || "autolearning-extension"}`,
     contributorLine,
-    `- ????: ${String(meta.site || "").trim() || "(empty)"}`,
-    `- ????: ${String(meta.pageUrl || "").trim() || "(empty)"}`,
-    `- ????: ${String(meta.title || "").trim() || "(empty)"}`,
+    `- 来源站点: ${String(meta.site || "").trim() || "(empty)"}`,
+    `- 来源页面: ${String(meta.pageUrl || "").trim() || "(empty)"}`,
+    `- 页面标题: ${String(meta.title || "").trim() || "(empty)"}`,
     "",
     "## JSON",
     "",
