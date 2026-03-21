@@ -12,17 +12,24 @@ const FIXED_CLOUD_REPO_BRANCH = "main";
 const DEFAULT_SERVER_ORIGIN = FIXED_SERVER_ORIGIN;
 const GITHUB_AUTH_STORAGE_KEY = "autolearningGithubAuthSession";
 const MAX_GITHUB_ISSUE_URL_LENGTH = 7000;
+const SUPPORTED_SOLVE_MODELS = [
+  "gemini-3-flash",
+  "claude-haiku-4-5-20251001",
+  "gpt-5.4-mini",
+];
+const DEFAULT_ACTIVE_SOLVE_MODEL = "gpt-5.4-mini";
 
 const DEFAULT_SETTINGS = {
   baseUrl: "https://api.deepseek.com/v1",
-  apiKey: "sk-9a70b94a7ec04788952e228c62529c54",
+  apiKey: "",
   textBaseUrl: "https://api.deepseek.com/v1",
-  textApiKey: "sk-9a70b94a7ec04788952e228c62529c54",
+  textApiKey: "",
   model: "deepseek-chat",
-  textModel: "deepseek-chat",
+  textModel: DEFAULT_ACTIVE_SOLVE_MODEL,
   imageBaseUrl: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
-  imageApiKey: "sk-9101f75ca6b24400953e03ba4cc283a5",
-  imageModel: "qwen3.5-flash",
+  imageApiKey: "",
+  imageModel: DEFAULT_ACTIVE_SOLVE_MODEL,
+  activeSolveModel: DEFAULT_ACTIVE_SOLVE_MODEL,
   promptMode: "choice",
   extraInstructions: DEFAULT_CHOICE_PROMPT,
   extraInstructionsChoice: DEFAULT_CHOICE_PROMPT,
@@ -37,7 +44,7 @@ const DEFAULT_SETTINGS = {
   autoPickNextDelayMs: 600,
   fullAutoMode: "extract",
   ocrBaseUrl: "https://generativelanguage.googleapis.com/v1beta/openai",
-  ocrApiKey: "AIzaSyCt9CvmNYNcX8CGe5k9TLVt_jPNH9veRCc",
+  ocrApiKey: "",
   ocrModel: "gemini-3-preview",
   ocrPrompt:
     "请只做 OCR，尽量完整提取图片中的中文、英文、公式、选项和输入输出要求。不要解释，不要总结，只返回纯文本。",
@@ -55,13 +62,13 @@ const ACTIVE_SOLVE_CONTROLLERS = new Map();
 
 chrome.runtime.onInstalled.addListener(async () => {
   const current = await storageGet(DEFAULT_SETTINGS);
-  await storageSet({ ...DEFAULT_SETTINGS, ...current });
+  await storageSet(normalizeSettingsShape({ ...DEFAULT_SETTINGS, ...current }));
 });
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.type === "autolearning:get-settings") {
     storageGet(DEFAULT_SETTINGS)
-      .then((settings) => sendResponse({ ok: true, settings }))
+      .then((settings) => sendResponse({ ok: true, settings: normalizeSettingsShape(settings) }))
       .catch((error) => sendResponse({ ok: false, error: formatError(error) }));
     return true;
   }
@@ -111,7 +118,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
 
   if (message?.type === "autolearning:submit-contribution") {
-    submitContribution(message.category, message.entries)
+    submitContributionWithServerFallback(message.category, message.entries)
       .then((result) => sendResponse({ ok: true, result }))
       .catch((error) => sendResponse({ ok: false, error: formatError(error) }));
     return true;
@@ -202,6 +209,23 @@ function storageSet(values) {
       resolve();
     });
   });
+}
+
+function sanitizeActiveSolveModel(value) {
+  const normalized = String(value || "").trim();
+  return SUPPORTED_SOLVE_MODELS.includes(normalized) ? normalized : DEFAULT_ACTIVE_SOLVE_MODEL;
+}
+
+function normalizeSettingsShape(settings = {}) {
+  const activeSolveModel = sanitizeActiveSolveModel(
+    settings?.activeSolveModel || settings?.textModel || settings?.imageModel || settings?.model,
+  );
+  return {
+    ...settings,
+    activeSolveModel,
+    textModel: activeSolveModel,
+    imageModel: activeSolveModel,
+  };
 }
 
 function normalizeBaseUrl(baseUrl) {
@@ -316,7 +340,7 @@ async function solveProblem(problem, extraInstructionsOverride, externalControll
     throw new Error("没有收到有效题目信息。");
   }
 
-  const settings = await storageGet(DEFAULT_SETTINGS);
+  const settings = normalizeSettingsShape(await storageGet(DEFAULT_SETTINGS));
   const extraInstructions = normalizeExtraInstructions(extraInstructionsOverride, settings);
   const promptMode = getPromptMode(settings);
 
@@ -420,6 +444,131 @@ async function syncCloudQuestionBank() {
   return cloudBank;
 }
 
+async function submitContributionWithServerFallback(category, entries) {
+  const normalizedCategory = String(category || "").trim();
+  const normalizedEntries = Array.isArray(entries)
+    ? entries
+        .map((entry) => normalizeContributionEntry(entry))
+        .filter((entry) => entry && entry.stem && entry.answer)
+    : [];
+  if (!normalizedCategory) {
+    throw new Error("请选择题库分类。");
+  }
+  if (normalizedEntries.length === 0) {
+    throw new Error("请先选择可用于贡献的题目。");
+  }
+
+  const settings = normalizeSettingsShape(await storageGet(DEFAULT_SETTINGS));
+  const owner = String(FIXED_CONTRIBUTION_REPO_OWNER || settings.cloudRepoOwner || "").trim();
+  const repo = String(FIXED_CONTRIBUTION_REPO_NAME || settings.cloudRepoName || "").trim();
+  if (!owner || !repo) {
+    throw new Error("当前没有配置 GitHub 题库仓库。");
+  }
+
+  const payload = {
+    version: 1,
+    category: normalizedCategory,
+    exportedAt: new Date().toISOString(),
+    source: "autolearning-extension",
+    questions: normalizedEntries.map((entry) => ({
+      clientEntryId: entry.clientEntryId,
+      stem: entry.stem,
+      answer: entry.answer,
+      sourceMeta: entry.sourceMeta,
+    })),
+  };
+
+  try {
+    const serverIssue = await createContributionIssueViaServer(
+      settings,
+      normalizedCategory,
+      normalizedEntries,
+      payload,
+    );
+    await openUrlInNewTab(serverIssue.issueUrl);
+    return {
+      createdCount: 1,
+      duplicateCount: 0,
+      issueUrl: serverIssue.issueUrl,
+      issueNumber: serverIssue.issueNumber,
+      issueTitle: serverIssue.issueTitle,
+      entryCount: serverIssue.entryCount,
+      viaServer: true,
+      fallbackUsed: false,
+      needsPaste: false,
+      payloadText: "",
+      results: normalizedEntries.map((entry) => ({
+        clientEntryId: entry.clientEntryId,
+        status: "issue_created",
+        fingerprint: "",
+        issueNumber: serverIssue.issueNumber,
+        issueUrl: serverIssue.issueUrl,
+        issueTitle: serverIssue.issueTitle,
+      })),
+    };
+  } catch (error) {
+    throw new Error(formatErrorMessage(error) || "Failed to create GitHub issue via server.");
+  }
+}
+
+async function createContributionIssueViaServer(settings, category, entries, payload) {
+  const response = await fetch(buildLocalServerUrl("/api/question-bank/contributions/issue", settings), {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      category,
+      entries,
+      sourceMeta: collectContributionSourceMeta(entries),
+      submittedAt: payload.exportedAt,
+      source: payload.source,
+    }),
+  });
+  const result = await parseJsonResponse(response);
+  if (!response.ok || !result?.ok) {
+    throw new Error(result?.error || result?.message || `Server returned ${response.status}`);
+  }
+  if (!result.issueUrl) {
+    throw new Error("Server did not return an issue URL.");
+  }
+  return {
+    issueUrl: String(result.issueUrl || ""),
+    issueNumber: Number(result.issueNumber || 0),
+    issueTitle: String(result.issueTitle || ""),
+    entryCount: Number(result.entryCount || entries.length || 0),
+  };
+}
+
+async function parseJsonResponse(response) {
+  const text = await response.text();
+  if (!text) {
+    return {};
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Server returned non-JSON response (${response.status}).`);
+  }
+}
+
+function collectContributionSourceMeta(entries) {
+  const firstEntry = Array.isArray(entries) ? entries.find((entry) => entry?.sourceMeta) : null;
+  const sourceMeta = firstEntry?.sourceMeta && typeof firstEntry.sourceMeta === "object" ? firstEntry.sourceMeta : {};
+  return {
+    title: String(sourceMeta.title || "").trim(),
+    category: String(sourceMeta.category || "").trim(),
+    source: String(sourceMeta.source || "").trim(),
+    site: String(sourceMeta.site || "").trim(),
+    pageUrl: String(sourceMeta.pageUrl || "").trim(),
+  };
+}
+
+function formatErrorMessage(error) {
+  return error instanceof Error ? error.message : String(error || "");
+}
+
 async function submitContribution(category, entries) {
   const normalizedCategory = String(category || "").trim();
   const normalizedEntries = Array.isArray(entries)
@@ -433,7 +582,7 @@ async function submitContribution(category, entries) {
   if (normalizedEntries.length === 0) {
     throw new Error("请先选择要贡献的题目。");
   }
-  const settings = await storageGet(DEFAULT_SETTINGS);
+  const settings = normalizeSettingsShape(await storageGet(DEFAULT_SETTINGS));
   const owner = String(FIXED_CONTRIBUTION_REPO_OWNER || settings.cloudRepoOwner || "").trim();
   const repo = String(FIXED_CONTRIBUTION_REPO_NAME || settings.cloudRepoName || "").trim();
   if (!owner || !repo) {
@@ -576,7 +725,7 @@ async function buildPromptPreview(problem, extraInstructionsOverride) {
     throw new Error("请先识别题面或读取当前代码。");
   }
 
-  const settings = await storageGet(DEFAULT_SETTINGS);
+  const settings = normalizeSettingsShape(await storageGet(DEFAULT_SETTINGS));
   const extraInstructions = normalizeExtraInstructions(extraInstructionsOverride, settings);
   const promptMode = getPromptMode(settings);
   const messages = buildSolverMessages(
@@ -902,12 +1051,15 @@ function resolveSolverConfig(settings, userContent) {
   const legacyBaseUrl = String(settings?.baseUrl || "").trim();
   const legacyApiKey = String(settings?.apiKey || "").trim();
   const legacyModel = String(settings?.model || "").trim();
+  const activeSolveModel = sanitizeActiveSolveModel(
+    settings?.activeSolveModel || settings?.textModel || settings?.imageModel || legacyModel,
+  );
   const textBaseUrl = String(settings?.textBaseUrl || legacyBaseUrl || "").trim();
   const textApiKey = String(settings?.textApiKey || legacyApiKey || "").trim();
-  const textModel = String(settings?.textModel || legacyModel || "").trim();
+  const textModel = String(activeSolveModel || settings?.textModel || legacyModel || "").trim();
   const imageBaseUrl = String(settings?.imageBaseUrl || textBaseUrl || legacyBaseUrl || "").trim();
   const imageApiKey = String(settings?.imageApiKey || textApiKey || legacyApiKey || "").trim();
-  const imageModel = String(settings?.imageModel || textModel || legacyModel || "").trim();
+  const imageModel = String(activeSolveModel || settings?.imageModel || textModel || legacyModel || "").trim();
   const shouldUseImageModel = hasImageInMessage(userContent);
   const selectedConfig = shouldUseImageModel
     ? {
@@ -971,8 +1123,9 @@ async function runExternalOcr(imageDataUrl) {
   }
 
   const settings = await storageGet(DEFAULT_SETTINGS);
-  if (!settings.ocrBaseUrl || !settings.ocrApiKey || !settings.ocrModel) {
-    throw new Error("请先在设置页填写 OCR Base URL、OCR API Key 和 OCR Model。");
+  const ocrApiKey = String(settings?.ocrApiKey || settings?.textApiKey || settings?.apiKey || "").trim();
+  if (!settings.ocrBaseUrl || !ocrApiKey || !settings.ocrModel) {
+    throw new Error("请先在设置页填写 API Key、OCR Base URL 和 OCR Model。");
   }
 
   const url = normalizeBaseUrl(settings.ocrBaseUrl);
@@ -986,7 +1139,7 @@ async function runExternalOcr(imageDataUrl) {
   const imageBase64 = extractBase64Data(imageDataUrl);
 
   try {
-    let result = await postOcrRequest(url, String(settings.ocrApiKey).trim(), {
+    let result = await postOcrRequest(url, ocrApiKey, {
       model: String(settings.ocrModel).trim(),
       temperature: 0,
       messages: [
@@ -1013,7 +1166,7 @@ async function runExternalOcr(imageDataUrl) {
     }, controller.signal);
 
     if (!result.ok && shouldRetryOcrWithInlineImages(result.errorMessage)) {
-      result = await postOcrRequest(url, String(settings.ocrApiKey).trim(), {
+      result = await postOcrRequest(url, ocrApiKey, {
         model: String(settings.ocrModel).trim(),
         stream: false,
         messages: [

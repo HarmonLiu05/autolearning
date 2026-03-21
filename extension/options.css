@@ -85,9 +85,35 @@ body {
   gap: 8px;
 }
 
+.field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .field span {
   font-size: 14px;
   font-weight: 700;
+}
+
+.field-link {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.field-link:hover {
+  text-decoration: underline;
+}
+
+.field-link.is-disabled {
+  color: rgba(16, 36, 50, 0.38);
+  cursor: not-allowed;
+  text-decoration: none;
+  pointer-events: auto;
 }
 
 .field small {
@@ -130,6 +156,7 @@ body {
 }
 
 .field input,
+.field select,
 .field textarea {
   width: 100%;
   padding: 14px 16px;
@@ -145,6 +172,7 @@ body {
 }
 
 .field input:focus,
+.field select:focus,
 .field textarea:focus {
   outline: none;
   border-color: rgba(213, 111, 42, 0.6);

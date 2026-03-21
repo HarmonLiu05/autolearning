@@ -16,17 +16,8 @@ Additional capabilities: OCR via image model, screenshot capture (fixed region o
 ## Development Commands
 
 ```bash
-# Run the Playwright prototype (requires .env with EDUCODER_USERNAME/PASSWORD)
-npm run dev
-
-# Build TypeScript source to dist/
-npm run build
-
-# Run the built JavaScript
-npm run start
-
-# Launch Playwright's code generator for recording flows
-npm run codegen
+# Start local backend server
+npm run dev:server
 
 # Check extension JavaScript files for syntax errors
 npm run check:extension
@@ -37,10 +28,10 @@ npm run test:extension
 
 ### Environment Variables
 
-Create a `.env` file from `.env.example`:
-- `EDUCODER_USERNAME`, `EDUCODER_PASSWORD`: Credentials for the Educoder platform (used by the Playwright prototype)
-- `HEADLESS`: Set to `true` to run Playwright in headless mode
-- `KEEP_OPEN`: Set to `true` to keep the browser open after prototype execution
+Create a `.env.local` file from `.env.local.example`:
+- `GITHUB_REPO_TOKEN`: GitHub personal access token for repo sync
+- `PORT`: Server port (default 8787)
+- `PUBLIC_BASE_URL`: Public URL for the server
 
 ## Architecture
 
@@ -85,38 +76,9 @@ Create a `.env` file from `.env.example`:
 - Content script ↔ Background: `chrome.runtime.sendMessage` with typed messages (`autolearning:solve-problem`, `autolearning:get-settings`, `autolearning:run-ocr`, `autolearning:capture-visible-tab`, `autolearning:cancel-solve`, `autolearning:save-history`, `autolearning:get-history`, etc.)
 - Content script ↔ Page bridge: Custom DOM events (`autolearning:bridge-request` / `autolearning:bridge-response`) with request IDs for multiplexing. Bridge handles: `getEditorValue`, `setEditorValue`, `isEditorCopyContext`, `selectChoiceOptions`, `submitSolution`, `get-editor-debug`
 
-### Playwright Prototype (`src/`)
+### Local Backend (`server/`)
 
-Originally used for extracting problem data from Educoder, now kept as reference for debugging site structures.
-
-**Key Files**:
-- `main.ts`: Entry point launching browser and extracting problem data
-- `extractor.ts`: DOM selectors and extraction logic for problem statements
-- `config.ts`: Environment configuration
-- `types.ts`: TypeScript interfaces (`ProblemData`, `SolveResult`)
-- `prompt.ts`: Builds AI prompts from extracted problem data
-- `flows/recorded.ts`: Navigation flow for Educoder
-
-**Data Structures**:
-
-```typescript
-interface ProblemData {
-  url: string;
-  title: string;
-  statementText: string;
-  statementHtml: string;
-  currentCode: string;
-  currentCodeLineCount: number;
-  samples: Array<{ input: string; output: string }>;
-  limits: { time?: string; memory?: string; language?: string };
-}
-
-interface SolveResult {
-  model: string;
-  promptPreview: string;
-  code: string;
-}
-```
+Used for GitHub login, contribution flow, and question bank sync. Started via `npm run dev:server`.
 
 ### Testing
 
@@ -138,9 +100,8 @@ interface SolveResult {
 - The extension is a learning aid — it does not automatically submit answers (unless auto-submit is explicitly enabled)
 - Generated artifacts (screenshots, extracted data) are saved to the `artifacts/` directory
 - Page structure changes may require selector updates in `content.js` and `page-bridge.js`
-- The Playwright prototype requires valid Educoder credentials to run
 - AI settings are configurable via the extension options page
-- The project uses TypeScript for the prototype but plain JavaScript for the extension
+- The extension uses plain JavaScript (no TypeScript, no build step)
 - `content.js` is the largest file — most feature work happens here
 - The extension injects `page-bridge.js` into the page's main frame; content script guards against double-injection via `window.__AUTOLEARNING_CONTENT__`
 - Page bridge guards against double-injection via `window.__AUTOLEARNING_PAGE_BRIDGE__`

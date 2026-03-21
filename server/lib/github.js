@@ -21,6 +21,34 @@ function hasGitHubRepoConfig() {
   return Boolean(config.repoToken && config.repoOwner && config.repoName);
 }
 
+function buildGitHubIssueCreationError(response, payload, config) {
+  const status = Number(response?.status || 0);
+  const message = String(payload?.message || "").trim();
+  const repoOwner = String(config?.repoOwner || "").trim();
+  const repoName = String(config?.repoName || "").trim();
+  const repoLabel = repoOwner && repoName ? `${repoOwner}/${repoName}` : "(unknown repo)";
+
+  if (!config?.repoToken) {
+    return "Missing GITHUB_REPO_TOKEN.";
+  }
+  if (!repoOwner || !repoName) {
+    return "Missing GITHUB_REPO_OWNER or GITHUB_REPO_NAME.";
+  }
+  if (status === 401) {
+    return `GitHub issue creation failed: invalid or expired token for ${repoLabel}.`;
+  }
+  if (status === 403) {
+    return `GitHub issue creation failed: token does not have permission for ${repoLabel}. ${message}`.trim();
+  }
+  if (status === 404) {
+    return `GitHub issue creation failed: repository ${repoLabel} was not found or is not accessible.`;
+  }
+  if (status === 422) {
+    return `GitHub issue creation failed: validation error from ${repoLabel}. ${message}`.trim();
+  }
+  return `GitHub issue creation failed (${status || "unknown"}): ${message || "Unknown GitHub API error."}`;
+}
+
 function buildIssueTitle(category, stem) {
   const normalizedCategory = String(category || "").trim() || "general";
   const compactStem = String(stem || "")
@@ -32,24 +60,19 @@ function buildIssueTitle(category, stem) {
 
 function buildIssueBody({ category, stem, answer, fingerprint, sourceMeta, user, submittedAt }) {
   const source = sourceMeta && typeof sourceMeta === "object" ? sourceMeta : {};
-  const metadata = {
-    site: String(source.site || ""),
-    pageUrl: String(source.pageUrl || ""),
-    source: String(source.source || ""),
-    title: String(source.title || ""),
-  };
+  const contributor = String(user?.login || "").trim() || "unknown";
 
   return [
     "## 题库贡献",
     "",
-    `- 提交人: @${String(user?.login || "").trim() || "unknown"}`,
+    `- 提交者: @${contributor}`,
     `- 分类: ${String(category || "").trim() || "general"}`,
-    `- 指纹: ${String(fingerprint || "").trim()}`,
-    `- 提交时间: ${String(submittedAt || "").trim()}`,
-    `- 来源站点: ${metadata.site || "(empty)"}`,
-    `- 页面地址: ${metadata.pageUrl || "(empty)"}`,
-    `- 来源标识: ${metadata.source || "(empty)"}`,
-    `- 页面标题: ${metadata.title || "(empty)"}`,
+    `- 指纹: ${String(fingerprint || "").trim() || "(empty)"}`,
+    `- 提交时间: ${String(submittedAt || "").trim() || "(empty)"}`,
+    `- 来源站点: ${String(source.site || "").trim() || "(empty)"}`,
+    `- 来源页面: ${String(source.pageUrl || "").trim() || "(empty)"}`,
+    `- 来源标签: ${String(source.source || "").trim() || "(empty)"}`,
+    `- 页面标题: ${String(source.title || "").trim() || "(empty)"}`,
     "",
     "## 题目",
     "",
@@ -65,10 +88,31 @@ function buildIssueBody({ category, stem, answer, fingerprint, sourceMeta, user,
   ].join("\n");
 }
 
+function buildBatchContributionIssueBody({ category, entryCount, exportedAt, source, sourceMeta, payload }) {
+  const meta = sourceMeta && typeof sourceMeta === "object" ? sourceMeta : {};
+  return [
+    "## 题库贡献",
+    "",
+    `- 分类: ${String(category || "").trim() || "general"}`,
+    `- 题目数量: ${Number(entryCount) || 0}`,
+    `- 提交时间: ${String(exportedAt || "").trim() || "(empty)"}`,
+    `- 来源: ${String(source || "").trim() || "autolearning-extension"}`,
+    `- 来源站点: ${String(meta.site || "").trim() || "(empty)"}`,
+    `- 来源页面: ${String(meta.pageUrl || "").trim() || "(empty)"}`,
+    `- 页面标题: ${String(meta.title || "").trim() || "(empty)"}`,
+    "",
+    "## JSON",
+    "",
+    "```json",
+    JSON.stringify(payload || {}, null, 2),
+    "```",
+  ].join("\n");
+}
+
 async function exchangeCodeForAccessToken(code) {
   const config = getGitHubConfig();
   if (!config.oauthClientId || !config.oauthClientSecret) {
-    throw new Error("GitHub OAuth 尚未配置。");
+    throw new Error("Missing GitHub OAuth client configuration.");
   }
 
   const response = await fetch("https://github.com/login/oauth/access_token", {
@@ -86,7 +130,7 @@ async function exchangeCodeForAccessToken(code) {
 
   const payload = safeJsonParse(await response.text(), {});
   if (!response.ok || !payload?.access_token) {
-    throw new Error(payload?.error_description || payload?.error || "GitHub OAuth token 交换失败。");
+    throw new Error(payload?.error_description || payload?.error || "GitHub OAuth token exchange failed.");
   }
   return String(payload.access_token);
 }
@@ -96,12 +140,12 @@ async function fetchGitHubUser(accessToken) {
     headers: {
       Accept: "application/vnd.github+json",
       Authorization: `Bearer ${accessToken}`,
-      "User-Agent": "autolearing-server",
+      "User-Agent": "autolearning-server",
     },
   });
   const payload = safeJsonParse(await response.text(), {});
   if (!response.ok || !payload?.id) {
-    throw new Error(payload?.message || "获取 GitHub 用户信息失败。");
+    throw new Error(payload?.message || "Failed to fetch GitHub user.");
   }
   return {
     githubId: String(payload.id),
@@ -115,7 +159,7 @@ async function fetchGitHubUser(accessToken) {
 async function createContributionIssue(input) {
   const config = getGitHubConfig();
   if (!hasGitHubRepoConfig()) {
-    throw new Error("请先配置 GITHUB_REPO_TOKEN、GITHUB_REPO_OWNER 和 GITHUB_REPO_NAME。");
+    throw new Error("Missing GitHub repository configuration.");
   }
 
   const title = buildIssueTitle(input?.category, input?.stem);
@@ -134,7 +178,7 @@ async function createContributionIssue(input) {
     headers: {
       Accept: "application/vnd.github+json",
       Authorization: `Bearer ${config.repoToken}`,
-      "User-Agent": "autolearing-server",
+      "User-Agent": "autolearning-server",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -145,7 +189,50 @@ async function createContributionIssue(input) {
 
   const payload = safeJsonParse(await response.text(), {});
   if (!response.ok || !payload?.number) {
-    throw new Error(payload?.message || "创建 GitHub issue 失败。");
+    throw new Error(buildGitHubIssueCreationError(response, payload, config));
+  }
+
+  return {
+    issueNumber: Number(payload.number),
+    issueUrl: String(payload.html_url || ""),
+    issueTitle: String(payload.title || title),
+  };
+}
+
+async function createBatchContributionIssue(input) {
+  const config = getGitHubConfig();
+  if (!hasGitHubRepoConfig()) {
+    throw new Error("Missing GitHub repository configuration.");
+  }
+
+  const title = String(input?.title || "").trim();
+  const body = buildBatchContributionIssueBody({
+    category: input?.category,
+    entryCount: input?.entryCount,
+    exportedAt: input?.exportedAt,
+    source: input?.source,
+    sourceMeta: input?.sourceMeta,
+    payload: input?.payload,
+  });
+
+  const response = await fetch(`https://api.github.com/repos/${config.repoOwner}/${config.repoName}/issues`, {
+    method: "POST",
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${config.repoToken}`,
+      "User-Agent": "autolearning-server",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title,
+      body,
+      labels: ["question-bank-contribution"],
+    }),
+  });
+
+  const payload = safeJsonParse(await response.text(), {});
+  if (!response.ok || !payload?.number) {
+    throw new Error(buildGitHubIssueCreationError(response, payload, config));
   }
 
   return {
@@ -166,6 +253,7 @@ async function syncCategoryFileToGitHub(category, questions) {
   const payload = {
     version: 1,
     name: category,
+    category,
     questions,
   };
 
@@ -174,7 +262,7 @@ async function syncCategoryFileToGitHub(category, questions) {
     headers: {
       Accept: "application/vnd.github+json",
       Authorization: `Bearer ${config.repoToken}`,
-      "User-Agent": "autolearing-server",
+      "User-Agent": "autolearning-server",
     },
   });
   if (currentResponse.ok) {
@@ -187,7 +275,7 @@ async function syncCategoryFileToGitHub(category, questions) {
     headers: {
       Accept: "application/vnd.github+json",
       Authorization: `Bearer ${config.repoToken}`,
-      "User-Agent": "autolearing-server",
+      "User-Agent": "autolearning-server",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -200,7 +288,7 @@ async function syncCategoryFileToGitHub(category, questions) {
 
   const putPayload = safeJsonParse(await putResponse.text(), {});
   if (!putResponse.ok) {
-    throw new Error(putPayload?.message || "同步 GitHub 题库失败。");
+    throw new Error(putPayload?.message || "Failed to sync GitHub question bank file.");
   }
 
   return {
@@ -210,6 +298,7 @@ async function syncCategoryFileToGitHub(category, questions) {
 }
 
 module.exports = {
+  createBatchContributionIssue,
   createContributionIssue,
   exchangeCodeForAccessToken,
   fetchGitHubUser,

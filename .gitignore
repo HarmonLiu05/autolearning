@@ -1,6 +1,9 @@
 node_modules
 dist
 .env
+.env.local
+server.local.ps1
+server.local.bat
 playwright/.auth
 artifacts
 .DS_Store

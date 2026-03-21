@@ -2,13 +2,8 @@
   "name": "autolearning",
   "version": "1.0.0",
   "description": "Browser extension MVP for extracting coding problems and filling AI-generated answers",
-  "main": "dist/main.js",
   "scripts": {
-    "dev": "tsx src/main.ts",
     "dev:server": "node server/index.js",
-    "build": "tsc -p tsconfig.json",
-    "start": "node dist/main.js",
-    "codegen": "playwright codegen",
     "educoder:login": "node scripts/educoder-login-with-extension.mjs",
     "check:extension": "node --check extension/background.js && node --check extension/content.js && node --check extension/options.js && node --check extension/page-bridge.js",
     "test:extension": "node scripts/extension-smoke.mjs"
@@ -18,14 +13,6 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "dotenv": "^17.3.1",
-    "openai": "^6.31.0",
-    "playwright": "^1.58.2",
-    "zod": "^4.3.6"
-  },
-  "devDependencies": {
-    "@types/node": "^25.5.0",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "playwright": "^1.58.2"
   }
 }

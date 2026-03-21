@@ -20,19 +20,16 @@
       <section class="card">
         <form id="settings-form" class="form">
           <label class="field">
-            <span>文本 Base URL</span>
-            <input
-              id="textBaseUrl"
-              name="textBaseUrl"
-              type="url"
-              placeholder="https://api.openai.com/v1"
-              required
-            />
-            <small>纯文本请求走这个接口，比如提取题面全自动、普通题面分析、纯文本答题。</small>
-          </label>
-
-          <label class="field">
-            <span>文本 API Key</span>
+            <span class="field-head">
+              <span>文本 API Key</span>
+              <a
+                id="textApiKeyPortalLink"
+                class="field-link"
+                href="#"
+                target="_blank"
+                rel="noreferrer noopener"
+              >去获取 API Key</a>
+            </span>
             <input
               id="textApiKey"
               name="textApiKey"
@@ -40,55 +37,7 @@
               placeholder="sk-..."
               autocomplete="off"
             />
-            <small>保存在当前浏览器本地，不会写进这个仓库。</small>
-          </label>
-
-          <label class="field">
-            <span>文本模型</span>
-            <input
-              id="textModel"
-              name="textModel"
-              type="text"
-              placeholder="gpt-4.1-mini"
-              required
-            />
-            <small>纯文本提问时使用这个模型，比如“提取题面全自动”或普通题面分析。</small>
-          </label>
-
-          <label class="field">
-            <span>图像 Base URL</span>
-            <input
-              id="imageBaseUrl"
-              name="imageBaseUrl"
-              type="url"
-              placeholder="https://api.openai.com/v1"
-              required
-            />
-            <small>当本次请求里真的附带了截图时，固定走这个接口。即使同时有文本和图像，也优先走图像接口。</small>
-          </label>
-
-          <label class="field">
-            <span>图像 API Key</span>
-            <input
-              id="imageApiKey"
-              name="imageApiKey"
-              type="password"
-              placeholder="sk-..."
-              autocomplete="off"
-            />
-            <small>如果图像模型来自另一家服务商，就在这里填写那家的 Key。</small>
-          </label>
-
-          <label class="field">
-            <span>图像模型</span>
-            <input
-              id="imageModel"
-              name="imageModel"
-              type="text"
-              placeholder="gpt-4.1-mini"
-              required
-            />
-            <small>当本次请求里实际附带了截图时，固定使用这个模型。即使同时有文本和图像，也会优先走图像模型。</small>
+            <small id="textApiKeyHelp">保存在当前浏览器本地，不会写进这个仓库。</small>
           </label>
 
           <div class="field">
@@ -118,30 +67,6 @@
               <button type="button" id="restoreCodePrompt" class="secondary">恢复代码题默认</button>
             </div>
           </div>
-
-          <label class="toggle-field" for="includeScreenshotInSolver">
-            <span class="toggle-copy">
-              <strong>生成答案时附带截图</strong>
-              <small>默认关闭。只有当解题模型支持图片输入时才建议开启，比如 Gemini Flash 这类多模态模型。</small>
-            </span>
-            <input
-              id="includeScreenshotInSolver"
-              name="includeScreenshotInSolver"
-              type="checkbox"
-            />
-          </label>
-
-          <label class="toggle-field" for="autoSolveAfterCapture">
-            <span class="toggle-copy">
-              <strong>截图后立刻开始生成</strong>
-              <small>开启后，截图完成会自动开始生成答案。直接发图模式会立刻发图，OCR 模式会在 OCR 完成后自动开始。</small>
-            </span>
-            <input
-              id="autoSolveAfterCapture"
-              name="autoSolveAfterCapture"
-              type="checkbox"
-            />
-          </label>
 
           <label class="field">
             <span>全自动模式快捷键</span>
@@ -185,13 +110,13 @@
           <div class="field">
             <span>GitHub 贡献</span>
             <div id="authSessionSummary" class="status">无需登录 GitHub；提交时会打开预填好的 Issue 页面。</div>
-            <small>同步云端题库不需要登录；贡献题目会跳转到 GitHub Issue，由仓库中的 Actions 自动校验并生成待审核更新。</small>
+            <small>下载云端题库不需要登录；贡献题目会跳转到 GitHub Issue，由仓库中的 Actions 自动校验并生成待审核更新。</small>
           </div>
 
           <label class="toggle-field" for="cloudAutoSync">
             <span class="toggle-copy">
-              <strong>启动时自动同步云端题库</strong>
-              <small>开启后，面板初始化时会自动从 GitHub 拉取云端题库并合并到本地缓存。</small>
+              <strong>启动时自动下载云端题库</strong>
+              <small>开启后，面板初始化时会自动从 GitHub 下载云端题库并合并到本地缓存；当前网络需要能访问 GitHub。</small>
             </span>
             <input id="cloudAutoSync" name="cloudAutoSync" type="checkbox" />
           </label>

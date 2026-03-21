@@ -14,7 +14,11 @@
   "options_page": "options.html",
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": [
+        "*://*.zhihuishu.com/*",
+        "*://educoder.net/*",
+        "*://*.educoder.net/*"
+      ],
       "js": ["content.js"],
       "all_frames": true,
       "run_at": "document_idle"
@@ -22,8 +26,22 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["page-bridge.js", "assets/ai-status.svg", "assets/close-cross.svg", "assets/newaistatus.png", "assets/launcher-logo.png", "assets/spinner-logo.png"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "page-bridge.js",
+        "assets/ai-status.svg",
+        "assets/close-cross.svg",
+        "assets/newaistatus.png",
+        "assets/launcher-logo.png",
+        "assets/spinner-logo.png",
+        "assets/gemini.png",
+        "assets/claude.png",
+        "assets/gpt.png"
+      ],
+      "matches": [
+        "*://*.zhihuishu.com/*",
+        "*://educoder.net/*",
+        "*://*.educoder.net/*"
+      ]
     }
   ]
 }

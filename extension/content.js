@@ -1,6 +1,20 @@
 (function () {
+  const SUPPORTED_SITE_HOSTS = ["zhihuishu.com", "educoder.net"];
+
+  function isSupportedLearningSite(hostname) {
+    const host = String(hostname || "").trim().toLowerCase();
+    if (!host) {
+      return false;
+    }
+    return SUPPORTED_SITE_HOSTS.some((suffix) => host === suffix || host.endsWith(`.${suffix}`));
+  }
+
   if (window.top !== window) {
     installFrameShortcutRelay();
+    return;
+  }
+
+  if (!isSupportedLearningSite(location.hostname)) {
     return;
   }
 
@@ -36,11 +50,22 @@
   const PANEL_VISIBLE_STRIP = 72;
   const LAUNCHER_ICON_URL = chrome.runtime.getURL("assets/launcher-logo.png");
   const SPINNER_ICON_URL = chrome.runtime.getURL("assets/spinner-logo.png");
-  const CLOSE_CROSS_ICON_URL = chrome.runtime.getURL("assets/close-cross.svg");
   const DEFAULT_CHOICE_PROMPT =
     "当前页面大概率是选择题、判断题、概念题或简答型理论题。请优先输出最终答案，而不是写完整程序。若题目是单选题，code 字段只放最终选项，例如 A、B、C、D；若是多选题，code 字段只放选项组合，例如 AC；若是判断题，code 字段只放“对”或“错”；若是简短填空或概念问答，code 字段只放最终可直接填写的简短答案。不要输出 main 函数，不要伪造代码。approach 用 3 到 5 句简洁说明你的判断依据，重点使用关键词匹配、概念定义和排除法。";
   const DEFAULT_CODE_PROMPT =
     "当前页面大概率是编程题、代码填空题或需要补全模板的题。请优先保留题目指定语言、函数签名、输入输出格式和已有代码骨架，只补上真正缺失的部分。若页面自带代码与题面冲突，优先相信题面和样例。code 字段只放最终可提交或可复制的内容，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
+
+  const SUPPORTED_SOLVE_MODELS = [
+    "gemini-3-flash",
+    "claude-haiku-4-5-20251001",
+    "gpt-5.4-mini",
+  ];
+  const DEFAULT_ACTIVE_SOLVE_MODEL = "gpt-5.4-mini";
+  const MODEL_ICON_URLS = {
+    "gemini-3-flash": chrome.runtime.getURL("assets/gemini.png"),
+    "claude-haiku-4-5-20251001": chrome.runtime.getURL("assets/claude.png"),
+    "gpt-5.4-mini": chrome.runtime.getURL("assets/gpt.png"),
+  };
 
   const state = {
     mounted: false,
@@ -95,6 +120,7 @@
       fullAutoNextDelayMs: 1500,
       autoPickNextDelayMs: 600,
       fullAutoMode: "extract",
+      activeSolveModel: DEFAULT_ACTIVE_SOLVE_MODEL,
       serverOrigin: "http://03hhhx.dpdns.org",
       cloudRepoOwner: "liuhexiong",
       cloudRepoName: "question-bank",
@@ -131,6 +157,7 @@
     renderOcrText("");
     renderGeneratedCode("");
     renderCompactCodeCopyStatus(false);
+    syncActiveSolveModelUi();
     renderPlatformSummary();
     syncPromptModeUi();
     renderHistory([]);
@@ -221,7 +248,24 @@
               <p class="al-status" data-role="status">初始化中...</p>
               <p class="al-status-hint" data-role="status-hint">准备就绪</p>
             </div>
-            <button class="al-status-action" data-role="status-action" type="button">提交</button>
+            <div class="al-status-actions">
+              <button class="al-api-key-action" data-role="open-api-key" type="button">获取 API Key</button>
+              <button class="al-status-action" data-role="status-action" type="button">提交</button>
+            </div>
+          </section>
+
+          <section class="al-model-switcher">
+            <div class="al-model-switcher-head">
+              <div>
+                <p class="al-model-switcher-label">当前模型</p>
+                <p class="al-model-switcher-hint">切换后会影响后续“生成答案”，文本和截图解题统一使用同一个模型。</p>
+              </div>
+              <select class="al-model-select" data-role="active-solve-model" aria-label="当前模型">
+                <option value="gemini-3-flash">gemini-3-flash</option>
+                <option value="claude-haiku-4-5-20251001">claude-haiku-4-5-20251001</option>
+                <option value="gpt-5.4-mini">gpt-5.4-mini</option>
+              </select>
+            </div>
           </section>
 
           <div class="al-actions al-actions-primary">
@@ -236,9 +280,10 @@
               <h3>云端题库</h3>
             </div>
             <div class="al-actions al-actions-secondary">
-              <button data-role="cloud-sync" type="button">同步云端</button>
+              <button data-role="cloud-sync" type="button">下载云端题库</button>
+              <button data-role="open-contribution" type="button">贡献题库</button>
             </div>
-            <div class="al-summary" data-role="platform-summary">云端题库会从 GitHub 下载到本地缓存使用；贡献会打开 GitHub Issue 页面，由仓库自动处理。</div>
+            <div class="al-summary" data-role="platform-summary">云端题库会下载到本地缓存使用；下载云端题库需要当前网络能访问 GitHub；贡献会打开 GitHub Issue 页面，由仓库自动处理。</div>
           </section>
 
           <section class="al-section" data-role="choice-answer-wrap" hidden>
@@ -381,6 +426,8 @@
     elements.status = host.querySelector('[data-role="status"]');
     elements.statusHint = host.querySelector('[data-role="status-hint"]');
     elements.statusAction = host.querySelector('[data-role="status-action"]');
+    elements.statusSpinner = host.querySelector(".al-status-spinner");
+    elements.activeSolveModel = host.querySelector('[data-role="active-solve-model"]');
     elements.summary = host.querySelector('[data-role="summary"]');
     elements.generatedTitle = host.querySelector('[data-role="generated-title"]');
     elements.problemType = host.querySelector('[data-role="problem-type"]');
@@ -408,8 +455,6 @@
     elements.fullAutoButton = host.querySelector('[data-role="full-auto"]');
     elements.platformSummary = host.querySelector('[data-role="platform-summary"]');
     elements.cloudSync = host.querySelector('[data-role="cloud-sync"]');
-    elements.githubAuthLogin = host.querySelector('[data-role="github-auth-login"]');
-    elements.githubAuthLogout = host.querySelector('[data-role="github-auth-logout"]');
     elements.header = host.querySelector(".al-header");
     elements.ocrText = host.querySelector('[data-role="ocr-text"]');
     elements.historyList = host.querySelector('[data-role="history-list"]');
@@ -432,11 +477,8 @@
     elements.cloudSync?.addEventListener("click", () => {
       void handleCloudSync();
     });
-    elements.githubAuthLogin?.addEventListener("click", () => {
-      void handleGitHubAuthLogin();
-    });
-    elements.githubAuthLogout?.addEventListener("click", () => {
-      void handleGitHubAuthLogout();
+    bindIfPresent('[data-role="open-contribution"]', "click", () => {
+      void handleOpenQuestionBankEditor({ activeTab: "mine" });
     });
     bindIfPresent('[data-role="capture"]', "click", () => {
       void handleCaptureScreenshot();
@@ -451,6 +493,9 @@
       void handleToggleFullAuto();
     });
     bindIfPresent('[data-role="settings"]', "click", () => {
+      void handleOpenSettings();
+    });
+    bindIfPresent('[data-role="open-api-key"]', "click", () => {
       void handleOpenSettings();
     });
     bindIfPresent('[data-role="edit-question-bank"]', "click", () => {
@@ -470,6 +515,9 @@
     });
     elements.fullAutoModeExtract?.addEventListener("click", () => {
       void handleFullAutoModeSwitch("extract");
+    });
+    elements.activeSolveModel?.addEventListener("change", (event) => {
+      void handleActiveSolveModelChange(event);
     });
     bindIfPresent('[data-role="refresh-preview"]', "click", () => {
       void refreshPromptPreview();
@@ -760,11 +808,21 @@
         height: 32px;
         border: 0;
         border-radius: 999px;
-        background:
-          url("${CLOSE_CROSS_ICON_URL}") center/78% no-repeat,
-          rgba(255, 255, 255, 0.08);
+        position: relative;
+        display: grid;
+        place-items: center;
+        background: rgba(255, 255, 255, 0.08);
         cursor: pointer;
         flex: 0 0 auto;
+      }
+
+      #${PANEL_ID} .al-close::before {
+        content: "×";
+        font-size: 20px;
+        line-height: 1;
+        font-weight: 500;
+        color: rgba(255, 244, 236, 0.92);
+        transform: translateY(-1px);
       }
 
       #${PANEL_ID} .al-status-card {
@@ -776,6 +834,54 @@
         border-radius: 18px;
         background: rgba(255, 255, 255, 0.06);
         border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      #${PANEL_ID} .al-model-switcher {
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      #${PANEL_ID} .al-model-switcher-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        align-items: center;
+      }
+
+      #${PANEL_ID} .al-model-switcher-label {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(243, 242, 239, 0.72);
+      }
+
+      #${PANEL_ID} .al-model-switcher-hint {
+        margin: 6px 0 0;
+        font-size: 12px;
+        line-height: 1.5;
+        color: rgba(243, 242, 239, 0.72);
+      }
+
+      #${PANEL_ID} .al-model-select {
+        min-width: 182px;
+        padding: 10px 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(9, 18, 22, 0.78);
+        color: #f3f2ef;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        outline: none;
+      }
+
+      #${PANEL_ID} .al-model-select:focus {
+        border-color: rgba(244, 170, 92, 0.7);
+        box-shadow: 0 0 0 3px rgba(244, 170, 92, 0.16);
       }
 
       #${PANEL_ID} .al-status-icon {
@@ -813,6 +919,14 @@
         min-width: 0;
       }
 
+      #${PANEL_ID} .al-status-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+      }
+
+      #${PANEL_ID} .al-api-key-action,
       #${PANEL_ID} .al-status-action {
         border: 0;
         border-radius: 999px;
@@ -822,8 +936,34 @@
         font-weight: 800;
         color: #20140e;
         cursor: pointer;
+        transition:
+          transform 160ms ease,
+          box-shadow 160ms ease,
+          background 160ms ease,
+          color 160ms ease;
+      }
+
+      #${PANEL_ID} .al-status-action {
         background: linear-gradient(135deg, #ffb56a 0%, #f08a3a 100%);
         box-shadow: 0 10px 20px rgba(240, 138, 58, 0.18);
+      }
+
+      #${PANEL_ID} .al-api-key-action {
+        padding: 6px 12px;
+        font-size: 11px;
+        color: rgba(255, 244, 236, 0.88);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: none;
+      }
+
+      #${PANEL_ID} .al-api-key-action:hover,
+      #${PANEL_ID} .al-status-action:hover {
+        transform: translateY(-1px);
+      }
+
+      #${PANEL_ID} .al-api-key-action:hover {
+        background: rgba(255, 255, 255, 0.12);
       }
 
       #${PANEL_ID} .al-status-action[data-variant="cancel"] {
@@ -1114,6 +1254,30 @@
         background: rgba(255, 255, 255, 0.06);
       }
 
+      @media (max-width: 560px) {
+        #${PANEL_ID} .al-status-card {
+          grid-template-columns: 36px minmax(0, 1fr);
+          align-items: start;
+        }
+
+        #${PANEL_ID} .al-status-actions {
+          grid-column: 2;
+          flex-direction: row;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+
+        #${PANEL_ID} .al-model-switcher-head {
+          grid-template-columns: 1fr;
+        }
+
+        #${PANEL_ID} .al-model-select {
+          min-width: 0;
+          width: 100%;
+        }
+      }
+
       #${PANEL_ID} .al-mode-button {
         border: 0;
         border-radius: 999px;
@@ -1297,7 +1461,7 @@
 
       .al-bank-modal-tools {
         display: flex;
-        align-items: center;
+        align-items: stretch;
         justify-content: space-between;
         gap: 10px;
         flex-wrap: wrap;
@@ -1307,6 +1471,34 @@
         display: flex;
         gap: 8px;
         flex-wrap: wrap;
+      }
+
+      .al-bank-modal-contrib-tools {
+        width: 100%;
+        display: grid;
+        gap: 10px;
+        padding: 14px;
+        border-radius: 16px;
+        background: linear-gradient(180deg, rgba(255, 181, 106, 0.14) 0%, rgba(255, 255, 255, 0.06) 100%);
+        border: 1px solid rgba(255, 181, 106, 0.22);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      .al-bank-modal-contrib-tools select {
+        min-height: 44px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #fff3df;
+        background: rgba(8, 14, 18, 0.78);
+      }
+
+      .al-bank-modal-contrib-actions {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+        gap: 10px;
       }
 
       .al-bank-auth-summary {
@@ -1498,6 +1690,36 @@
         background: linear-gradient(135deg, #ffb56a 0%, #f08a3a 100%);
       }
 
+      .al-bank-contrib-secondary {
+        min-height: 48px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 14px;
+        padding: 12px 14px;
+        font-size: 14px;
+        font-weight: 800;
+        color: #fff3df;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        cursor: pointer;
+      }
+
+      .al-bank-contrib-primary {
+        min-height: 48px;
+        border-radius: 14px;
+        padding: 12px 18px;
+        font-size: 15px;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        box-shadow: 0 12px 26px rgba(240, 138, 58, 0.24);
+      }
+
+      .al-bank-contrib-secondary:disabled,
+      .al-bank-contrib-primary:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
       @media (max-width: 720px) {
         #${LAUNCHER_ID} {
           top: auto;
@@ -1621,7 +1843,6 @@
       renderCompactCodeCopyStatus(false);
       renderChoiceAnswer("");
       await refreshPromptPreview({ silent: true });
-      await upsertQuestionBankDraftEntry(problem, getPromptMode());
       const successMessage =
         problem.statementSource === "custom"
           ? "已按当前页面的自定义题面规则提取内容。"
@@ -3178,11 +3399,15 @@
   }
 
   function applySettings(settings) {
+    const activeSolveModel = sanitizeActiveSolveModel(
+      settings?.activeSolveModel || settings?.textModel || settings?.imageModel || state.settings.activeSolveModel,
+    );
     state.settings = {
       ...state.settings,
       ...settings,
       promptMode: sanitizePromptMode(settings?.promptMode ?? state.settings.promptMode),
       fullAutoMode: sanitizeFullAutoMode(settings?.fullAutoMode ?? state.settings.fullAutoMode),
+      activeSolveModel,
       extraInstructionsChoice:
         String(settings?.extraInstructionsChoice || state.settings.extraInstructionsChoice || DEFAULT_CHOICE_PROMPT).trim() ||
         DEFAULT_CHOICE_PROMPT,
@@ -3211,7 +3436,10 @@
       cloudRepoBranch: "main",
       cloudAutoSync: Boolean(settings?.cloudAutoSync),
     };
+    state.settings.textModel = activeSolveModel;
+    state.settings.imageModel = activeSolveModel;
     renderShortcutTip();
+    syncActiveSolveModelUi();
     syncPromptModeUi();
     syncFullAutoModeUi();
     renderPlatformSummary();
@@ -3228,6 +3456,10 @@
     }
     if (changes.fullAutoMode) {
       nextSettings.fullAutoMode = changes.fullAutoMode.newValue;
+    }
+    if (changes.activeSolveModel || changes.textModel || changes.imageModel) {
+      nextSettings.activeSolveModel =
+        changes.activeSolveModel?.newValue || changes.textModel?.newValue || changes.imageModel?.newValue || "";
     }
     if (changes.extraInstructionsChoice) {
       nextSettings.extraInstructionsChoice = changes.extraInstructionsChoice.newValue || "";
@@ -3625,15 +3857,17 @@
     if (!elements.platformSummary) {
       return;
     }
+    const activeSolveModel = sanitizeActiveSolveModel(state.settings.activeSolveModel);
     const owner = String(state.settings.cloudRepoOwner || "").trim();
     const repo = String(state.settings.cloudRepoName || "").trim();
     const branch = String(state.settings.cloudRepoBranch || "").trim() || "main";
     if (!owner || !repo) {
-      elements.platformSummary.textContent = "还没有配置云端仓库；配置后可从 GitHub 同步公共题库到本地。";
+      elements.platformSummary.textContent =
+        `当前解题模型：${activeSolveModel}。还没有配置云端仓库；配置后可下载 GitHub 云端题库到本地缓存使用。`;
       return;
     }
     elements.platformSummary.textContent =
-      `当前云端仓库：${owner}/${repo}@${branch}。同步云端不需要登录；贡献题目会打开 GitHub Issue 页面，由仓库里的 Actions 自动校验并生成待审核更新。`;
+      `当前解题模型：${activeSolveModel}。当前云端仓库：${owner}/${repo}@${branch}。下载云端题库不需要登录，但当前网络需要能访问 GitHub；贡献题目会打开 GitHub Issue 页面，由仓库里的 Actions 自动校验并生成待审核更新。`;
   }
 
   async function hydrateGitHubAuthStatus(options = {}) {
@@ -3743,23 +3977,27 @@
 
   async function handleCloudSync(options = {}) {
     const silent = Boolean(options.silent);
+    setStatus("正在从 GitHub 下载云端题库...", {
+      busy: !silent,
+      hint: "请确保当前网络可以访问 GitHub。",
+    });
     try {
       const response = await sendMessage({ type: "autolearning:cloud-sync" });
       if (!response?.ok) {
-        throw new Error(response?.error || "同步云端题库失败");
+        throw new Error(response?.error || "下载云端题库失败");
       }
       const importedCount = mergeCloudQuestionBank(response.cloudBank);
       if (importedCount > 0) {
         await persistQuestionBank();
       }
-      if (!silent) {
-        setStatus(`云端题库同步完成，共合并 ${importedCount} 条记录。`);
-        showToast(`云端题库已同步 ${importedCount} 条。`);
-      }
+      setStatus(`云端题库下载完成，已合并 ${importedCount} 条记录。`, {
+        hint: "云端题库已缓存到本地，可直接参与匹配。",
+      });
     } catch (error) {
-      if (!silent) {
-        setStatus(error instanceof Error ? error.message : String(error));
-      }
+      const message = error instanceof Error ? error.message : String(error);
+      setStatus(`下载云端题库失败：${message}`, {
+        hint: "请检查当前网络是否可以访问 GitHub。",
+      });
     }
   }
 
@@ -3944,6 +4182,24 @@
     return value === "choice" ? "choice" : "code";
   }
 
+  function sanitizeActiveSolveModel(value) {
+    const normalized = String(value || "").trim();
+    return SUPPORTED_SOLVE_MODELS.includes(normalized) ? normalized : DEFAULT_ACTIVE_SOLVE_MODEL;
+  }
+
+  function getActiveSolveModelIconUrl(model) {
+    const normalizedModel = sanitizeActiveSolveModel(model);
+    const modelIconUrl = MODEL_ICON_URLS[normalizedModel];
+    if (typeof modelIconUrl === "string" && modelIconUrl.trim()) {
+      return modelIconUrl;
+    }
+    const defaultModelIconUrl = MODEL_ICON_URLS[DEFAULT_ACTIVE_SOLVE_MODEL];
+    if (typeof defaultModelIconUrl === "string" && defaultModelIconUrl.trim()) {
+      return defaultModelIconUrl;
+    }
+    return SPINNER_ICON_URL;
+  }
+
   function sanitizeFullAutoMode(value) {
     return value === "capture" ? "capture" : "extract";
   }
@@ -3968,6 +4224,22 @@
       : String(state.settings.extraInstructionsCode || DEFAULT_CODE_PROMPT).trim();
   }
 
+  function syncActiveSolveModelUi() {
+    renderActiveSolveModelIcon();
+    if (!elements.activeSolveModel) {
+      return;
+    }
+    elements.activeSolveModel.value = sanitizeActiveSolveModel(state.settings.activeSolveModel);
+  }
+
+  function renderActiveSolveModelIcon() {
+    if (!(elements.statusSpinner instanceof HTMLElement)) {
+      return;
+    }
+    const iconUrl = getActiveSolveModelIconUrl(state.settings.activeSolveModel);
+    elements.statusSpinner.style.backgroundImage = `url("${iconUrl}")`;
+  }
+
   function syncPromptModeUi() {
     const mode = getPromptMode();
     if (elements.promptModeChoice) {
@@ -3979,6 +4251,39 @@
     renderChoiceAnswer(mode === "choice" ? state.result?.answer || state.result?.code || "" : "");
     renderGeneratedCode(state.result?.code || "");
     renderFullAutoButton();
+  }
+
+  async function handleActiveSolveModelChange(event) {
+    const nextModel = sanitizeActiveSolveModel(event?.target?.value);
+    const previousModel = sanitizeActiveSolveModel(state.settings.activeSolveModel);
+    if (nextModel === previousModel) {
+      syncActiveSolveModelUi();
+      return;
+    }
+
+    state.settings.activeSolveModel = nextModel;
+    state.settings.textModel = nextModel;
+    state.settings.imageModel = nextModel;
+    syncActiveSolveModelUi();
+    renderPlatformSummary();
+
+    try {
+      await storageSet({
+        activeSolveModel: nextModel,
+        textModel: nextModel,
+        imageModel: nextModel,
+        model: nextModel,
+      });
+      setStatus(`已切换模型：${nextModel}`);
+      void refreshPromptPreview({ silent: true });
+    } catch (error) {
+      state.settings.activeSolveModel = previousModel;
+      state.settings.textModel = previousModel;
+      state.settings.imageModel = previousModel;
+      syncActiveSolveModelUi();
+      renderPlatformSummary();
+      setStatus(error instanceof Error ? error.message : String(error));
+    }
   }
 
   function syncFullAutoModeUi() {
@@ -7143,58 +7448,6 @@
     await persistQuestionBank();
   }
 
-  async function upsertQuestionBankDraftEntry(problem, mode, options = {}) {
-    if (!problem) {
-      return;
-    }
-
-    await ensureQuestionBankLoaded();
-
-    const keys = buildQuestionBankLookupKeys(problem, mode);
-    if (keys.length === 0) {
-      return;
-    }
-
-    const now = Date.now();
-    const firstKey = keys[0];
-    const existing = state.questionBank[firstKey] || state.questionBank[keys[1]] || null;
-    const existingAnswer = String(existing?.answer || existing?.code || "").trim();
-    const inferredCategory = resolvePreferredQuestionBankCategory(problem);
-    const existingCategory = normalizeQuestionBankCategory(existing?.category);
-    const finalCategory =
-      existingCategory && existingCategory !== "general" ? existingCategory : inferredCategory;
-    const nextEntry = {
-      key: firstKey,
-      promptMode: mode === "choice" ? "choice" : "code",
-      title: String(existing?.title || problem.title || "").slice(0, 300),
-      statementPreview:
-        String(existing?.statementPreview || normalizeText(problem.statementText || "").slice(0, 1600)),
-      answer: existingAnswer,
-      code: mode === "choice" ? existingAnswer : String(existing?.code || ""),
-      summary: String(existing?.summary || ""),
-      approach: String(existing?.approach || ""),
-      generatedTitle: String(existing?.generatedTitle || ""),
-      model: String(existing?.model || ""),
-      source: normalizeQuestionBankSource(existing?.source || options.source || "local"),
-      status: normalizeQuestionBankStatus(existing?.status, existingAnswer),
-      category: finalCategory,
-      pageUrl: String(problem.url || existing?.pageUrl || ""),
-      cloudFingerprint: String(existing?.cloudFingerprint || ""),
-      cloudCategory: String(existing?.cloudCategory || ""),
-      cloudStatus: String(existing?.cloudStatus || ""),
-      createdAt: existing?.createdAt || now,
-      updatedAt: now,
-    };
-
-    for (const key of keys) {
-      state.questionBank[key] = {
-        ...nextEntry,
-        key,
-      };
-    }
-    await persistQuestionBank();
-  }
-
   function queueQuestionBankReviewItem(problem, mode, answerText) {
     if (mode !== "choice" || !problem) {
       return;
@@ -7259,10 +7512,10 @@
     return raw.slice(0, 24);
   }
 
-  async function handleOpenQuestionBankEditor() {
+  async function handleOpenQuestionBankEditor(options = {}) {
     await ensureQuestionBankLoaded();
     const items = buildQuestionBankEditorItems();
-    openQuestionBankReviewModal(items);
+    openQuestionBankReviewModal(items, options);
   }
 
   function buildQuestionBankEditorItems() {
@@ -7383,13 +7636,13 @@
     });
   }
 
-  function openQuestionBankReviewModal(items) {
+  function openQuestionBankReviewModal(items, options = {}) {
     if (state.reviewModalOpen) {
       return;
     }
 
     state.reviewModalOpen = true;
-    let activeTab = "mine";
+    let activeTab = options.activeTab === "cloud" ? "cloud" : "mine";
     let selectedCategory = resolvePreferredQuestionBankCategory(state.problem);
     let isSubmittingContribution = false;
     const modal = document.createElement("div");
@@ -7410,7 +7663,6 @@
             <button type="button" data-role="bank-tab-cloud">云端题库</button>
           </div>
           <div class="al-bank-modal-tool-buttons">
-            <button type="button" data-role="bank-migrate-legacy">整理旧题库分类</button>
             <button type="button" data-role="bank-export">导出题库</button>
             <button type="button" data-role="bank-import">导入题库</button>
           </div>
@@ -7625,17 +7877,19 @@
         ${
           isMineTab
             ? `<div class="al-bank-modal-tools">
-                <div class="al-bank-modal-tool-buttons">
+                <div class="al-bank-modal-contrib-tools">
                   <select data-role="bank-category-select">
                     ${QUESTION_BANK_CATEGORY_DEFS.map(
                       (category) =>
                         `<option value="${category.key}" ${category.key === selectedCategory ? "selected" : ""}>${category.label}</option>`,
                     ).join("")}
                   </select>
-                  <button type="button" data-role="bank-select-all">全选可贡献题</button>
-                  <button type="button" class="al-bank-modal-save" data-role="bank-submit" ${contributableCount > 0 && !isSubmittingContribution ? "" : "disabled"}>
-                    ${isSubmittingContribution ? "提交贡献中..." : "贡献选中题目"}
-                  </button>
+                  <div class="al-bank-modal-contrib-actions">
+                    <button type="button" class="al-bank-contrib-secondary" data-role="bank-select-all">全选可贡献题</button>
+                    <button type="button" class="al-bank-modal-save al-bank-contrib-primary" data-role="bank-submit" ${contributableCount > 0 && !isSubmittingContribution ? "" : "disabled"}>
+                      ${isSubmittingContribution ? "提交贡献中..." : "贡献选中题目"}
+                    </button>
+                  </div>
                 </div>
                 <div class="al-bank-auth-summary">${buildGitHubAuthSummaryHtml()}</div>
               </div>`
@@ -7644,7 +7898,7 @@
         <div class="al-bank-list">
           ${
             visibleItems.length === 0
-              ? `<div class="al-bank-empty"><p>${isMineTab ? `当前分类下还没有${getQuestionBankCategoryLabel(selectedCategory)}题库；先点“提取题面”或导入题库。` : `当前分类下还没有${getQuestionBankCategoryLabel(selectedCategory)}云端题库；可以先点面板里的“同步云端”。`}</p></div>`
+              ? `<div class="al-bank-empty"><p>${isMineTab ? `当前分类下还没有${getQuestionBankCategoryLabel(selectedCategory)}题库；先点“生成答案”或导入题库。` : `当前分类下还没有${getQuestionBankCategoryLabel(selectedCategory)}云端题库；可以先点面板里的“下载云端题库”。`}</p></div>`
               : visibleItems
                   .map((item, index) => {
                     const globalIndex = items.indexOf(item);
@@ -7827,53 +8081,6 @@
       }
     };
 
-    const migrateLegacyQuestionBankCategories = async () => {
-      await ensureQuestionBankLoaded();
-      const entries = Object.entries(state.questionBank || {});
-      let migratedCount = 0;
-
-      for (const [storageKey, entry] of entries) {
-        if (!entry || typeof entry !== "object") {
-          continue;
-        }
-        if (normalizeQuestionBankSource(entry.source) === "cloud") {
-          continue;
-        }
-        const currentCategory = normalizeQuestionBankCategory(entry.category);
-        if (currentCategory !== "general") {
-          continue;
-        }
-
-        const nextCategory = inferLegacyQuestionBankCategory(entry);
-        if (nextCategory === "general") {
-          continue;
-        }
-
-        state.questionBank[storageKey] = {
-          ...entry,
-          source: normalizeQuestionBankSource(entry.source || "local"),
-          status: normalizeQuestionBankStatus(entry.status, entry.answer || entry.code || ""),
-          category: nextCategory,
-          pageUrl: String(entry.pageUrl || ""),
-          updatedAt: Date.now(),
-        };
-        migratedCount += 1;
-      }
-
-      if (migratedCount === 0) {
-        setStatus("没有可整理的旧题库分类。");
-        setBankNotice("旧题库分类已经是最新。", "info", true);
-        return;
-      }
-
-      await persistQuestionBank();
-      const latestItems = buildQuestionBankEditorItems();
-      items.splice(0, items.length, ...latestItems);
-      renderTabPanel();
-      setStatus(`旧题库分类整理完成，共迁移 ${migratedCount} 条。选择题已归到智慧树，代码题已归到 Educoder。`);
-      setBankNotice(`已整理 ${migratedCount} 条旧题库分类。`, "success", true);
-    };
-
     const submitContributions = async () => {
       const categorySelect = modal.querySelector('[data-role="bank-category-select"]');
       const submitCategory =
@@ -7941,27 +8148,41 @@
         const results = Array.isArray(response.result?.results) ? response.result.results : [];
         applyContributionResults(items, results, submitCategory);
         await persistQuestionBank();
-        const openedCount = results.filter((item) => item.status === "issue_opened").length;
+        const openedCount = results.filter(
+          (item) => item.status === "issue_opened" || item.status === "issue_created",
+        ).length;
         const duplicateCount = results.filter((item) => item.status === "duplicate").length;
         if (response.result?.needsPaste && response.result?.payloadText) {
           try {
             await navigator.clipboard.writeText(String(response.result.payloadText));
           } catch {}
         }
+        const usedFallback = Boolean(response.result?.fallbackUsed);
         const summaryText = response.result?.needsPaste
-          ? `贡献入口已打开：本次整理了 ${openedCount} 条题目，完整 JSON 已复制到剪贴板，请在 GitHub 页面粘贴后提交。`
-          : `贡献入口已打开：本次整理了 ${openedCount} 条题目，重复标记 ${duplicateCount} 条。`;
+          ? usedFallback
+            ? `服务端不可用，已切回手动提交流程：本次整理了 ${openedCount} 条题目，完整 JSON 已复制到剪贴板，请在 GitHub 页面粘贴后提交。`
+            : `贡献入口已打开：本次整理了 ${openedCount} 条题目，完整 JSON 已复制到剪贴板，请在 GitHub 页面粘贴后提交。`
+          : usedFallback
+            ? `服务端不可用，已回退到 GitHub 预填提交流程：本次整理了 ${openedCount} 条题目，重复标记 ${duplicateCount} 条。`
+            : `GitHub Issue 已创建：本次整理了 ${openedCount} 条题目，重复标记 ${duplicateCount} 条。`;
         setSaveIndicator(summaryText, "saved", true);
         setStatus(
           response.result?.needsPaste
-            ? "GitHub Issue 已打开，完整 JSON 已复制到剪贴板。"
-            : "GitHub Issue 已打开，请在新页面确认提交。",
+            ? "服务端不可用，已回退到手动粘贴模式。"
+            : usedFallback
+              ? "服务端不可用，已打开 GitHub 预填页面，请在新页面确认提交。"
+              : "GitHub Issue 已创建并打开，请在新页面确认。",
         );
         setBankNotice(summaryText, "success", true);
+        const cleanSummary = `GitHub Issue created and opened. ${openedCount} item(s) included, ${duplicateCount} duplicate(s).`;
+        setSaveIndicator(cleanSummary, "saved", true);
+        setStatus("GitHub Issue created and opened.");
+        setBankNotice(cleanSummary, "success", true);
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         setSaveIndicator("提交失败", "idle", true);
         setStatus(message);
+        setBankNotice(`Contribution failed: ${message}`, "error", true);
         setBankNotice(`贡献提交失败：${message}`, "error");
         throw error;
       } finally {
@@ -7977,13 +8198,6 @@
       }
       if (target.getAttribute("data-role") === "bank-export") {
         void exportQuestionBank();
-        return;
-      }
-      if (target.getAttribute("data-role") === "bank-migrate-legacy") {
-        void migrateLegacyQuestionBankCategories().catch((error) => {
-          setStatus(error instanceof Error ? error.message : String(error));
-          setBankNotice(error instanceof Error ? error.message : String(error), "error");
-        });
         return;
       }
       if (target.getAttribute("data-role") === "bank-import") {

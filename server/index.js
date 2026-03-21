@@ -2,11 +2,13 @@ const http = require("node:http");
 const { URL } = require("node:url");
 const { readDb, updateDb } = require("./lib/db");
 const {
+  createBatchContributionIssue,
   createContributionIssue,
   exchangeCodeForAccessToken,
   fetchGitHubUser,
   getGitHubConfig,
   hasGitHubOAuthConfig,
+  hasGitHubRepoConfig,
   syncCategoryFileToGitHub,
 } = require("./lib/github");
 const { solveWithPlatform } = require("./lib/solver");
@@ -47,9 +49,14 @@ const server = http.createServer(async (req, res) => {
     const requestUrl = new URL(req.url || "/", `http://${req.headers.host || "127.0.0.1"}`);
 
     if (req.method === "GET" && requestUrl.pathname === "/health") {
+      const githubConfig = getGitHubConfig();
       sendJson(res, 200, {
         ok: true,
         githubOAuthConfigured: hasGitHubOAuthConfig(),
+        repoConfigPresent: hasGitHubRepoConfig(),
+        repoOwner: githubConfig.repoOwner || "",
+        repoName: githubConfig.repoName || "",
+        repoTokenPresent: Boolean(githubConfig.repoToken),
         publicBaseUrl: PUBLIC_BASE_URL || "",
         host: HOST,
         port: PORT,
@@ -128,6 +135,11 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "POST" && requestUrl.pathname === "/contributions") {
       const session = await requireSession(req);
       await handleContributions(req, res, session);
+      return;
+    }
+
+    if (req.method === "POST" && requestUrl.pathname === "/api/question-bank/contributions/issue") {
+      await handleBatchContributionIssue(req, res);
       return;
     }
 
@@ -425,6 +437,149 @@ async function handleContributions(req, res, session) {
     createdCount: results.filter((item) => item.status === "issue_created").length,
     duplicateCount: results.filter((item) => item.status === "duplicate").length,
     results,
+  });
+}
+
+async function handleBatchContributionIssue(req, res) {
+  const body = safeJsonParse(await readRequestBody(req), {}) || {};
+  const category = assertCategory(String(body.category || "").trim());
+  const rawEntries = Array.isArray(body.entries) ? body.entries : [];
+  const entries = rawEntries.map((entry) => normalizeBatchContributionEntry(entry)).filter(Boolean);
+  if (entries.length === 0) {
+    throw new Error("No valid contribution entries were provided.");
+  }
+
+  const submittedAt = String(body.submittedAt || "").trim() || nowIso();
+  const source = String(body.source || "").trim() || "autolearning-extension";
+  const sourceMeta = buildBatchSourceMeta(entries, body.sourceMeta);
+  const payload = {
+    version: 1,
+    category,
+    exportedAt: submittedAt,
+    source,
+    questions: entries.map((entry) => ({
+      clientEntryId: entry.clientEntryId,
+      stem: entry.stem,
+      answer: entry.answer,
+      sourceMeta: entry.sourceMeta,
+    })),
+  };
+  const issueTitle = `[题库贡献][${category}] ${entries.length} 题`;
+  const issue = await createBatchContributionIssue({
+    title: issueTitle,
+    category,
+    entryCount: entries.length,
+    exportedAt: submittedAt,
+    source,
+    sourceMeta,
+    payload,
+  });
+
+  sendJson(res, 200, {
+    ok: true,
+    issueUrl: issue.issueUrl,
+    issueNumber: issue.issueNumber,
+    issueTitle: issue.issueTitle,
+    entryCount: entries.length,
+  });
+}
+
+function normalizeBatchContributionEntry(entry) {
+  if (!entry || typeof entry !== "object") {
+    return null;
+  }
+
+  const stem = normalizeText(entry.stem || "");
+  const answer = normalizeAnswer(entry.answer || "");
+  if (!stem || !answer) {
+    return null;
+  }
+
+  const rawSourceMeta = entry.sourceMeta && typeof entry.sourceMeta === "object" ? entry.sourceMeta : {};
+  return {
+    clientEntryId: String(entry.clientEntryId || "").trim() || randomId("client"),
+    stem,
+    answer,
+    sourceMeta: {
+      title: String(rawSourceMeta.title || "").trim(),
+      category: String(rawSourceMeta.category || "").trim(),
+      source: String(rawSourceMeta.source || "").trim(),
+      site: String(rawSourceMeta.site || "").trim(),
+      pageUrl: String(rawSourceMeta.pageUrl || "").trim(),
+    },
+  };
+}
+
+function buildBatchSourceMeta(entries, providedMeta) {
+  const normalizedProvided =
+    providedMeta && typeof providedMeta === "object"
+      ? {
+          title: String(providedMeta.title || "").trim(),
+          category: String(providedMeta.category || "").trim(),
+          source: String(providedMeta.source || "").trim(),
+          site: String(providedMeta.site || "").trim(),
+          pageUrl: String(providedMeta.pageUrl || "").trim(),
+        }
+      : {};
+  const firstEntryMeta = entries[0]?.sourceMeta && typeof entries[0].sourceMeta === "object" ? entries[0].sourceMeta : {};
+  return {
+    title: normalizedProvided.title || String(firstEntryMeta.title || "").trim(),
+    category: normalizedProvided.category || String(firstEntryMeta.category || "").trim(),
+    source: normalizedProvided.source || String(firstEntryMeta.source || "").trim(),
+    site: normalizedProvided.site || String(firstEntryMeta.site || "").trim(),
+    pageUrl: normalizedProvided.pageUrl || String(firstEntryMeta.pageUrl || "").trim(),
+  };
+}
+
+async function handleBatchContributionIssue(req, res) {
+  const body = safeJsonParse(await readRequestBody(req), {}) || {};
+  const category = assertCategory(String(body.category || "").trim());
+  const rawEntries = Array.isArray(body.entries) ? body.entries : [];
+  const entries = rawEntries.map((entry) => normalizeBatchContributionEntry(entry)).filter(Boolean);
+  if (entries.length === 0) {
+    throw new Error("No valid contribution entries were provided.");
+  }
+
+  const submittedAt = String(body.submittedAt || "").trim() || nowIso();
+  const source = String(body.source || "").trim() || "autolearning-extension";
+  const sourceMeta = buildBatchSourceMeta(entries, body.sourceMeta);
+  const payload = {
+    version: 1,
+    category,
+    exportedAt: submittedAt,
+    source,
+    questions: entries.map((entry) => ({
+      clientEntryId: entry.clientEntryId,
+      stem: entry.stem,
+      answer: entry.answer,
+      sourceMeta: entry.sourceMeta,
+    })),
+  };
+
+  const issueTitle = `[题库贡献][${category}] ${entries.length} 题`;
+  let issue;
+  try {
+    issue = await createBatchContributionIssue({
+      title: issueTitle,
+      category,
+      entryCount: entries.length,
+      exportedAt: submittedAt,
+      source,
+      sourceMeta,
+      payload,
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error(`[question-bank/contributions/issue] ${errorMessage}`);
+    throw error;
+  }
+
+  sendJson(res, 200, {
+    ok: true,
+    issueUrl: issue.issueUrl,
+    issueNumber: issue.issueNumber,
+    issueTitle: issue.issueTitle,
+    entryCount: entries.length,
   });
 }
 
