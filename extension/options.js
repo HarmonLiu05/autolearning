@@ -3,20 +3,17 @@ const DEFAULT_CHOICE_PROMPT =
 const DEFAULT_CODE_PROMPT =
   "当前页面大概率是编程题、代码填空题或需要补全模板的题。请优先保留题目指定语言、函数签名、输入输出格式和已有代码骨架，只补上真正缺失的部分。若页面自带代码与题面冲突，优先相信题面和样例。code 字段只放最终可提交或可复制的内容，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
 const API_KEY_PORTAL_URL = "http://03hhhx.dpdns.org:13030/login";
-const SUPPORTED_SOLVE_MODELS = [
-  "gemini-3-flash",
-  "claude-haiku-4-5-20251001",
-  "gpt-5.4-mini",
-];
+const FIXED_API_BASE_URL = "http://03hhhx.dpdns.org:18317/v1";
+const SUPPORTED_SOLVE_MODELS = ["gpt-5.4-mini"];
 const DEFAULT_ACTIVE_SOLVE_MODEL = "gpt-5.4-mini";
 const DEFAULT_SETTINGS = {
-  baseUrl: "https://api.deepseek.com/v1",
+  baseUrl: FIXED_API_BASE_URL,
   apiKey: "",
-  textBaseUrl: "https://api.deepseek.com/v1",
+  textBaseUrl: FIXED_API_BASE_URL,
   textApiKey: "",
-  model: "deepseek-chat",
+  model: DEFAULT_ACTIVE_SOLVE_MODEL,
   textModel: DEFAULT_ACTIVE_SOLVE_MODEL,
-  imageBaseUrl: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+  imageBaseUrl: FIXED_API_BASE_URL,
   imageApiKey: "",
   imageModel: DEFAULT_ACTIVE_SOLVE_MODEL,
   activeSolveModel: DEFAULT_ACTIVE_SOLVE_MODEL,
@@ -90,8 +87,17 @@ textApiKeyPortalLinkNode?.addEventListener("click", (event) => {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const textApiKey = document.getElementById("textApiKey").value.trim();
   const values = {
-    textApiKey: document.getElementById("textApiKey").value.trim(),
+    apiKey: textApiKey,
+    textApiKey,
+    baseUrl: FIXED_API_BASE_URL,
+    textBaseUrl: FIXED_API_BASE_URL,
+    imageBaseUrl: FIXED_API_BASE_URL,
+    model: DEFAULT_ACTIVE_SOLVE_MODEL,
+    textModel: DEFAULT_ACTIVE_SOLVE_MODEL,
+    imageModel: DEFAULT_ACTIVE_SOLVE_MODEL,
+    activeSolveModel: DEFAULT_ACTIVE_SOLVE_MODEL,
     extraInstructionsChoice: document.getElementById("extraInstructionsChoice").value.trim(),
     extraInstructionsCode: document.getElementById("extraInstructionsCode").value.trim(),
     fullAutoShortcut:

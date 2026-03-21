@@ -4,6 +4,7 @@ const DEFAULT_CODE_PROMPT =
   "当前页面大概率是编程题、代码填空题或需要补全模板的题。请优先保留题目指定语言、函数签名、输入输出格式和已有代码骨架，只补上真正缺失的部分。若页面自带代码与题面冲突，优先相信题面和样例。code 字段只放最终可提交或可复制的内容，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
 const QUESTION_BANK_CATEGORIES = ["educoder", "zhihuishu", "leetcode", "general"];
 const FIXED_SERVER_ORIGIN = "http://03hhhx.dpdns.org";
+const FIXED_API_BASE_URL = "http://03hhhx.dpdns.org:18317/v1";
 const FIXED_CONTRIBUTION_REPO_OWNER = "HarmonLiu05";
 const FIXED_CONTRIBUTION_REPO_NAME = "autolearning";
 const FIXED_CLOUD_REPO_OWNER = "HarmonLiu05";
@@ -12,21 +13,17 @@ const FIXED_CLOUD_REPO_BRANCH = "main";
 const DEFAULT_SERVER_ORIGIN = FIXED_SERVER_ORIGIN;
 const GITHUB_AUTH_STORAGE_KEY = "autolearningGithubAuthSession";
 const MAX_GITHUB_ISSUE_URL_LENGTH = 7000;
-const SUPPORTED_SOLVE_MODELS = [
-  "gemini-3-flash",
-  "claude-haiku-4-5-20251001",
-  "gpt-5.4-mini",
-];
+const SUPPORTED_SOLVE_MODELS = ["gpt-5.4-mini"];
 const DEFAULT_ACTIVE_SOLVE_MODEL = "gpt-5.4-mini";
 
 const DEFAULT_SETTINGS = {
-  baseUrl: "https://api.deepseek.com/v1",
+  baseUrl: FIXED_API_BASE_URL,
   apiKey: "",
-  textBaseUrl: "https://api.deepseek.com/v1",
+  textBaseUrl: FIXED_API_BASE_URL,
   textApiKey: "",
-  model: "deepseek-chat",
+  model: DEFAULT_ACTIVE_SOLVE_MODEL,
   textModel: DEFAULT_ACTIVE_SOLVE_MODEL,
-  imageBaseUrl: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
+  imageBaseUrl: FIXED_API_BASE_URL,
   imageApiKey: "",
   imageModel: DEFAULT_ACTIVE_SOLVE_MODEL,
   activeSolveModel: DEFAULT_ACTIVE_SOLVE_MODEL,
@@ -220,9 +217,16 @@ function normalizeSettingsShape(settings = {}) {
   const activeSolveModel = sanitizeActiveSolveModel(
     settings?.activeSolveModel || settings?.textModel || settings?.imageModel || settings?.model,
   );
+  const sharedApiKey = String(settings?.textApiKey || settings?.apiKey || "").trim();
   return {
     ...settings,
+    baseUrl: FIXED_API_BASE_URL,
+    textBaseUrl: FIXED_API_BASE_URL,
+    imageBaseUrl: FIXED_API_BASE_URL,
+    apiKey: sharedApiKey,
+    textApiKey: sharedApiKey,
     activeSolveModel,
+    model: activeSolveModel,
     textModel: activeSolveModel,
     imageModel: activeSolveModel,
   };
@@ -1048,18 +1052,16 @@ function getPromptMode(settings) {
 }
 
 function resolveSolverConfig(settings, userContent) {
-  const legacyBaseUrl = String(settings?.baseUrl || "").trim();
-  const legacyApiKey = String(settings?.apiKey || "").trim();
-  const legacyModel = String(settings?.model || "").trim();
   const activeSolveModel = sanitizeActiveSolveModel(
-    settings?.activeSolveModel || settings?.textModel || settings?.imageModel || legacyModel,
+    settings?.activeSolveModel || settings?.textModel || settings?.imageModel || settings?.model,
   );
-  const textBaseUrl = String(settings?.textBaseUrl || legacyBaseUrl || "").trim();
-  const textApiKey = String(settings?.textApiKey || legacyApiKey || "").trim();
-  const textModel = String(activeSolveModel || settings?.textModel || legacyModel || "").trim();
-  const imageBaseUrl = String(settings?.imageBaseUrl || textBaseUrl || legacyBaseUrl || "").trim();
-  const imageApiKey = String(settings?.imageApiKey || textApiKey || legacyApiKey || "").trim();
-  const imageModel = String(activeSolveModel || settings?.imageModel || textModel || legacyModel || "").trim();
+  const sharedApiKey = String(settings?.textApiKey || settings?.apiKey || "").trim();
+  const textBaseUrl = FIXED_API_BASE_URL;
+  const textApiKey = sharedApiKey;
+  const textModel = String(activeSolveModel).trim();
+  const imageBaseUrl = FIXED_API_BASE_URL;
+  const imageApiKey = sharedApiKey;
+  const imageModel = String(activeSolveModel).trim();
   const shouldUseImageModel = hasImageInMessage(userContent);
   const selectedConfig = shouldUseImageModel
     ? {
