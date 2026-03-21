@@ -8415,6 +8415,7 @@
     let activeTab = options.activeTab === "cloud" ? "cloud" : "mine";
     let selectedCategory = resolvePreferredQuestionBankCategory(state.problem);
     let isSubmittingContribution = false;
+    let contributionEmailDraft = String(state.settings.contributionEmail || "").trim();
     const modal = document.createElement("div");
     modal.className = "al-bank-modal";
     modal.setAttribute("data-role", "question-bank-modal");
@@ -8668,6 +8669,15 @@
       return changed;
     };
 
+    const persistContributionEmail = async (nextEmail) => {
+      const normalizedEmail = String(nextEmail || "").trim();
+      if (normalizedEmail === String(state.settings.contributionEmail || "").trim()) {
+        return;
+      }
+      state.settings.contributionEmail = normalizedEmail;
+      await storageSet({ contributionEmail: normalizedEmail });
+    };
+
     const saveInputValue = async (input, options = {}) => {
       if (!(input instanceof HTMLInputElement)) {
         return false;
@@ -8775,6 +8785,19 @@
                     </button>
                   </div>
                 </div>
+                <div class="al-bank-item-answer">
+                  <label for="al-bank-contribution-email">贡献邮箱</label>
+                  <input
+                    id="al-bank-contribution-email"
+                    type="email"
+                    data-role="bank-contribution-email"
+                    value="${escapeHtml(contributionEmailDraft)}"
+                    placeholder="例如 name@example.com"
+                    autocomplete="email"
+                    ${isSubmittingContribution ? "disabled" : ""}
+                  />
+                  <p class="al-bank-item-meta">仅用于贡献标记和后续人工发放额度，不做登录验证。</p>
+                </div>
                 <div class="al-bank-auth-summary">${buildGitHubAuthSummaryHtml()}</div>
               </div>`
             : `<div class="al-bank-empty"><p>云端题库只读展示，会在本地直接参与匹配，不会出现在贡献列表里。</p></div>`
@@ -8874,6 +8897,17 @@
         categorySelect.addEventListener("change", () => {
           selectedCategory = normalizeQuestionBankCategory(categorySelect.value);
           renderTabPanel();
+        });
+      }
+
+      const contributionEmailInput = tabPanel.querySelector('[data-role="bank-contribution-email"]');
+      if (contributionEmailInput instanceof HTMLInputElement) {
+        contributionEmailInput.addEventListener("input", () => {
+          contributionEmailDraft = contributionEmailInput.value.trim();
+        });
+        contributionEmailInput.addEventListener("blur", () => {
+          contributionEmailInput.value = contributionEmailInput.value.trim();
+          contributionEmailDraft = contributionEmailInput.value;
         });
       }
 
@@ -8992,7 +9026,13 @@
         return;
       }
 
-      const contributorEmail = String(state.settings.contributionEmail || "").trim();
+      const contributionEmailInput = tabPanel.querySelector('[data-role="bank-contribution-email"]');
+      const contributorEmail = String(
+        contributionEmailInput instanceof HTMLInputElement
+          ? contributionEmailInput.value
+          : contributionEmailDraft || state.settings.contributionEmail || "",
+      ).trim();
+      contributionEmailDraft = contributorEmail;
       const entries = pickedInputs
         .map((input) => {
           const index = Number(input.getAttribute("data-index"));
@@ -9066,6 +9106,7 @@
         const results = Array.isArray(response.result?.results) ? response.result.results : [];
         applyContributionResults(items, results, submitCategory);
         await persistQuestionBank();
+        await persistContributionEmail(contributorEmail);
         const openedCount = results.filter(
           (item) => item.status === "issue_opened" || item.status === "issue_created",
         ).length;

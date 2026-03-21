@@ -535,6 +535,11 @@ async function submitContributionWithServerFallback(category, entries) {
 }
 
 async function createContributionIssueViaServer(settings, category, entries, payload) {
+  const contributorEmail =
+    String(payload?.contributorEmail || "").trim() ||
+    (Array.isArray(entries)
+      ? String(entries.find((entry) => entry && typeof entry === "object" && entry.contributorEmail)?.contributorEmail || "").trim()
+      : "");
   const response = await fetch(buildLocalServerUrl("/api/question-bank/contributions/issue", settings), {
     method: "POST",
     headers: {
