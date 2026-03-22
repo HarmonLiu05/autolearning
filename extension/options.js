@@ -4,8 +4,8 @@ const DEFAULT_CODE_PROMPT =
   "当前页面大概率是编程题、代码填空题或需要补全模板的题。只要当前编辑器里已经有非空代码模板，你就必须基于这份模板补全，不能擅自重写整体结构。不要改函数签名、类名、输入输出格式、主流程结构、已有辅助函数名和注释约定；只补全 TODO、空函数、占位返回值、核心逻辑以及必要 import。若题面与模板冲突，优先遵循题面和样例，但仍尽量在原模板内修正，不要另起一份独立实现。若当前编辑器为空，再正常生成完整答案。code 字段只放最终可提交或可复制的完整代码，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
 const API_KEY_PORTAL_URL = "http://03hhhx.dpdns.org:13030/login";
 const FIXED_API_BASE_URL = "http://03hhhx.dpdns.org:18317/v1";
-const SUPPORTED_SOLVE_MODELS = ["gpt-5.4-mini"];
-const DEFAULT_ACTIVE_SOLVE_MODEL = "gpt-5.4-mini";
+const solveModelConfig = globalThis.AUTOLEARNING_SOLVE_MODELS || {};
+const DEFAULT_ACTIVE_SOLVE_MODEL = String(solveModelConfig.DEFAULT_ACTIVE_SOLVE_MODEL || "gpt-5.4-mini");
 const DEFAULT_SETTINGS = {
   baseUrl: FIXED_API_BASE_URL,
   apiKey: "",
@@ -89,17 +89,21 @@ textApiKeyPortalLinkNode?.addEventListener("click", (event) => {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  const currentValues = await storageGet(DEFAULT_SETTINGS);
   const textApiKey = document.getElementById("textApiKey").value.trim();
+  const activeSolveModel = String(
+    currentValues.activeSolveModel || currentValues.textModel || currentValues.imageModel || currentValues.model || "",
+  ).trim() || DEFAULT_ACTIVE_SOLVE_MODEL;
   const values = {
     apiKey: textApiKey,
     textApiKey,
     baseUrl: FIXED_API_BASE_URL,
     textBaseUrl: FIXED_API_BASE_URL,
     imageBaseUrl: FIXED_API_BASE_URL,
-    model: DEFAULT_ACTIVE_SOLVE_MODEL,
-    textModel: DEFAULT_ACTIVE_SOLVE_MODEL,
-    imageModel: DEFAULT_ACTIVE_SOLVE_MODEL,
-    activeSolveModel: DEFAULT_ACTIVE_SOLVE_MODEL,
+    model: activeSolveModel,
+    textModel: activeSolveModel,
+    imageModel: activeSolveModel,
+    activeSolveModel,
     extraInstructionsChoice: document.getElementById("extraInstructionsChoice").value.trim(),
     extraInstructionsCode: document.getElementById("extraInstructionsCode").value.trim(),
     fullAutoShortcut:
@@ -116,7 +120,17 @@ form.addEventListener("submit", async (event) => {
 });
 
 resetButton.addEventListener("click", async () => {
-  await storageSet(DEFAULT_SETTINGS);
+  const currentValues = await storageGet(DEFAULT_SETTINGS);
+  const activeSolveModel = String(
+    currentValues.activeSolveModel || currentValues.textModel || currentValues.imageModel || currentValues.model || "",
+  ).trim() || DEFAULT_ACTIVE_SOLVE_MODEL;
+  await storageSet({
+    ...DEFAULT_SETTINGS,
+    model: activeSolveModel,
+    textModel: activeSolveModel,
+    imageModel: activeSolveModel,
+    activeSolveModel,
+  });
   await hydrateForm();
   setStatus("已恢复默认值。");
 });

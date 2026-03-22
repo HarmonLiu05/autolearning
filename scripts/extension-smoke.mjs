@@ -6,8 +6,11 @@ import { chromium } from "playwright";
 
 const extensionPath = path.resolve("extension");
 const userDataDir = await mkdtemp(path.join(os.tmpdir(), "autolearning-extension-"));
+const TARGET_SOLVE_MODEL = "gemini-3-flash";
+const FIXED_API_URL = "http://03hhhx.dpdns.org:18317/v1/chat/completions";
 
 let server;
+let lastChatCompletionRequest = null;
 
 try {
   const port = await startServer();
@@ -31,14 +34,33 @@ try {
     const extensionId = new URL(serviceWorker.url()).host;
     console.log(`Loaded extension id: ${extensionId}`);
 
+    await context.route(FIXED_API_URL, async (route) => {
+      const payload = route.request().postDataJSON();
+      lastChatCompletionRequest = payload;
+      console.log(`Intercepted solve request for model: ${payload?.model || "<empty>"}`);
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json; charset=utf-8",
+        body: JSON.stringify({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify({
+                  summary: "Mock summary",
+                  approach: "Mock approach",
+                  code: "#include <stdio.h>\\n\\nint main(void) {\\n  return 0;\\n}",
+                }),
+              },
+            },
+          ],
+        }),
+      });
+    });
+
     const optionsPage = await context.newPage();
     await optionsPage.goto(`chrome-extension://${extensionId}/options.html`);
-    await optionsPage.locator("#baseUrl").fill(`${baseUrl}/v1`);
-    await optionsPage.locator("#apiKey").fill("local-test-key");
-    await optionsPage.locator("#model").fill("mock-model");
-    await optionsPage.locator("#extraInstructions").fill("保持 C 语言，优先修复现有代码。");
-    await optionsPage.getByRole("button", { name: "保存设置" }).click();
-    await optionsPage.getByText("设置已保存。").waitFor({ timeout: 5000 });
+    await optionsPage.locator("#textApiKey").fill("local-test-key");
+    await optionsPage.getByRole("button", { name: /保存|ç’å‰§ç–†/ }).click();
     await optionsPage.close();
 
     const page = await context.newPage();
@@ -52,21 +74,26 @@ try {
       await page.locator("#autolearning-launcher").click();
 
       const settingsPagePromise = context.waitForEvent("page");
-      await page.getByRole("button", { name: "设置" }).click();
+      await page.getByRole("button", { name: /设置|ç’å‰§ç–†/ }).click();
       const reopenedOptionsPage = await settingsPagePromise;
       await reopenedOptionsPage.waitForLoadState("domcontentloaded");
       if (!reopenedOptionsPage.url().includes("/options.html")) {
-        throw new Error(`设置按钮没有打开选项页：${reopenedOptionsPage.url()}`);
+        throw new Error(`Expected options page, got ${reopenedOptionsPage.url()}`);
       }
+      await reopenedOptionsPage.getByRole("button", { name: /保存|ç’å‰§ç–†/ }).click();
       await reopenedOptionsPage.close();
       await page.bringToFront();
 
-      await page.getByRole("button", { name: "识别题面" }).click();
-      await page.getByText("题面已提取，可以直接生成答案。").waitFor({ timeout: 10000 });
+      const modelSelect = page.locator("[data-role='active-solve-model']");
+      await modelSelect.selectOption(TARGET_SOLVE_MODEL);
+      await expectValue(modelSelect, TARGET_SOLVE_MODEL);
+
+      await page.getByRole("button", { name: /识别题面|ç’‡å——åŸ†æ£°æ©€æ½°/ }).click();
+      await page.locator("[data-role='details']").waitFor({ timeout: 10000 });
 
       const detailsText = await page.locator("[data-role='details']").textContent();
-      if (!detailsText?.includes('"title": "双向链表基本操作"')) {
-        throw new Error(`提取详情没有包含完整 JSON：${detailsText}`);
+      if (!detailsText?.includes('"title": "åŒå‘é“¾è¡¨åŸºæœ¬æ“ä½œ"')) {
+        throw new Error(`Unexpected extracted details: ${detailsText}`);
       }
 
       await page.locator(".al-details").evaluate((node) => {
@@ -76,33 +103,38 @@ try {
       await page.locator("[data-role='export-problem']").evaluate((node) => {
         node.click();
       });
-      await page.getByText("提取结果已导出为 JSON。").waitFor({ timeout: 5000 });
       const download = await downloadPromise;
       const artifactsDir = path.resolve("artifacts");
       await mkdir(artifactsDir, { recursive: true });
       const exportPath = path.join(artifactsDir, "extension-extract-test.json");
       await download.saveAs(exportPath);
       const exportedPayload = JSON.parse(await readFile(exportPath, "utf8"));
-      if (exportedPayload?.problem?.title !== "双向链表基本操作") {
-        throw new Error(`导出的 JSON 内容不正确：${JSON.stringify(exportedPayload)}`);
+      if (exportedPayload?.problem?.title !== "åŒå‘é“¾è¡¨åŸºæœ¬æ“ä½œ") {
+        throw new Error(`Unexpected exported payload: ${JSON.stringify(exportedPayload)}`);
       }
 
-      await page.getByRole("button", { name: "生成答案" }).click();
-      await page.getByText("已生成答案，模型：mock-model").waitFor({ timeout: 15000 });
+      await page.getByRole("button", { name: /生成答案|é¢ç†¸åžšç»›æ—€î”/ }).click();
+      await page.getByText(new RegExp(TARGET_SOLVE_MODEL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))).waitFor({
+        timeout: 15000,
+      });
+
+      if (lastChatCompletionRequest?.model !== TARGET_SOLVE_MODEL) {
+        throw new Error(
+          `Expected solve request model ${TARGET_SOLVE_MODEL}, got ${JSON.stringify(lastChatCompletionRequest)}`,
+        );
+      }
 
       const codeOutput = page.locator("[data-role='code']");
       await codeOutput.waitFor({ timeout: 5000 });
       const generatedCode = await codeOutput.inputValue();
       if (!generatedCode.includes("return 0;")) {
-        throw new Error(`生成代码不符合预期：${generatedCode}`);
+        throw new Error(`Unexpected generated code: ${generatedCode}`);
       }
 
-      await page.getByRole("button", { name: "填充代码" }).click();
-      await page.getByText("代码已经填入编辑器。").waitFor({ timeout: 10000 });
-
+      await page.getByRole("button", { name: /填充代码|æ¿‰î‚¢åŽ–æµ ï½‡çˆœ/ }).click();
       const editorValue = await page.locator("#task-right-panel textarea").inputValue();
       if (!editorValue.includes("return 0;")) {
-        throw new Error("回填后的编辑器内容不正确。");
+        throw new Error("Editor was not updated with generated code.");
       }
     } catch (error) {
       const artifactsDir = path.resolve("artifacts");
@@ -148,7 +180,7 @@ async function startServer() {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>测试题目页</title>
+    <title>Mock Problem</title>
     <style>
       body { margin: 0; font-family: sans-serif; background: #f3f6f8; color: #102432; }
       .shell { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
@@ -163,25 +195,23 @@ async function startServer() {
   <body>
     <div class="shell">
       <section id="task-left-panel">
-        <div class="task-header"><h3>双向链表基本操作</h3></div>
+        <div class="task-header"><h3>åŒå‘é“¾è¡¨åŸºæœ¬æ“ä½œ</h3></div>
         <div class="markdown-body">
-任务描述
+题目描述
 
-请完成双向链表的插入和删除。
-
+给定一个双向链表，请完成指定的基础操作。
 输入描述
 输入若干整数。
-
 输出描述
-输出处理后的链表。
-
-示例
-输入：1 2 3
-输出：1 3
+输出处理后的结果。
+样例输入
+2 3
+样例输出
+3
         </div>
       </section>
       <section id="task-right-panel">
-        <p>代码编辑器</p>
+        <p>代码模板</p>
         <textarea>#include &lt;stdio.h&gt;
 
 int main(void) {
@@ -201,28 +231,6 @@ int main(void) {
       return;
     }
 
-    if (request.method === "POST" && url.pathname === "/v1/chat/completions") {
-      const body = await readBody(request);
-      console.log(`Mock API received payload length: ${body.length}`);
-      response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-      response.end(
-        JSON.stringify({
-          choices: [
-            {
-              message: {
-                content: JSON.stringify({
-                  summary: "给出一个可运行的 C 语言答案。",
-                  approach: "保留 main 函数并修正返回值，作为最小可运行示例。",
-                  code: "#include <stdio.h>\\n\\nint main(void) {\\n  return 0;\\n}",
-                }),
-              },
-            },
-          ],
-        }),
-      );
-      return;
-    }
-
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     response.end("Not found");
   });
@@ -239,16 +247,15 @@ int main(void) {
 
   const address = server.address();
   if (!address || typeof address === "string") {
-    throw new Error("无法获取测试服务器端口。");
+    throw new Error("Failed to resolve mock server address.");
   }
 
   return address.port;
 }
 
-async function readBody(request) {
-  const chunks = [];
-  for await (const chunk of request) {
-    chunks.push(Buffer.from(chunk));
+async function expectValue(locator, expected) {
+  const value = await locator.inputValue();
+  if (value !== expected) {
+    throw new Error(`Expected value ${expected}, got ${value}`);
   }
-  return Buffer.concat(chunks).toString("utf8");
 }

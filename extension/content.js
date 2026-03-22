@@ -60,17 +60,15 @@
   const DEFAULT_CODE_PROMPT =
     "当前页面大概率是编程题、代码填空题或需要补全模板的题。只要当前编辑器里已经有非空代码模板，你就必须基于这份模板补全，不能擅自重写整体结构。不要改函数签名、类名、输入输出格式、主流程结构、已有辅助函数名和注释约定；只补全 TODO、空函数、占位返回值、核心逻辑以及必要 import。若题面与模板冲突，优先遵循题面和样例，但仍尽量在原模板内修正，不要另起一份独立实现。若当前编辑器为空，再正常生成完整答案。code 字段只放最终可提交或可复制的完整代码，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
 
-  const SUPPORTED_SOLVE_MODELS = [
-    "gemini-3-flash",
-    "claude-haiku-4-5-20251001",
-    "gpt-5.4-mini",
-  ];
-  const DEFAULT_ACTIVE_SOLVE_MODEL = "gpt-5.4-mini";
-  const MODEL_ICON_URLS = {
-    "gemini-3-flash": chrome.runtime.getURL("assets/gemini.png"),
-    "claude-haiku-4-5-20251001": chrome.runtime.getURL("assets/claude.png"),
-    "gpt-5.4-mini": chrome.runtime.getURL("assets/gpt.png"),
-  };
+  const solveModelConfig = globalThis.AUTOLEARNING_SOLVE_MODELS || {};
+  const SOLVE_MODELS = Array.isArray(solveModelConfig.SOLVE_MODELS) ? solveModelConfig.SOLVE_MODELS : [];
+  const SUPPORTED_SOLVE_MODELS = Array.isArray(solveModelConfig.SUPPORTED_SOLVE_MODELS)
+    ? solveModelConfig.SUPPORTED_SOLVE_MODELS
+    : ["gpt-5.4-mini"];
+  const DEFAULT_ACTIVE_SOLVE_MODEL = String(solveModelConfig.DEFAULT_ACTIVE_SOLVE_MODEL || "gpt-5.4-mini");
+  const MODEL_ICON_URLS = Object.fromEntries(
+    SOLVE_MODELS.map((item) => [item.value, chrome.runtime.getURL(item.icon)]),
+  );
 
   const state = {
     mounted: false,
@@ -271,9 +269,7 @@
                 <p class="al-model-switcher-hint">切换后会影响后续“生成答案”，文本和截图解题统一使用同一个模型。</p>
               </div>
               <select class="al-model-select" data-role="active-solve-model" aria-label="当前模型">
-                <option value="gemini-3-flash">gemini-3-flash</option>
-                <option value="claude-haiku-4-5-20251001">claude-haiku-4-5-20251001</option>
-                <option value="gpt-5.4-mini">gpt-5.4-mini</option>
+                ${renderSolveModelOptions()}
               </select>
             </div>
           </section>
@@ -4398,6 +4394,13 @@
   function sanitizeActiveSolveModel(value) {
     const normalized = String(value || "").trim();
     return SUPPORTED_SOLVE_MODELS.includes(normalized) ? normalized : DEFAULT_ACTIVE_SOLVE_MODEL;
+  }
+
+  function renderSolveModelOptions() {
+    return SOLVE_MODELS.map((item) => {
+      const value = escapeHtml(item?.value || "");
+      return `<option value="${value}">${value}</option>`;
+    }).join("");
   }
 
   function getActiveSolveModelIconUrl(model) {

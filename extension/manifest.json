@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "智拓",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "智启新知，拓学无界。识别算法题面、读取编辑器代码、调用大模型并回填代码的学习辅助插件。",
   "permissions": ["storage", "clipboardRead", "clipboardWrite", "activeTab", "tabs"],
   "host_permissions": ["<all_urls>"],
@@ -19,11 +19,16 @@
         "*://educoder.net/*",
         "*://*.educoder.net/*"
       ],
-      "js": ["content.js"],
+      "js": ["solve-models.js", "content.js"],
       "all_frames": true,
       "run_at": "document_idle"
     }
   ],
+  "icons": {
+    "16": "assets/launcher-logo.png",
+    "48": "assets/launcher-logo.png",
+    "128": "assets/launcher-logo.png"
+  },
   "web_accessible_resources": [
     {
       "resources": [

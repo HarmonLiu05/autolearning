@@ -5,7 +5,7 @@
   "scripts": {
     "dev:server": "node server/index.js",
     "educoder:login": "node scripts/educoder-login-with-extension.mjs",
-    "check:extension": "node --check extension/background.js && node --check extension/content.js && node --check extension/options.js && node --check extension/page-bridge.js",
+    "check:extension": "node --check extension/solve-models.js && node --check extension/background.js && node --check extension/content.js && node --check extension/options.js && node --check extension/page-bridge.js",
     "test:extension": "node scripts/extension-smoke.mjs"
   },
   "keywords": [],
