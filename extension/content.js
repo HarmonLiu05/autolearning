@@ -7282,7 +7282,7 @@
     if (!Number.isFinite(parsed)) {
       return 3000;
     }
-    return Math.min(15000, Math.max(500, Math.round(parsed)));
+    return Math.min(15000, Math.max(0, Math.round(parsed)));
   }
 
   function normalizeAutoPickDelay(value) {
@@ -7290,7 +7290,7 @@
     if (!Number.isFinite(parsed)) {
       return 600;
     }
-    return Math.min(5000, Math.max(100, Math.round(parsed)));
+    return Math.min(5000, Math.max(0, Math.round(parsed)));
   }
 
   function getPageFingerprint() {

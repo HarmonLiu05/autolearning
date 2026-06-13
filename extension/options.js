@@ -307,7 +307,7 @@ function normalizeDelayInput(value) {
   if (!Number.isFinite(parsed)) {
     return DEFAULT_SETTINGS.fullAutoNextDelayMs;
   }
-  return Math.min(15000, Math.max(500, Math.round(parsed)));
+  return Math.min(15000, Math.max(0, Math.round(parsed)));
 }
 
 function normalizeAutoPickDelayInput(value) {
@@ -315,7 +315,7 @@ function normalizeAutoPickDelayInput(value) {
   if (!Number.isFinite(parsed)) {
     return DEFAULT_SETTINGS.autoPickNextDelayMs;
   }
-  return Math.min(5000, Math.max(100, Math.round(parsed)));
+  return Math.min(5000, Math.max(0, Math.round(parsed)));
 }
 
 function normalizeShortcut(value) {
