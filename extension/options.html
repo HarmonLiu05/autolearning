@@ -20,8 +20,33 @@
       <section class="card">
         <form id="settings-form" class="form">
           <label class="field">
+            <span>文本模型服务</span>
+            <select id="textProvider" name="textProvider">
+              <option value="platform">现有平台</option>
+              <option value="deepseek">DeepSeek 官方 API</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>文本 Base URL</span>
+            <input
+              id="textBaseUrl"
+              name="textBaseUrl"
+              type="url"
+              placeholder="https://api.deepseek.com"
+              autocomplete="off"
+            />
+            <small>DeepSeek 官方地址为 https://api.deepseek.com。</small>
+          </label>
+
+          <label class="field">
+            <span>文本模型</span>
+            <select id="textModel" name="textModel"></select>
+          </label>
+
+          <label class="field">
             <span class="field-head">
-              <span>文本 API Key</span>
+              <span id="textApiKeyLabel">文本 API Key</span>
               <a
                 id="textApiKeyPortalLink"
                 class="field-link"
@@ -150,6 +175,7 @@
     </main>
 
     <script src="solve-models.js"></script>
+    <script src="solve-api-config.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

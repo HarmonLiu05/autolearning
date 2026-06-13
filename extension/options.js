@@ -5,8 +5,12 @@ const DEFAULT_CODE_PROMPT =
 const API_KEY_PORTAL_URL = "http://03hhhx.dpdns.org:13030/login";
 const FIXED_API_BASE_URL = "http://03hhhx.dpdns.org:18317/v1";
 const solveModelConfig = globalThis.AUTOLEARNING_SOLVE_MODELS || {};
+const apiConfig = globalThis.AUTOLEARNING_API_CONFIG || {};
+const PROVIDERS = solveModelConfig.PROVIDERS || {};
+const DEFAULT_PROVIDER = String(solveModelConfig.DEFAULT_PROVIDER || "platform");
 const DEFAULT_ACTIVE_SOLVE_MODEL = String(solveModelConfig.DEFAULT_ACTIVE_SOLVE_MODEL || "gpt-5.4-mini");
 const DEFAULT_SETTINGS = {
+  textProvider: "",
   baseUrl: FIXED_API_BASE_URL,
   apiKey: "",
   textBaseUrl: FIXED_API_BASE_URL,
@@ -54,6 +58,10 @@ const authSessionSummaryNode = document.getElementById("authSessionSummary");
 const cloudRepoSummaryNode = document.getElementById("cloudRepoSummary");
 const textApiKeyPortalLinkNode = document.getElementById("textApiKeyPortalLink");
 const textApiKeyHelpNode = document.getElementById("textApiKeyHelp");
+const textApiKeyLabelNode = document.getElementById("textApiKeyLabel");
+const textProviderNode = document.getElementById("textProvider");
+const textBaseUrlNode = document.getElementById("textBaseUrl");
+const textModelNode = document.getElementById("textModel");
 
 void hydrateForm();
 chrome.storage.onChanged.addListener((changes, areaName) => {
@@ -67,6 +75,9 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
   if (
     changes.textApiKey ||
     changes.apiKey ||
+    changes.textProvider ||
+    changes.textBaseUrl ||
+    changes.textModel ||
     changes.extraInstructionsChoice ||
     changes.extraInstructionsCode ||
     changes.extraInstructions ||
@@ -79,8 +90,12 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
     void hydrateForm();
   }
 });
+textProviderNode?.addEventListener("change", () => {
+  renderProviderFields(textProviderNode.value, "");
+});
 textApiKeyPortalLinkNode?.addEventListener("click", (event) => {
-  if (API_KEY_PORTAL_URL) {
+  const provider = sanitizeProvider(textProviderNode?.value);
+  if (provider === "deepseek" || API_KEY_PORTAL_URL) {
     return;
   }
   event.preventDefault();
@@ -89,21 +104,28 @@ textApiKeyPortalLinkNode?.addEventListener("click", (event) => {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  const currentValues = await storageGet(DEFAULT_SETTINGS);
+  const textProvider = sanitizeProvider(textProviderNode?.value);
+  const providerConfig = PROVIDERS[textProvider] || {};
+  const textBaseUrl = String(textBaseUrlNode?.value || "").trim().replace(/\/+$/, "");
   const textApiKey = document.getElementById("textApiKey").value.trim();
-  const activeSolveModel = String(
-    currentValues.activeSolveModel || currentValues.textModel || currentValues.imageModel || currentValues.model || "",
-  ).trim() || DEFAULT_ACTIVE_SOLVE_MODEL;
+  const textModel = sanitizeProviderModel(textProvider, textModelNode?.value);
+  if (!textBaseUrl || !textApiKey || !textModel) {
+    setStatus("请完整填写文本 Base URL、API Key 和模型。");
+    return;
+  }
   const values = {
+    textProvider,
     apiKey: textApiKey,
     textApiKey,
-    baseUrl: FIXED_API_BASE_URL,
-    textBaseUrl: FIXED_API_BASE_URL,
-    imageBaseUrl: FIXED_API_BASE_URL,
-    model: activeSolveModel,
-    textModel: activeSolveModel,
-    imageModel: activeSolveModel,
-    activeSolveModel,
+    baseUrl: textBaseUrl,
+    textBaseUrl,
+    model: textModel,
+    textModel,
+    activeSolveModel: textModel,
+    imageBaseUrl:
+      textProvider === "platform"
+        ? textBaseUrl
+        : String(providerConfig.imageBaseUrl || FIXED_API_BASE_URL),
     extraInstructionsChoice: document.getElementById("extraInstructionsChoice").value.trim(),
     extraInstructionsCode: document.getElementById("extraInstructionsCode").value.trim(),
     fullAutoShortcut:
@@ -120,17 +142,7 @@ form.addEventListener("submit", async (event) => {
 });
 
 resetButton.addEventListener("click", async () => {
-  const currentValues = await storageGet(DEFAULT_SETTINGS);
-  const activeSolveModel = String(
-    currentValues.activeSolveModel || currentValues.textModel || currentValues.imageModel || currentValues.model || "",
-  ).trim() || DEFAULT_ACTIVE_SOLVE_MODEL;
-  await storageSet({
-    ...DEFAULT_SETTINGS,
-    model: activeSolveModel,
-    textModel: activeSolveModel,
-    imageModel: activeSolveModel,
-    activeSolveModel,
-  });
+  await storageSet(DEFAULT_SETTINGS);
   await hydrateForm();
   setStatus("已恢复默认值。");
 });
@@ -153,7 +165,18 @@ restoreCodePromptButton.addEventListener("click", async () => {
 });
 
 async function hydrateForm() {
-  const values = await storageGet(DEFAULT_SETTINGS);
+  const storedValues = await storageGet(DEFAULT_SETTINGS);
+  const normalizedTextSettings =
+    typeof apiConfig.normalizeTextProviderSettings === "function"
+      ? apiConfig.normalizeTextProviderSettings(storedValues)
+      : storedValues;
+  const values = {
+    ...storedValues,
+    ...normalizedTextSettings,
+  };
+  textProviderNode.value = sanitizeProvider(values.textProvider);
+  renderProviderFields(values.textProvider, values.textModel);
+  textBaseUrlNode.value = values.textBaseUrl || values.baseUrl || "";
   document.getElementById("textApiKey").value = values.textApiKey || values.apiKey || "";
   document.getElementById("extraInstructionsChoice").value =
     values.extraInstructionsChoice || DEFAULT_CHOICE_PROMPT;
@@ -171,6 +194,30 @@ async function hydrateForm() {
   document.getElementById("cloudAutoSync").checked = Boolean(values.cloudAutoSync);
   renderCloudRepoSummary(values);
   renderAuthSessionSummary();
+  renderApiKeyPortalState();
+}
+
+function sanitizeProvider(value) {
+  return typeof solveModelConfig.sanitizeProvider === "function"
+    ? solveModelConfig.sanitizeProvider(value)
+    : DEFAULT_PROVIDER;
+}
+
+function sanitizeProviderModel(provider, value) {
+  return typeof solveModelConfig.sanitizeProviderModel === "function"
+    ? solveModelConfig.sanitizeProviderModel(provider, value)
+    : String(value || DEFAULT_ACTIVE_SOLVE_MODEL);
+}
+
+function renderProviderFields(providerValue, selectedModel) {
+  const provider = sanitizeProvider(providerValue);
+  const providerConfig = PROVIDERS[provider] || PROVIDERS[DEFAULT_PROVIDER] || {};
+  textProviderNode.value = provider;
+  textBaseUrlNode.value = providerConfig.baseUrl || "";
+  textModelNode.innerHTML = (providerConfig.models || [])
+    .map((model) => `<option value="${model}">${model}</option>`)
+    .join("");
+  textModelNode.value = sanitizeProviderModel(provider, selectedModel);
   renderApiKeyPortalState();
 }
 
@@ -221,14 +268,22 @@ function renderAuthSessionSummary() {
 }
 
 function renderApiKeyPortalState() {
+  const provider = sanitizeProvider(textProviderNode?.value);
+  const portalUrl =
+    provider === "deepseek"
+      ? "https://platform.deepseek.com/api_keys"
+      : API_KEY_PORTAL_URL;
   if (textApiKeyPortalLinkNode instanceof HTMLAnchorElement) {
-    const enabled = Boolean(API_KEY_PORTAL_URL);
-    textApiKeyPortalLinkNode.href = enabled ? API_KEY_PORTAL_URL : "#";
+    const enabled = Boolean(portalUrl);
+    textApiKeyPortalLinkNode.href = enabled ? portalUrl : "#";
     textApiKeyPortalLinkNode.setAttribute("aria-disabled", enabled ? "false" : "true");
     textApiKeyPortalLinkNode.classList.toggle("is-disabled", !enabled);
   }
+  if (textApiKeyLabelNode) {
+    textApiKeyLabelNode.textContent = provider === "deepseek" ? "DeepSeek API Key" : "文本 API Key";
+  }
   if (textApiKeyHelpNode) {
-    textApiKeyHelpNode.textContent = API_KEY_PORTAL_URL
+    textApiKeyHelpNode.textContent = portalUrl
       ? "保存在当前浏览器本地，不会写进这个仓库。也可以通过右侧链接前往认证页获取新的 API Key。"
       : "保存在当前浏览器本地，不会写进这个仓库。认证页暂未开放。";
   }

@@ -61,6 +61,8 @@
     "当前页面大概率是编程题、代码填空题或需要补全模板的题。只要当前编辑器里已经有非空代码模板，你就必须基于这份模板补全，不能擅自重写整体结构。不要改函数签名、类名、输入输出格式、主流程结构、已有辅助函数名和注释约定；只补全 TODO、空函数、占位返回值、核心逻辑以及必要 import。若题面与模板冲突，优先遵循题面和样例，但仍尽量在原模板内修正，不要另起一份独立实现。若当前编辑器为空，再正常生成完整答案。code 字段只放最终可提交或可复制的完整代码，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
 
   const solveModelConfig = globalThis.AUTOLEARNING_SOLVE_MODELS || {};
+  const PROVIDERS = solveModelConfig.PROVIDERS || {};
+  const DEFAULT_PROVIDER = String(solveModelConfig.DEFAULT_PROVIDER || "platform");
   const SOLVE_MODELS = Array.isArray(solveModelConfig.SOLVE_MODELS) ? solveModelConfig.SOLVE_MODELS : [];
   const SUPPORTED_SOLVE_MODELS = Array.isArray(solveModelConfig.SUPPORTED_SOLVE_MODELS)
     ? solveModelConfig.SUPPORTED_SOLVE_MODELS
@@ -113,6 +115,9 @@
     cloudSyncStarted: false,
     githubAuth: null,
     settings: {
+      textProvider: DEFAULT_PROVIDER,
+      textBaseUrl: String(PROVIDERS[DEFAULT_PROVIDER]?.baseUrl || ""),
+      textModel: DEFAULT_ACTIVE_SOLVE_MODEL,
       promptMode: "choice",
       extraInstructionsChoice: DEFAULT_CHOICE_PROMPT,
       extraInstructionsCode: DEFAULT_CODE_PROMPT,
@@ -3520,12 +3525,16 @@
   }
 
   function applySettings(settings) {
+    const textProvider = sanitizeProvider(settings?.textProvider || state.settings.textProvider);
     const activeSolveModel = sanitizeActiveSolveModel(
       settings?.activeSolveModel || settings?.textModel || settings?.imageModel || state.settings.activeSolveModel,
+      textProvider,
     );
     state.settings = {
       ...state.settings,
       ...settings,
+      textProvider,
+      textBaseUrl: String(settings?.textBaseUrl || state.settings.textBaseUrl || "").trim(),
       promptMode: sanitizePromptMode(settings?.promptMode ?? state.settings.promptMode),
       fullAutoMode: sanitizeFullAutoMode(settings?.fullAutoMode ?? state.settings.fullAutoMode),
       activeSolveModel,
@@ -3559,7 +3568,6 @@
       contributionEmail: String(settings?.contributionEmail || state.settings.contributionEmail || "").trim(),
     };
     state.settings.textModel = activeSolveModel;
-    state.settings.imageModel = activeSolveModel;
     renderShortcutTip();
     syncActiveSolveModelUi();
     syncPromptModeUi();
@@ -3578,6 +3586,12 @@
     }
     if (changes.fullAutoMode) {
       nextSettings.fullAutoMode = changes.fullAutoMode.newValue;
+    }
+    if (changes.textProvider) {
+      nextSettings.textProvider = changes.textProvider.newValue;
+    }
+    if (changes.textBaseUrl) {
+      nextSettings.textBaseUrl = changes.textBaseUrl.newValue;
     }
     if (changes.activeSolveModel || changes.textModel || changes.imageModel) {
       nextSettings.activeSolveModel =
@@ -4034,16 +4048,18 @@
       return;
     }
     const activeSolveModel = sanitizeActiveSolveModel(state.settings.activeSolveModel);
+    const provider = sanitizeProvider(state.settings.textProvider);
+    const providerLabel = String(PROVIDERS[provider]?.label || provider);
     const owner = String(state.settings.cloudRepoOwner || "").trim();
     const repo = String(state.settings.cloudRepoName || "").trim();
     const branch = String(state.settings.cloudRepoBranch || "").trim() || "main";
     if (!owner || !repo) {
       elements.platformSummary.textContent =
-        `当前解题模型：${activeSolveModel}。还没有配置云端仓库；配置后可下载 GitHub 云端题库到本地缓存使用。`;
+        `当前文本服务：${providerLabel}；当前模型：${activeSolveModel}。还没有配置云端仓库；配置后可下载 GitHub 云端题库到本地缓存使用。`;
       return;
     }
     elements.platformSummary.textContent =
-      `当前解题模型：${activeSolveModel}。当前云端仓库：${owner}/${repo}@${branch}。下载云端题库不需要登录，但当前网络需要能访问 GitHub；贡献题目会打开 GitHub Issue 页面，由仓库里的 Actions 自动校验并生成待审核更新。`;
+      `当前文本服务：${providerLabel}；当前模型：${activeSolveModel}。当前云端仓库：${owner}/${repo}@${branch}。下载云端题库不需要登录，但当前网络需要能访问 GitHub；贡献题目会打开 GitHub Issue 页面，由仓库里的 Actions 自动校验并生成待审核更新。`;
   }
 
   async function hydrateGitHubAuthStatus(options = {}) {
@@ -4391,13 +4407,26 @@
     return value === "choice" ? "choice" : "code";
   }
 
-  function sanitizeActiveSolveModel(value) {
+  function sanitizeProvider(value) {
+    return typeof solveModelConfig.sanitizeProvider === "function"
+      ? solveModelConfig.sanitizeProvider(value)
+      : DEFAULT_PROVIDER;
+  }
+
+  function sanitizeActiveSolveModel(value, provider = state.settings.textProvider) {
+    if (typeof solveModelConfig.sanitizeProviderModel === "function") {
+      return solveModelConfig.sanitizeProviderModel(provider, value);
+    }
     const normalized = String(value || "").trim();
     return SUPPORTED_SOLVE_MODELS.includes(normalized) ? normalized : DEFAULT_ACTIVE_SOLVE_MODEL;
   }
 
   function renderSolveModelOptions() {
-    return SOLVE_MODELS.map((item) => {
+    const provider = sanitizeProvider(state.settings.textProvider);
+    const providerModels = Array.isArray(PROVIDERS[provider]?.models)
+      ? PROVIDERS[provider].models
+      : SUPPORTED_SOLVE_MODELS;
+    return SOLVE_MODELS.filter((item) => providerModels.includes(item.value)).map((item) => {
       const value = escapeHtml(item?.value || "");
       return `<option value="${value}">${value}</option>`;
     }).join("");
@@ -4445,7 +4474,11 @@
     if (!elements.activeSolveModel) {
       return;
     }
-    elements.activeSolveModel.value = sanitizeActiveSolveModel(state.settings.activeSolveModel);
+    elements.activeSolveModel.innerHTML = renderSolveModelOptions();
+    elements.activeSolveModel.value = sanitizeActiveSolveModel(
+      state.settings.activeSolveModel,
+      state.settings.textProvider,
+    );
   }
 
   function renderActiveSolveModelIcon() {
@@ -4522,8 +4555,11 @@
   }
 
   async function handleActiveSolveModelChange(event) {
-    const nextModel = sanitizeActiveSolveModel(event?.target?.value);
-    const previousModel = sanitizeActiveSolveModel(state.settings.activeSolveModel);
+    const nextModel = sanitizeActiveSolveModel(event?.target?.value, state.settings.textProvider);
+    const previousModel = sanitizeActiveSolveModel(
+      state.settings.activeSolveModel,
+      state.settings.textProvider,
+    );
     if (nextModel === previousModel) {
       syncActiveSolveModelUi();
       return;
@@ -4531,7 +4567,6 @@
 
     state.settings.activeSolveModel = nextModel;
     state.settings.textModel = nextModel;
-    state.settings.imageModel = nextModel;
     syncActiveSolveModelUi();
     renderPlatformSummary();
 
@@ -4539,7 +4574,6 @@
       await storageSet({
         activeSolveModel: nextModel,
         textModel: nextModel,
-        imageModel: nextModel,
         model: nextModel,
       });
       setStatus(`已切换模型：${nextModel}`);
@@ -4547,7 +4581,6 @@
     } catch (error) {
       state.settings.activeSolveModel = previousModel;
       state.settings.textModel = previousModel;
-      state.settings.imageModel = previousModel;
       syncActiveSolveModelUi();
       renderPlatformSummary();
       setStatus(error instanceof Error ? error.message : String(error));

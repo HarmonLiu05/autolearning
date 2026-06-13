@@ -2,7 +2,7 @@ const DEFAULT_CHOICE_PROMPT =
   "当前页面大概率是选择题、判断题、概念题或简答型理论题。请优先输出最终答案，而不是写完整程序。若题目是单选题，code 字段只放最终选项，例如 A、B、C、D；若是多选题，code 字段只放选项组合，例如 AC；若是判断题，code 字段只放“对”或“错”；若是简短填空或概念问答，code 字段只放最终可直接填写的简短答案。不要输出 main 函数，不要伪造代码。approach 用 3 到 5 句简洁说明你的判断依据，重点使用关键词匹配、概念定义和排除法。";
 const DEFAULT_CODE_PROMPT =
   "当前页面大概率是编程题、代码填空题或需要补全模板的题。只要当前编辑器里已经有非空代码模板，你就必须基于这份模板补全，不能擅自重写整体结构。不要改函数签名、类名、输入输出格式、主流程结构、已有辅助函数名和注释约定；只补全 TODO、空函数、占位返回值、核心逻辑以及必要 import。若题面与模板冲突，优先遵循题面和样例，但仍尽量在原模板内修正，不要另起一份独立实现。若当前编辑器为空，再正常生成完整答案。code 字段只放最终可提交或可复制的完整代码，不要在 code 里混入解释。尽量给出最稳妥、最容易通过样例和评测的做法。";
-importScripts("solve-models.js");
+importScripts("solve-models.js", "solve-api-config.js");
 
 const QUESTION_BANK_CATEGORIES = ["educoder", "zhihuishu", "leetcode", "general"];
 const FIXED_SERVER_ORIGIN = "http://03hhhx.dpdns.org";
@@ -16,12 +16,15 @@ const DEFAULT_SERVER_ORIGIN = FIXED_SERVER_ORIGIN;
 const GITHUB_AUTH_STORAGE_KEY = "autolearningGithubAuthSession";
 const MAX_GITHUB_ISSUE_URL_LENGTH = 7000;
 const solveModelConfig = globalThis.AUTOLEARNING_SOLVE_MODELS || {};
+const apiConfig = globalThis.AUTOLEARNING_API_CONFIG || {};
+const DEFAULT_PROVIDER = String(solveModelConfig.DEFAULT_PROVIDER || "platform");
 const SUPPORTED_SOLVE_MODELS = Array.isArray(solveModelConfig.SUPPORTED_SOLVE_MODELS)
   ? solveModelConfig.SUPPORTED_SOLVE_MODELS
   : ["gpt-5.4-mini"];
 const DEFAULT_ACTIVE_SOLVE_MODEL = String(solveModelConfig.DEFAULT_ACTIVE_SOLVE_MODEL || "gpt-5.4-mini");
 
 const DEFAULT_SETTINGS = {
+  textProvider: "",
   baseUrl: FIXED_API_BASE_URL,
   apiKey: "",
   textBaseUrl: FIXED_API_BASE_URL,
@@ -220,26 +223,31 @@ function sanitizeActiveSolveModel(value) {
 }
 
 function normalizeSettingsShape(settings = {}) {
-  const activeSolveModel = sanitizeActiveSolveModel(
-    settings?.activeSolveModel || settings?.textModel || settings?.imageModel || settings?.model,
-  );
-  const sharedApiKey = String(settings?.textApiKey || settings?.apiKey || "").trim();
+  const normalizedTextSettings =
+    typeof apiConfig.normalizeTextProviderSettings === "function"
+      ? apiConfig.normalizeTextProviderSettings(settings)
+      : {
+          textProvider: DEFAULT_PROVIDER,
+          textBaseUrl: String(settings?.textBaseUrl || settings?.baseUrl || FIXED_API_BASE_URL).trim(),
+          textApiKey: String(settings?.textApiKey || settings?.apiKey || "").trim(),
+          textModel: sanitizeActiveSolveModel(
+            settings?.textModel || settings?.activeSolveModel || settings?.model,
+          ),
+        };
   return {
     ...settings,
-    baseUrl: FIXED_API_BASE_URL,
-    textBaseUrl: FIXED_API_BASE_URL,
-    imageBaseUrl: FIXED_API_BASE_URL,
-    apiKey: sharedApiKey,
-    textApiKey: sharedApiKey,
-    activeSolveModel,
-    model: activeSolveModel,
-    textModel: activeSolveModel,
-    imageModel: activeSolveModel,
+    ...normalizedTextSettings,
+    imageBaseUrl: String(settings?.imageBaseUrl || FIXED_API_BASE_URL).trim(),
+    imageApiKey: String(settings?.imageApiKey || "").trim(),
+    imageModel: String(settings?.imageModel || DEFAULT_ACTIVE_SOLVE_MODEL).trim(),
     contributionEmail: String(settings?.contributionEmail || "").trim(),
   };
 }
 
 function normalizeBaseUrl(baseUrl) {
+  if (typeof apiConfig.normalizeChatCompletionsUrl === "function") {
+    return apiConfig.normalizeChatCompletionsUrl(baseUrl);
+  }
   const trimmed = String(baseUrl || "").trim().replace(/\/+$/, "");
   if (!trimmed) {
     throw new Error("请先在设置页填写 Base URL。");
@@ -360,11 +368,13 @@ async function solveProblem(problem, extraInstructionsOverride, externalControll
   const settings = normalizeSettingsShape(await storageGet(DEFAULT_SETTINGS));
   const extraInstructions = normalizeExtraInstructions(extraInstructionsOverride, settings);
   const promptMode = getPromptMode(settings);
+  const includeScreenshotInSolver =
+    Boolean(settings.includeScreenshotInSolver) && settings.textProvider !== "deepseek";
 
   const messages = buildSolverMessages(
     problem,
     extraInstructions,
-    Boolean(settings.includeScreenshotInSolver),
+    includeScreenshotInSolver,
     promptMode,
   );
   const solverConfig = resolveSolverConfig(settings, messages[1]?.content);
@@ -379,11 +389,22 @@ async function solveProblem(problem, extraInstructionsOverride, externalControll
         "Content-Type": "application/json",
         Authorization: `Bearer ${solverConfig.apiKey}`,
       },
-      body: JSON.stringify({
-        model: solverConfig.model,
-        temperature: Number(settings.temperature ?? 0.2),
-        messages,
-      }),
+      body: JSON.stringify(
+        typeof apiConfig.buildChatCompletionBody === "function"
+          ? apiConfig.buildChatCompletionBody(
+              {
+                ...settings,
+                textModel: solverConfig.model,
+              },
+              messages,
+              promptMode,
+            )
+          : {
+              model: solverConfig.model,
+              temperature: Number(settings.temperature ?? 0.2),
+              messages,
+            },
+      ),
       signal: controller.signal,
     });
 
@@ -397,11 +418,15 @@ async function solveProblem(problem, extraInstructionsOverride, externalControll
     }
 
     if (!response.ok) {
-      const apiMessage =
+      const fallbackMessage =
         payload?.error?.message ||
         payload?.message ||
         rawText ||
         `请求失败，状态码 ${response.status}`;
+      const apiMessage =
+        typeof apiConfig.formatProviderHttpError === "function"
+          ? apiConfig.formatProviderHttpError(settings.textProvider, response.status, fallbackMessage)
+          : fallbackMessage;
       throw new Error(apiMessage);
     }
 
@@ -1110,16 +1135,17 @@ function getPromptMode(settings) {
 }
 
 function resolveSolverConfig(settings, userContent) {
-  const activeSolveModel = sanitizeActiveSolveModel(
-    settings?.activeSolveModel || settings?.textModel || settings?.imageModel || settings?.model,
-  );
-  const sharedApiKey = String(settings?.textApiKey || settings?.apiKey || "").trim();
-  const textBaseUrl = FIXED_API_BASE_URL;
-  const textApiKey = sharedApiKey;
-  const textModel = String(activeSolveModel).trim();
-  const imageBaseUrl = FIXED_API_BASE_URL;
-  const imageApiKey = sharedApiKey;
-  const imageModel = String(activeSolveModel).trim();
+  const legacyBaseUrl = String(settings?.baseUrl || "").trim();
+  const legacyApiKey = String(settings?.apiKey || "").trim();
+  const legacyModel = String(settings?.model || "").trim();
+  const textBaseUrl = String(settings?.textBaseUrl || legacyBaseUrl || "").trim();
+  const textApiKey = String(settings?.textApiKey || legacyApiKey || "").trim();
+  const textModel = String(settings?.textModel || settings?.activeSolveModel || legacyModel || "").trim();
+  const imageBaseUrl = String(settings?.imageBaseUrl || FIXED_API_BASE_URL).trim();
+  const imageApiKey = String(
+    settings?.imageApiKey || (settings?.textProvider === "platform" ? textApiKey : ""),
+  ).trim();
+  const imageModel = String(settings?.imageModel || DEFAULT_ACTIVE_SOLVE_MODEL).trim();
   const shouldUseImageModel = hasImageInMessage(userContent);
   const selectedConfig = shouldUseImageModel
     ? {
@@ -1183,7 +1209,10 @@ async function runExternalOcr(imageDataUrl) {
   }
 
   const settings = await storageGet(DEFAULT_SETTINGS);
-  const ocrApiKey = String(settings?.ocrApiKey || settings?.textApiKey || settings?.apiKey || "").trim();
+  const ocrApiKey =
+    typeof apiConfig.resolveOcrApiKey === "function"
+      ? apiConfig.resolveOcrApiKey(settings)
+      : String(settings?.ocrApiKey || settings?.textApiKey || settings?.apiKey || "").trim();
   if (!settings.ocrBaseUrl || !ocrApiKey || !settings.ocrModel) {
     throw new Error("请先在设置页填写 API Key、OCR Base URL 和 OCR Model。");
   }

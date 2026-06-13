@@ -47,6 +47,18 @@
 
 # ***API key是你AI 答题的凭证 没有API key无法正常使用ai答题功能***
 
+#### 使用 DeepSeek 官方 API
+
+1. 打开插件设置页，将“文本模型服务”切换为 `DeepSeek 官方 API`
+2. 文本 Base URL 使用 `https://api.deepseek.com`
+3. 在 [DeepSeek API Keys](https://platform.deepseek.com/api_keys) 创建并填写 API Key
+4. 批量采集题库建议选择 `deepseek-v4-flash`；更看重回答质量时可选择 `deepseek-v4-pro`
+5. 保存设置后刷新智慧树题目页面
+
+`deepseek-chat` 和 `deepseek-reasoner` 计划于 2026 年 7 月 24 日 15:59 UTC 停止使用，本插件的新配置使用 V4 模型名称。
+
+DeepSeek V4 官方 API 在本插件中只负责文本解题。题面截图不会直接发送给 DeepSeek；截图内容仍需通过现有 OCR 配置转成文字后再参与解题。
+
 #### 点击获取API key
 
 ![image-20260321175233500](./README.assets/image-20260321175233500.png)
