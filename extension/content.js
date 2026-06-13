@@ -2121,11 +2121,8 @@
       if (!usedQuestionBank && mode === "choice") {
         await upsertQuestionBankEntry(state.problem, mode, solveResult, {
           source: "local",
-          status: "candidate",
+          status: "verified",
         });
-      }
-      if (mode === "choice" && choiceAnswerText && !usedQuestionBank) {
-        queueQuestionBankReviewItem(state.problem, mode, choiceAnswerText);
       }
 
       let autoPickResult = null;
@@ -2175,9 +2172,7 @@
               : "这题没有稳定匹配到可点击选项，请手动确认；看完解析后也可以到“编辑题库”修正答案。"
           : usedQuestionBank
             ? "答案来自本地题库。"
-            : solveResult.needsVerification
-              ? "AI 已返回候选结果，确认无误后可再入库。"
-              : "AI 已返回结果。",
+            : "AI 已返回结果，并自动写入本地题库。",
       );
       showToast(
         questionBankHit?.matchStrength === "weak"
@@ -8027,7 +8022,7 @@
     }
     nextResult.fromQuestionBank = mode === "choice" && Boolean(options.fromQuestionBank || nextResult.fromQuestionBank);
     nextResult.matchStrength = String(options.matchStrength || nextResult.matchStrength || "");
-    nextResult.needsVerification = mode === "choice" && !nextResult.fromQuestionBank;
+    nextResult.needsVerification = false;
     return nextResult;
   }
 
