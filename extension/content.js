@@ -131,7 +131,7 @@
       autoPickNextDelayMs: 600,
       fullAutoMode: "extract",
       activeSolveModel: DEFAULT_ACTIVE_SOLVE_MODEL,
-      serverOrigin: "http://03hhhx.dpdns.org",
+      serverOrigin: "https://03hhhx.dpdns.org",
       cloudRepoOwner: "liuhexiong",
       cloudRepoName: "question-bank",
       cloudRepoBranch: "main",
@@ -3560,7 +3560,7 @@
       fullAutoNextDelayMs: normalizeFullAutoDelay(
         settings?.fullAutoNextDelayMs ?? state.settings.fullAutoNextDelayMs,
       ),
-      serverOrigin: "http://03hhhx.dpdns.org",
+      serverOrigin: "https://03hhhx.dpdns.org",
       cloudRepoOwner: "liuhexiong",
       cloudRepoName: "question-bank",
       cloudRepoBranch: "main",

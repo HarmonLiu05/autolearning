@@ -5,7 +5,7 @@ const DEFAULT_CODE_PROMPT =
 importScripts("solve-models.js", "solve-api-config.js");
 
 const QUESTION_BANK_CATEGORIES = ["educoder", "zhihuishu", "leetcode", "general"];
-const FIXED_SERVER_ORIGIN = "http://03hhhx.dpdns.org";
+const FIXED_SERVER_ORIGIN = "https://03hhhx.dpdns.org";
 const FIXED_API_BASE_URL = "http://03hhhx.dpdns.org:18317/v1";
 const FIXED_CONTRIBUTION_REPO_OWNER = "HarmonLiu05";
 const FIXED_CONTRIBUTION_REPO_NAME = "autolearning";

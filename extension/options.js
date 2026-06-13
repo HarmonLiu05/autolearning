@@ -41,7 +41,7 @@ const DEFAULT_SETTINGS = {
   ocrPrompt:
     "请只做 OCR，尽量完整提取图片中的中文、英文、公式、选项和输入输出要求。不要解释，不要总结，只返回纯文本。",
   historyLimit: 50,
-  serverOrigin: "http://03hhhx.dpdns.org",
+  serverOrigin: "https://03hhhx.dpdns.org",
   cloudRepoOwner: "HarmonLiu05",
   cloudRepoName: "question-bank",
   cloudRepoBranch: "main",
