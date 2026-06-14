@@ -1,6 +1,7 @@
 const http = require("node:http");
 const { URL } = require("node:url");
 const { readDb, updateDb } = require("./lib/db");
+const { splitContributionEntriesByIssueBodySize } = require("./lib/contribution-batching");
 const {
   createBatchContributionIssue,
   createContributionIssue,
@@ -564,52 +565,83 @@ async function handleBatchContributionIssue(req, res) {
     String(body.contributorEmail || "").trim() ||
     String(entries.find((entry) => entry.contributorEmail)?.contributorEmail || "").trim();
   const sourceMeta = buildBatchSourceMeta(entries, body.sourceMeta);
-  const payload = {
-    version: 1,
+  const batches = splitContributionEntriesByIssueBodySize({
+    entries,
     category,
     exportedAt: submittedAt,
     source,
     contributorEmail,
-    questions: entries.map((entry) => ({
-      clientEntryId: entry.clientEntryId,
-      stem: entry.stem,
-      answer: entry.answer,
-      fingerprint: entry.fingerprint,
-      questionType: entry.questionType,
-      statementFingerprint: entry.statementFingerprint,
-      answerText: entry.answerText,
-      optionMapSnapshot: entry.optionMapSnapshot,
-      formatStrength: entry.formatStrength,
-      contributorEmail: entry.contributorEmail || contributorEmail,
-      sourceMeta: entry.sourceMeta,
-    })),
-  };
+    sourceMeta,
+  });
+  const createdIssues = [];
+  const contributionResults = [];
+  let partialFailure = null;
 
-  const issueTitle = `[题库贡献][${category}] ${entries.length} 题`;
-  let issue;
-  try {
-    issue = await createBatchContributionIssue({
-      title: issueTitle,
-      category,
-      entryCount: entries.length,
-      exportedAt: submittedAt,
-      source,
-      sourceMeta,
-      payload,
-      contributorEmail,
-    });
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`[question-bank/contributions/issue] ${errorMessage}`);
-    throw error;
+  for (let index = 0; index < batches.length; index += 1) {
+    const batch = batches[index];
+    const issueTitle =
+      batches.length === 1
+        ? `[题库贡献][${category}] ${entries.length} 题`
+        : `[题库贡献][${category}] ${entries.length} 题（${index + 1}/${batches.length}）`;
+    try {
+      const issue = await createBatchContributionIssue({
+        title: issueTitle,
+        category,
+        entryCount: batch.entries.length,
+        exportedAt: submittedAt,
+        source,
+        sourceMeta,
+        payload: batch.payload,
+        contributorEmail,
+      });
+      const createdIssue = {
+        ...issue,
+        batchIndex: index + 1,
+        batchCount: batches.length,
+        entryCount: batch.entries.length,
+        bodyLength: batch.bodyLength,
+      };
+      createdIssues.push(createdIssue);
+      for (const entry of batch.entries) {
+        contributionResults.push({
+          clientEntryId: entry.clientEntryId,
+          status: "issue_created",
+          fingerprint: entry.fingerprint || "",
+          issueNumber: issue.issueNumber,
+          issueUrl: issue.issueUrl,
+          issueTitle: issue.issueTitle,
+        });
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error(`[question-bank/contributions/issue] batch ${index + 1}/${batches.length}: ${errorMessage}`);
+      if (createdIssues.length === 0) {
+        throw error;
+      }
+      partialFailure = {
+        batchIndex: index + 1,
+        batchCount: batches.length,
+        failedEntryCount: batches.slice(index).reduce((total, item) => total + item.entries.length, 0),
+        error: errorMessage,
+      };
+      break;
+    }
   }
+
+  const firstIssue = createdIssues[0];
 
   sendJson(res, 200, {
     ok: true,
-    issueUrl: issue.issueUrl,
-    issueNumber: issue.issueNumber,
-    issueTitle: issue.issueTitle,
-    entryCount: entries.length,
+    issueUrl: firstIssue.issueUrl,
+    issueNumber: firstIssue.issueNumber,
+    issueTitle: firstIssue.issueTitle,
+    entryCount: contributionResults.length,
+    requestedEntryCount: entries.length,
+    issueCount: createdIssues.length,
+    plannedIssueCount: batches.length,
+    issues: createdIssues,
+    results: contributionResults,
+    partialFailure,
   });
 }
 

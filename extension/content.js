@@ -127,8 +127,8 @@
       fullPageScreenshotShortcut: "Alt+Shift+F",
       fullAutoShortcut: "Alt+Shift+A",
       autoSubmitAfterFullCapture: false,
-      fullAutoNextDelayMs: 1500,
-      autoPickNextDelayMs: 600,
+      fullAutoNextDelayMs: 0,
+      autoPickNextDelayMs: 0,
       fullAutoMode: "extract",
       activeSolveModel: DEFAULT_ACTIVE_SOLVE_MODEL,
       serverOrigin: "https://03hhhx.dpdns.org",
@@ -7280,7 +7280,7 @@
   function normalizeFullAutoDelay(value) {
     const parsed = Number(value);
     if (!Number.isFinite(parsed)) {
-      return 3000;
+      return 0;
     }
     return Math.min(15000, Math.max(0, Math.round(parsed)));
   }
@@ -7288,7 +7288,7 @@
   function normalizeAutoPickDelay(value) {
     const parsed = Number(value);
     if (!Number.isFinite(parsed)) {
-      return 600;
+      return 0;
     }
     return Math.min(5000, Math.max(0, Math.round(parsed)));
   }
@@ -8314,6 +8314,16 @@
       return 1;
     };
     const resolveQuestionBankEditorPrimaryKey = (payload) => {
+      const canonicalText = extractQuestionCoreText({
+        statementText: String(payload?.statementPreview || payload?.title || ""),
+        ocrText: "",
+      });
+      const canonicalFingerprint = buildStatementFingerprintFromText(
+        canonicalText || normalizeText(payload?.statementPreview || payload?.title || ""),
+      );
+      if (canonicalFingerprint) {
+        return `fingerprint:${canonicalFingerprint}`;
+      }
       const fingerprint = String(payload?.statementFingerprint || "").trim();
       if (fingerprint) {
         return `fingerprint:${fingerprint}`;
@@ -8706,6 +8716,9 @@
 
       for (const aliasKey of editorItem.keys) {
         const existing = state.questionBank[aliasKey];
+        if (!existing) {
+          continue;
+        }
         const previousAnswer = normalizeChoiceAnswerForBank(existing?.answer || existing?.code || "");
         if (previousAnswer === normalizedAnswer) {
           continue;
@@ -8718,6 +8731,7 @@
           latestAnswerText = nextAnswerText;
         }
         state.questionBank[aliasKey] = {
+          ...existing,
           key: aliasKey,
           promptMode: "choice",
           questionType: "choice",
@@ -9236,6 +9250,12 @@
           (item) => item.status === "issue_opened" || item.status === "issue_created",
         ).length;
         const duplicateCount = results.filter((item) => item.status === "duplicate").length;
+        const issueCount = Number(response.result?.issueCount || 1);
+        const plannedIssueCount = Number(response.result?.plannedIssueCount || issueCount);
+        const partialFailure =
+          response.result?.partialFailure && typeof response.result.partialFailure === "object"
+            ? response.result.partialFailure
+            : null;
         if (response.result?.needsPaste && response.result?.payloadText) {
           try {
             await navigator.clipboard.writeText(String(response.result.payloadText));
@@ -9258,10 +9278,16 @@
               : "GitHub Issue 已创建并打开，请在新页面确认。",
         );
         setBankNotice(summaryText, "success", true);
-        const cleanSummary = `GitHub Issue created and opened. ${openedCount} item(s) included, ${duplicateCount} duplicate(s).`;
+        const cleanSummary = partialFailure
+          ? `Created ${issueCount}/${plannedIssueCount} GitHub Issues. ${openedCount} question(s) uploaded; ${Number(partialFailure.failedEntryCount || 0)} question(s) remain unsubmitted. ${String(partialFailure.error || "")}`.trim()
+          : `Created ${issueCount} GitHub Issue(s). ${openedCount} question(s) uploaded, ${duplicateCount} duplicate(s).`;
         setSaveIndicator(cleanSummary, "saved", true);
-        setStatus("GitHub Issue created and opened.");
-        setBankNotice(cleanSummary, "success", true);
+        setStatus(
+          partialFailure
+            ? `Only ${issueCount}/${plannedIssueCount} GitHub Issues were created.`
+            : `${issueCount} GitHub Issue(s) created; the first one was opened.`,
+        );
+        setBankNotice(cleanSummary, partialFailure ? "error" : "success", true);
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         setSaveIndicator("提交失败", "idle", true);

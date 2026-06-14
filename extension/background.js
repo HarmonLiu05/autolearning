@@ -45,8 +45,8 @@ const DEFAULT_SETTINGS = {
   screenshotShortcut: "Alt+Shift+S",
   fullPageScreenshotShortcut: "Alt+Shift+F",
   autoSubmitAfterFullCapture: false,
-  fullAutoNextDelayMs: 1500,
-  autoPickNextDelayMs: 600,
+  fullAutoNextDelayMs: 0,
+  autoPickNextDelayMs: 0,
   fullAutoMode: "extract",
   ocrBaseUrl: "https://generativelanguage.googleapis.com/v1beta/openai",
   ocrApiKey: "",
@@ -383,83 +383,117 @@ async function solveProblem(problem, extraInstructionsOverride, externalControll
   const timeout = setTimeout(() => controller.abort(new Error("请求超时")), 90000);
 
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${solverConfig.apiKey}`,
-      },
-      body: JSON.stringify(
-        typeof apiConfig.buildChatCompletionBody === "function"
-          ? apiConfig.buildChatCompletionBody(
-              {
-                ...settings,
-                textModel: solverConfig.model,
+    const maxAttempts =
+      settings.textProvider === "deepseek" && promptMode === "choice" ? 2 : 1;
+    let lastDiagnostics = null;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${solverConfig.apiKey}`,
+        },
+        body: JSON.stringify(
+          typeof apiConfig.buildChatCompletionBody === "function"
+            ? apiConfig.buildChatCompletionBody(
+                {
+                  ...settings,
+                  textModel: solverConfig.model,
+                },
+                messages,
+                promptMode,
+                { retryWithoutJsonMode: attempt > 0 },
+              )
+            : {
+                model: solverConfig.model,
+                temperature: Number(settings.temperature ?? 0.2),
+                messages,
               },
-              messages,
+        ),
+        signal: controller.signal,
+      });
+
+      const rawText = await response.text();
+      let payload = {};
+
+      try {
+        payload = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        payload = {};
+      }
+
+      if (!response.ok) {
+        const fallbackMessage =
+          payload?.error?.message ||
+          payload?.message ||
+          rawText ||
+          `请求失败，状态码 ${response.status}`;
+        const apiMessage =
+          typeof apiConfig.formatProviderHttpError === "function"
+            ? apiConfig.formatProviderHttpError(settings.textProvider, response.status, fallbackMessage)
+            : fallbackMessage;
+        throw new Error(apiMessage);
+      }
+
+      const assistantText = readAssistantText(payload);
+      const parsed = parseSolverResponse(assistantText);
+      const fallbackAnswer = extractChoiceAnswer(parsed.answer || parsed.code || assistantText);
+      const finalAnswer = parsed.answer || fallbackAnswer;
+      const finalCode =
+        promptMode === "choice" && finalAnswer ? parsed.code || finalAnswer : parsed.code;
+      lastDiagnostics =
+        typeof apiConfig.inspectChatCompletionPayload === "function"
+          ? apiConfig.inspectChatCompletionPayload(payload)
+          : null;
+
+      const shouldRetry =
+        typeof apiConfig.shouldRetryEmptyChoiceResponse === "function"
+          ? apiConfig.shouldRetryEmptyChoiceResponse({
+              provider: settings.textProvider,
               promptMode,
-            )
-          : {
-              model: solverConfig.model,
-              temperature: Number(settings.temperature ?? 0.2),
-              messages,
-            },
-      ),
-      signal: controller.signal,
-    });
+              attempt,
+              finalAnswer,
+            })
+          : false;
+      if (shouldRetry) {
+        continue;
+      }
 
-    const rawText = await response.text();
-    let payload = {};
+      if (promptMode === "choice" && !finalAnswer) {
+        const message =
+          typeof apiConfig.formatEmptyChoiceResponseError === "function"
+            ? apiConfig.formatEmptyChoiceResponseError(lastDiagnostics)
+            : "模型返回里没有识别到最终答案。";
+        throw new Error(message);
+      }
 
-    try {
-      payload = rawText ? JSON.parse(rawText) : {};
-    } catch {
-      payload = {};
+      if (promptMode !== "choice" && !finalCode) {
+        throw new Error("模型返回里没有可填充的代码。");
+      }
+
+      const result = {
+        model: solverConfig.model,
+        promptPreview: extractTextContent(messages[1]?.content).slice(0, 1200),
+        generatedTitle: parsed.generatedTitle,
+        summary: parsed.summary,
+        problemType: parsed.problemType,
+        problemDefinition: parsed.problemDefinition,
+        approach: parsed.approach,
+        answer: finalAnswer,
+        code: finalCode,
+        raw: assistantText,
+      };
+
+      await appendSolveHistory(problem, result);
+      return result;
     }
 
-    if (!response.ok) {
-      const fallbackMessage =
-        payload?.error?.message ||
-        payload?.message ||
-        rawText ||
-        `请求失败，状态码 ${response.status}`;
-      const apiMessage =
-        typeof apiConfig.formatProviderHttpError === "function"
-          ? apiConfig.formatProviderHttpError(settings.textProvider, response.status, fallbackMessage)
-          : fallbackMessage;
-      throw new Error(apiMessage);
-    }
-
-    const assistantText = readAssistantText(payload);
-    const parsed = parseSolverResponse(assistantText);
-    const fallbackAnswer = extractChoiceAnswer(parsed.answer || parsed.code || assistantText);
-    const finalAnswer = parsed.answer || fallbackAnswer;
-    const finalCode =
-      promptMode === "choice" && finalAnswer ? parsed.code || finalAnswer : parsed.code;
-
-    if (promptMode === "choice" && !finalAnswer) {
-      throw new Error("模型返回里没有识别到最终答案。");
-    }
-
-    if (promptMode !== "choice" && !finalCode) {
-      throw new Error("模型返回里没有可填充的代码。");
-    }
-
-    const result = {
-      model: solverConfig.model,
-      promptPreview: extractTextContent(messages[1]?.content).slice(0, 1200),
-      generatedTitle: parsed.generatedTitle,
-      summary: parsed.summary,
-      problemType: parsed.problemType,
-      problemDefinition: parsed.problemDefinition,
-      approach: parsed.approach,
-      answer: finalAnswer,
-      code: finalCode,
-      raw: assistantText,
-    };
-
-    await appendSolveHistory(problem, result);
-    return result;
+    const message =
+      typeof apiConfig.formatEmptyChoiceResponseError === "function"
+        ? apiConfig.formatEmptyChoiceResponseError(lastDiagnostics)
+        : "模型返回里没有识别到最终答案。";
+    throw new Error(message);
   } finally {
     clearTimeout(timeout);
   }
@@ -539,25 +573,33 @@ async function submitContributionWithServerFallback(category, entries) {
       payload,
     );
     await openUrlInNewTab(serverIssue.issueUrl);
+    const serverResults =
+      Array.isArray(serverIssue.results) && serverIssue.results.length > 0
+        ? serverIssue.results
+        : normalizedEntries.map((entry) => ({
+            clientEntryId: entry.clientEntryId,
+            status: "issue_created",
+            fingerprint: entry.fingerprint || "",
+            issueNumber: serverIssue.issueNumber,
+            issueUrl: serverIssue.issueUrl,
+            issueTitle: serverIssue.issueTitle,
+          }));
     return {
-      createdCount: 1,
+      createdCount: serverResults.length,
       duplicateCount: 0,
       issueUrl: serverIssue.issueUrl,
       issueNumber: serverIssue.issueNumber,
       issueTitle: serverIssue.issueTitle,
       entryCount: serverIssue.entryCount,
+      issueCount: serverIssue.issueCount,
+      plannedIssueCount: serverIssue.plannedIssueCount,
+      issues: serverIssue.issues,
+      partialFailure: serverIssue.partialFailure,
       viaServer: true,
       fallbackUsed: false,
       needsPaste: false,
       payloadText: "",
-      results: normalizedEntries.map((entry) => ({
-        clientEntryId: entry.clientEntryId,
-        status: "issue_created",
-        fingerprint: entry.fingerprint || "",
-        issueNumber: serverIssue.issueNumber,
-        issueUrl: serverIssue.issueUrl,
-        issueTitle: serverIssue.issueTitle,
-      })),
+      results: serverResults,
     };
   } catch (error) {
     throw new Error(formatErrorMessage(error) || "Failed to create GitHub issue via server.");
@@ -597,6 +639,14 @@ async function createContributionIssueViaServer(settings, category, entries, pay
     issueNumber: Number(result.issueNumber || 0),
     issueTitle: String(result.issueTitle || ""),
     entryCount: Number(result.entryCount || entries.length || 0),
+    issueCount: Number(result.issueCount || 1),
+    plannedIssueCount: Number(result.plannedIssueCount || result.issueCount || 1),
+    issues: Array.isArray(result.issues) ? result.issues : [],
+    results: Array.isArray(result.results) ? result.results : [],
+    partialFailure:
+      result.partialFailure && typeof result.partialFailure === "object"
+        ? result.partialFailure
+        : null,
   };
 }
 

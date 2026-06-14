@@ -54,6 +54,21 @@ const requestBody = apiConfig.buildChatCompletionBody(
 assert.equal(requestBody.model, "deepseek-v4-flash");
 assert.equal(requestBody.response_format.type, "json_object");
 assert.equal(requestBody.max_tokens, 1200);
+assert.equal(requestBody.thinking.type, "disabled");
+
+const retryRequestBody = apiConfig.buildChatCompletionBody(
+  {
+    textProvider: "deepseek",
+    textModel: "deepseek-v4-flash",
+    temperature: 0.2,
+  },
+  [{ role: "user", content: "Return JSON" }],
+  "choice",
+  { retryWithoutJsonMode: true },
+);
+assert.equal(retryRequestBody.thinking.type, "disabled");
+assert.equal(retryRequestBody.response_format, undefined);
+assert.equal(retryRequestBody.max_tokens, 1200);
 
 const codeRequestBody = apiConfig.buildChatCompletionBody(
   {
@@ -65,6 +80,60 @@ const codeRequestBody = apiConfig.buildChatCompletionBody(
   "code",
 );
 assert.equal(codeRequestBody.response_format, undefined);
+assert.equal(codeRequestBody.thinking, undefined);
+
+const emptyChoiceDiagnostics = apiConfig.inspectChatCompletionPayload({
+  choices: [
+    {
+      finish_reason: "length",
+      message: {
+        content: "",
+        reasoning_content: "long internal reasoning",
+      },
+    },
+  ],
+  usage: { completion_tokens: 1200 },
+});
+assert.deepEqual(
+  JSON.parse(JSON.stringify(emptyChoiceDiagnostics)),
+  {
+    finishReason: "length",
+    contentLength: 0,
+    reasoningLength: 23,
+    completionTokens: 1200,
+  },
+);
+assert.equal(
+  apiConfig.formatEmptyChoiceResponseError(emptyChoiceDiagnostics),
+  "模型返回里没有识别到最终答案（finish_reason=length，正文=0字，思考=23字，输出令牌=1200）。",
+);
+assert.equal(
+  apiConfig.shouldRetryEmptyChoiceResponse({
+    provider: "deepseek",
+    promptMode: "choice",
+    attempt: 0,
+    finalAnswer: "",
+  }),
+  true,
+);
+assert.equal(
+  apiConfig.shouldRetryEmptyChoiceResponse({
+    provider: "deepseek",
+    promptMode: "choice",
+    attempt: 1,
+    finalAnswer: "",
+  }),
+  false,
+);
+assert.equal(
+  apiConfig.shouldRetryEmptyChoiceResponse({
+    provider: "deepseek",
+    promptMode: "choice",
+    attempt: 0,
+    finalAnswer: "B",
+  }),
+  false,
+);
 
 assert.equal(apiConfig.formatProviderHttpError("deepseek", 401, ""), "DeepSeek API Key 无效。");
 assert.equal(apiConfig.formatProviderHttpError("deepseek", 402, ""), "DeepSeek 账户余额不足。");

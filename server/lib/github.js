@@ -24,6 +24,21 @@ function hasGitHubRepoConfig() {
 function buildGitHubIssueCreationError(response, payload, config) {
   const status = Number(response?.status || 0);
   const message = String(payload?.message || "").trim();
+  const details = Array.isArray(payload?.errors)
+    ? payload.errors
+        .map((error) => {
+          if (typeof error === "string") {
+            return error;
+          }
+          const field = String(error?.field || "").trim();
+          const code = String(error?.code || "").trim();
+          const detailMessage = String(error?.message || "").trim();
+          return [field, code, detailMessage].filter(Boolean).join(": ");
+        })
+        .filter(Boolean)
+        .join("; ")
+    : "";
+  const fullMessage = [message, details].filter(Boolean).join(" - ");
   const repoOwner = String(config?.repoOwner || "").trim();
   const repoName = String(config?.repoName || "").trim();
   const repoLabel = repoOwner && repoName ? `${repoOwner}/${repoName}` : "(unknown repo)";
@@ -38,15 +53,15 @@ function buildGitHubIssueCreationError(response, payload, config) {
     return `GitHub issue creation failed: invalid or expired token for ${repoLabel}.`;
   }
   if (status === 403) {
-    return `GitHub issue creation failed: token does not have permission for ${repoLabel}. ${message}`.trim();
+    return `GitHub issue creation failed: token does not have permission for ${repoLabel}. ${fullMessage}`.trim();
   }
   if (status === 404) {
     return `GitHub issue creation failed: repository ${repoLabel} was not found or is not accessible.`;
   }
   if (status === 422) {
-    return `GitHub issue creation failed: validation error from ${repoLabel}. ${message}`.trim();
+    return `GitHub issue creation failed: validation error from ${repoLabel}. ${fullMessage}`.trim();
   }
-  return `GitHub issue creation failed (${status || "unknown"}): ${message || "Unknown GitHub API error."}`;
+  return `GitHub issue creation failed (${status || "unknown"}): ${fullMessage || "Unknown GitHub API error."}`;
 }
 
 function buildIssueTitle(category, stem) {
@@ -304,6 +319,7 @@ async function syncCategoryFileToGitHub(category, questions) {
 }
 
 module.exports = {
+  buildBatchContributionIssueBody,
   createBatchContributionIssue,
   createContributionIssue,
   exchangeCodeForAccessToken,

@@ -65,17 +65,60 @@
       : `${trimmed}/chat/completions`;
   }
 
-  function buildChatCompletionBody(settings, messages, promptMode) {
+  function buildChatCompletionBody(settings, messages, promptMode, options = {}) {
     const body = {
       model: String(settings?.textModel || settings?.model || "").trim(),
       temperature: Number(settings?.temperature ?? 0.2),
       messages,
     };
     if (settings?.textProvider === "deepseek" && promptMode === "choice") {
-      body.response_format = { type: "json_object" };
+      body.thinking = { type: "disabled" };
+      if (!options.retryWithoutJsonMode) {
+        body.response_format = { type: "json_object" };
+      }
       body.max_tokens = 1200;
     }
     return body;
+  }
+
+  function inspectChatCompletionPayload(payload) {
+    const choice = payload?.choices?.[0] || {};
+    const message = choice?.message || {};
+    const content = typeof message.content === "string" ? message.content : "";
+    const reasoning =
+      typeof message.reasoning_content === "string" ? message.reasoning_content : "";
+    const completionTokens = Number(payload?.usage?.completion_tokens);
+
+    return {
+      finishReason: String(choice?.finish_reason || "unknown"),
+      contentLength: content.length,
+      reasoningLength: reasoning.length,
+      completionTokens: Number.isFinite(completionTokens) ? completionTokens : 0,
+    };
+  }
+
+  function formatEmptyChoiceResponseError(diagnostics = {}) {
+    return [
+      "模型返回里没有识别到最终答案",
+      `（finish_reason=${diagnostics.finishReason || "unknown"}`,
+      `，正文=${Number(diagnostics.contentLength) || 0}字`,
+      `，思考=${Number(diagnostics.reasoningLength) || 0}字`,
+      `，输出令牌=${Number(diagnostics.completionTokens) || 0}）。`,
+    ].join("");
+  }
+
+  function shouldRetryEmptyChoiceResponse({
+    provider,
+    promptMode,
+    attempt,
+    finalAnswer,
+  } = {}) {
+    return (
+      provider === "deepseek" &&
+      promptMode === "choice" &&
+      Number(attempt) === 0 &&
+      !String(finalAnswer || "").trim()
+    );
   }
 
   function formatProviderHttpError(provider, status, fallbackMessage) {
@@ -107,6 +150,9 @@
     normalizeTextProviderSettings,
     normalizeChatCompletionsUrl,
     buildChatCompletionBody,
+    inspectChatCompletionPayload,
+    formatEmptyChoiceResponseError,
+    shouldRetryEmptyChoiceResponse,
     formatProviderHttpError,
     resolveOcrApiKey,
   };
