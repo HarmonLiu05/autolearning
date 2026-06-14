@@ -11,6 +11,10 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: question-bank-contribution
+  cancel-in-progress: false
+
 jobs:
   process:
     if: startsWith(github.event.issue.title, '[题库贡献]')

@@ -30,8 +30,11 @@ async function main() {
 
   const payload = extractContributionPayload(ISSUE_BODY);
   const normalized = normalizeContributionPayload(payload);
-  const branchName = `codex/question-bank-issue-${ISSUE_NUMBER}`;
-  const workdir = await cloneTargetRepository(branchName);
+  const preferredBranchName = `codex/question-bank-${normalized.category}-pending`;
+  const existingPullRequest = await findOpenPullRequest(preferredBranchName, normalized.category);
+  const branchName = String(existingPullRequest?.head?.ref || preferredBranchName);
+  const workdir = await cloneTargetRepository();
+  checkoutContributionBranch(workdir, branchName, Boolean(existingPullRequest));
   const mergeResult = await mergeContributionIntoRepo(workdir, normalized, branchName);
 
   if (mergeResult.addedCount === 0 && mergeResult.updatedCount === 0) {
@@ -58,6 +61,7 @@ async function main() {
     updatedCount: mergeResult.updatedCount,
     contributorEmail: normalized.contributorEmail,
     issueNumber: ISSUE_NUMBER,
+    existingPullRequest,
   });
 
   await postIssueComment(
@@ -276,12 +280,20 @@ function inferFormatStrength(answerText, optionMapSnapshot) {
   return normalizeText(answerText) && normalizeChoiceOptionSnapshot(optionMapSnapshot).length > 0 ? "strong" : "weak";
 }
 
-async function cloneTargetRepository(branchName) {
+async function cloneTargetRepository() {
   const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "question-bank-"));
   const remote = `https://x-access-token:${TARGET_REPO_TOKEN}@github.com/${TARGET_REPO_OWNER}/${TARGET_REPO_NAME}.git`;
   runGit(["clone", "--depth", "20", "--branch", TARGET_REPO_BRANCH, remote, tempRoot], process.cwd());
-  runGit(["checkout", "-B", branchName], tempRoot);
   return tempRoot;
+}
+
+function checkoutContributionBranch(workdir, branchName, hasOpenPullRequest) {
+  if (hasOpenPullRequest) {
+    runGit(["fetch", "origin", `${branchName}:refs/remotes/origin/${branchName}`], workdir);
+    runGit(["checkout", "-B", branchName, `origin/${branchName}`], workdir);
+    return;
+  }
+  runGit(["checkout", "-B", branchName, `origin/${TARGET_REPO_BRANCH}`], workdir);
 }
 
 async function mergeContributionIntoRepo(workdir, payload, branchName) {
@@ -457,23 +469,43 @@ async function readQuestionBankFile(filePath, category) {
   }
 }
 
-async function ensurePullRequest({ branchName, category, addedCount, updatedCount, contributorEmail, issueNumber }) {
+async function findOpenPullRequest(branchName, category) {
   const existing = await githubRequest({
     token: TARGET_REPO_TOKEN,
     repo: `${TARGET_REPO_OWNER}/${TARGET_REPO_NAME}`,
-    path: `/pulls?state=open&head=${encodeURIComponent(`${TARGET_REPO_OWNER}:${branchName}`)}`,
+    path: "/pulls?state=open&per_page=100",
   });
-  if (Array.isArray(existing) && existing[0]?.html_url) {
-    return existing[0];
+  if (!Array.isArray(existing)) {
+    return null;
   }
+  return (
+    existing.find((pullRequest) => String(pullRequest?.head?.ref || "") === branchName) ||
+    existing.find((pullRequest) =>
+      String(pullRequest?.title || "").startsWith(`[题库贡献][${category}]`),
+    ) ||
+    null
+  );
+}
 
+async function ensurePullRequest({
+  branchName,
+  category,
+  addedCount,
+  updatedCount,
+  contributorEmail,
+  issueNumber,
+  existingPullRequest,
+}) {
+  if (existingPullRequest?.html_url) {
+    return existingPullRequest;
+  }
   return githubRequest({
     token: TARGET_REPO_TOKEN,
     repo: `${TARGET_REPO_OWNER}/${TARGET_REPO_NAME}`,
     path: "/pulls",
     method: "POST",
     body: {
-      title: `[题库贡献][${category}] issue #${issueNumber}`,
+      title: `[题库贡献][${category}] 待审核汇总`,
       head: branchName,
       base: TARGET_REPO_BRANCH,
       body: [
